@@ -1,0 +1,5 @@
+# NOTE: Update the `url` field as needed
+# e.g. "https://vimc.github.io/vimpact/"
+url: ~
+template:
+  bootstrap: 5
