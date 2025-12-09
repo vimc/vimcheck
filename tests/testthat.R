@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(vimc.rpkg.template)
+library(vimcheck)
 
-test_check("vimc.rpkg.template")
+test_check("vimcheck")

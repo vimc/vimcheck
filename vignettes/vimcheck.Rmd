@@ -1,8 +1,8 @@
 ---
-title: "vimc-rpkg-template"
+title: "vimcheck"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vimc-rpkg-template}
+  %\VignetteIndexEntry{vimcheck}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(vimc.rpkg.template)
+library(vimcheck)
 ```
 
 This is a special vignette, which shares the same name as the package.
