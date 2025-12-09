@@ -1,15 +1,23 @@
-Package: vimc.rpkg.template
-Title: Your Package Title in Title Case
+Package: vimcheck
+Title: Diagnostics for Vaccination Modelling Burden and Impact Estimates
 Version: 0.0.0.9000
 Authors@R: c(
     person("Pratik", "Gupte", , "p.gupte24@imperial.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5294-7819")),
+    person("Katy", "Gaythorpe", role = "aut",
+           comment = c(ORCID = "0000-0003-3734-9081")),
+    person("Xiang", "Li", role = "aut",
+           comment = c(ORCID = "0000-0002-5945-159X")),
+    person("Zoe", "Gibney", role = "aut"),
     person("Imperial College of Science, Technology and Medicine", role = c("cph", "fnd"))
   )
-Description: Your package description. It must end with a period (".") and
-    include relevant bibliographical references if applicable, using the
-    following format: Author et al. (2023) <doi:10.5281/zenodo.6619350>.
+Description: Run diagnostics on burden estimates submitted to the Vaccine
+    Impact Modelling Consortium (VIMC), and impacts estimated by VIMC, as
+    described in Echeverria-Londono et al.  (2021)
+    <doi:10.1186/s12889-021-12040-9>.
 License: MIT + file LICENSE
+URL: https://github.com/vimc/vimcheck, https://vimc.github.io/vimcheck/
+BugReports: https://github.com/vimc/vimcheck/issues
 Suggests: 
     knitr,
     rmarkdown,
