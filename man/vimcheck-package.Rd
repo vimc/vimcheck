@@ -4,9 +4,9 @@
 \name{vimcheck-package}
 \alias{vimcheck}
 \alias{vimcheck-package}
-\title{vimcheck: Diagnostics for Vaccination Modelling Burden and Impact Estimates}
+\title{vimcheck: Diagnostics for Vaccine Impact Modelling Consortium Burden and Impact Estimates}
 \description{
-Run diagnostics and sense-checks on burden estimates submitted to the Vaccine Impact Modelling Consortium (VIMC), and impacts estimated by VIMC, as described in Echeverria-Londono et al. (2021) \doi{10.1186/s12889-021-12040-9}.
+Run diagnostics on burden estimates submitted by modellers in the Vaccine Impact Modelling Consortium (VIMC) and impact estimates calculated by the VIMC Science & Policy team.
 }
 \seealso{
 Useful links:
@@ -24,7 +24,7 @@ Authors:
 \itemize{
   \item Katy Gaythorpe (\href{https://orcid.org/0000-0003-3734-9081}{ORCID})
   \item Xiang Li (\href{https://orcid.org/0000-0002-5945-159X}{ORCID})
-  \item Zoe Gibney
+  \item Zoë Gibney (\href{https://orcid.org/0009-0002-8114-9984}{ORCID})
 }
 
 Other contributors:
