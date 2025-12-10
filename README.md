@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# vimcheck: Diagnostics for vaccination modelling burden and impact estimates
+# vimcheck: Diagnostics for Vaccine Impact Modelling Consortium burden and impact estimates
 
 <!-- badges: start -->
 
@@ -19,7 +19,7 @@ status](https://www.r-pkg.org/badges/version/vimcheck)](https://CRAN.R-project.o
 
 *vimcheck* is an R package for running diagnostic checks on burden
 estimates submitted to the Vaccine Impact Modelling Consortium (VIMC),
-and on impact estimates calculated by VIMC.
+and on vaccine impact estimates calculated by VIMC.
 
 ## Installation
 
