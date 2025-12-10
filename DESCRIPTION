@@ -1,6 +1,7 @@
 Package: vimcheck
-Title: Diagnostics for Vaccination Modelling Burden and Impact Estimates
-Version: 0.0.0.9000
+Title: Diagnostics for Vaccine Impact Modelling Consortium Burden and
+    Impact Estimates
+Version: 0.0.1
 Authors@R: c(
     person("Pratik", "Gupte", , "p.gupte24@imperial.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5294-7819")),
@@ -8,13 +9,13 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-3734-9081")),
     person("Xiang", "Li", role = "aut",
            comment = c(ORCID = "0000-0002-5945-159X")),
-    person("Zoe", "Gibney", role = "aut"),
+    person("Zoë", "Gibney", role = "aut",
+           comment = c(ORCID = "0009-0002-8114-9984")),
     person("Imperial College of Science, Technology and Medicine", role = c("cph", "fnd"))
   )
-Description: Run diagnostics on burden estimates submitted to the Vaccine
-    Impact Modelling Consortium (VIMC), and impacts estimated by VIMC, as
-    described in Echeverria-Londono et al.  (2021)
-    <doi:10.1186/s12889-021-12040-9>.
+Description: Run diagnostics on burden estimates submitted by modellers in
+    the Vaccine Impact Modelling Consortium (VIMC) and impact estimates
+    calculated by the VIMC Science & Policy team.
 License: MIT + file LICENSE
 URL: https://github.com/vimc/vimcheck, https://vimc.github.io/vimcheck/
 BugReports: https://github.com/vimc/vimcheck/issues
