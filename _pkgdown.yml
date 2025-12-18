@@ -3,3 +3,25 @@
 url: ~
 template:
   bootstrap: 5
+
+reference:
+  - title: Package-level documentation
+    contents:
+    - has_keyword("package_doc")
+  - title: Diagnostic functions
+    desc: Package diagnostic functions.
+    contents:
+    - has_keyword("diagnostics")
+  - title: Plotting functions
+    desc: Package plotting functions.
+    contents:
+    - plotting
+    - plotting_theme
+  - title: Internal functions
+    desc: Internal helper functions.
+    contents:
+    - has_keyword("internal")
+  - title: Constants
+    desc: Package constants.
+    contents:
+    - has_keyword("constants")
