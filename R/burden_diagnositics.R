@@ -28,17 +28,48 @@ validate_file_dict_template <- function(
 ) {
   # TODO: check conditions on arg disease - what is the original source `pars`?
 
-  assert_is_directory(path_burden)
+  checkmate::assert_directory_exists(path_burden)
   template <- file.path(path_burden, "file_dictionary.csv")
 
   if (file.exists(template)) {
-    cli::cli_inform(
-      "File dictionary found at {.file {template}}, no action needed."
+    # TODO: check that file_dictionary entries are acceptable?
+    data_dict <- readr::read_csv(
+      template,
+      show_col_types = FALSE
     )
+    is_good_df <- checkmate::test_data_frame(
+      data_dict,
+      any.missing = FALSE,
+      min.cols = length(file_dict_colnames),
+      min.rows = 2L # needs a no-vax and a vax scenario?
+    ) &&
+      checkmate::test_names(
+        colnames(data_dict),
+        must.include = file_dict_colnames
+      )
+
+    if (is_good_df) {
+      cli::cli_inform(
+        "File dictionary found at {.file {template}}, no action needed."
+      )
+    } else {
+      cli::cli_abort(
+        c(
+          "File dictionary found at {.file {template}}, \\
+          but it is not well formed. Please check info below.",
+          i = "Column names: {.str {colnames(data_dict)}}, \\
+          expected min. column names: {.str {file_dict_colnames}};
+          No. rows: {nrow(data_dict)}, expected min. no. rows: 2."
+        )
+      )
+    }
   } else {
-    # TODO: resolve magic strings
-    scenario_dir <- "model_inputs"
+    # TODO: explain why this branch of the decision tree triggers in fn docs
+
+    # NOTE: see expected dir structure in `tests/testthat/testdata/`
+    scenario_dir <- file.path(path_burden, "model_inputs")
     checkmate::assert_directory_exists(scenario_dir)
+
     scenario_data <- file.path(scenario_dir, "scenario.csv")
     checkmate::assert_file_exists(scenario_data)
 
@@ -47,16 +78,16 @@ validate_file_dict_template <- function(
     # NOTE: consider wrapping into check function
     checkmate::assert_data_frame(
       sce,
-      any.missing = FALSE,
-      min.cols = length(const_data_colnames),
+      any.missing = TRUE, # allowing missing as contained in examples
+      min.cols = length(scenario_data_colnames),
     )
     checkmate::assert_names(
       colnames(sce),
-      must.include = const_data_colnames
+      must.include = scenario_data_colnames
     )
 
     # get distinct scenario entries and add no-vax if needed
-    sce <- dplyr::select(sce, {{ const_data_colnames }})
+    sce <- dplyr::select(sce, {{ scenario_data_colnames }})
     sce <- dplyr::distinct(sce)
 
     novax_scenario <- "novac"
@@ -68,7 +99,7 @@ validate_file_dict_template <- function(
       )
     }
 
-    sce$file <- NA_character_ # TODO: investigate this further
+    sce$file <- NA_character_ # NOTE: remove file
     readr::write_csv(sce, template)
 
     cli::cli_inform(
@@ -102,7 +133,7 @@ validate_file_dict_template <- function(
 validate_complete_incoming_files <- function(
   path_burden = "incoming_burden_estimates"
 ) {
-  assert_is_directory(path_burden)
+  checkmate::assert_directory_exists(path_burden)
 
   files <- list.files(path_burden, full.names = TRUE)
   file_dict <- file.path(path_burden, "file_dictionary.csv")
@@ -371,6 +402,8 @@ basic_burden_sanity <- function(burden) {
 #' @examples
 #' # example code
 #'
+#' @importFrom dplyr .data
+#'
 #' @keywords diagnostics
 #'
 #' @export
@@ -426,13 +459,11 @@ transfrom_coverage_fvps <- function(coverage, wpp) {
       .data$target_wpp # replace NAs in target with target_wpp
     ),
     fvps = .data$target * .data$coverage,
-    fvps_adjusted = dplyr::if_else(
-      .data$fvps > .data$target_wpp,
+    fvps_adjusted = pmin(
       .data$target_wpp,
       .data$fvps
     ),
-    target_adjusted = dplyr::if_else(
-      .data$target > .data$target_wpp,
+    target_adjusted = pmin(
       .data$target_wpp,
       .data$target
     ),
@@ -453,6 +484,8 @@ transfrom_coverage_fvps <- function(coverage, wpp) {
 #' @param scenario_order
 #'
 #' @return
+#'
+#' @importFrom dplyr .data
 #'
 #' @examples
 #'
