@@ -1,0 +1,3 @@
+scenario_type,scenario_type_description,scenario,scenario_description,file
+disease-rout,Routine Only,disease-rout,disease-rout,no-vaccination.csv
+novac,No Vaccination,disease-no-vaccination,No vaccination,with-vaccination.csv
