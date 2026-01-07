@@ -20,17 +20,18 @@ make_novax_scenario <- function(disease) {
     "novac",
     "No Vaccination",
     glue::glue("{disease}-no-vaccination"),
-    "No vaccination"
+    "No vaccination",
+    "no-vaccination.csv"
   )
 
   # internal function without input checking
-  df <- dplyr::tibble(
-    variable = need_colnames,
+  df_ <- dplyr::tibble(
+    variable = file_dict_colnames,
     value = v
   )
 
   tidyr::pivot_wider(
-    df,
+    df_,
     names_from = "variable"
   )
 }
