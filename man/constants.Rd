@@ -3,15 +3,21 @@
 \docType{data}
 \name{constants}
 \alias{constants}
-\alias{const_data_colnames}
+\alias{file_dict_colnames}
+\alias{scenario_data_colnames}
 \title{Package constants}
 \format{
+An object of class \code{character} of length 5.
+
 An object of class \code{character} of length 4.
 }
 \usage{
-const_data_colnames
+file_dict_colnames
+
+scenario_data_colnames
 }
 \description{
 Package constants
 }
 \keyword{constants}
+\keyword{datasets}

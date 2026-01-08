@@ -207,21 +207,25 @@ validate_complete_incoming_files <- function(
 #'
 #' @description
 #'
-#' @param burden_set
+#' @param burden_set A `<data.frame>` of modeller-provided burden-set data.
 #'
-#' @param template
+#' @param template A `<data.frame>` of the burden template as provided to
+#' modelling groups by VIMC.
 #'
-#' @return
+#' @return A named list of checks carried out on `burden_set` to comapre it
+#' against `template`, with information on missing and extra data.
 #'
 #' @examples
 #'
 #' @keywords diagnostics
 #'
 #' @export
-check_template_alignment <- function(burden_set, template) {
-  # TODO: figure out what the args are expected to be: dfs? lists, vecs?
-  expected <- names(template)
-  provided <- names(burden_set)
+validate_template_alignment <- function(burden_set, template) {
+  checkmate::assert_data_frame(burden_set)
+  checkmate::assert_data_frame(template)
+
+  expected <- colnames(template)
+  provided <- colnames(burden_set)
 
   missing_cols_in_burden <- setdiff(expected, provided)
   extra_cols_in_burden <- setdiff(provided, expected)
@@ -248,8 +252,8 @@ check_template_alignment <- function(burden_set, template) {
 
   # TODO: if these are data.frames, this might not be the best way to check
   # for differences
-  missing_grid_in_burden <- setdiff(template_grid, burden_grid)
-  extra_grid_in_burden <- setdiff(burden_grid, template_grid)
+  missing_grid_in_burden <- dplyr::setdiff(template_grid, burden_grid)
+  extra_grid_in_burden <- dplyr::setdiff(burden_grid, template_grid)
   burden_grid_matches_template <- all(
     c(
       nrow(missing_grid_in_burden),
@@ -283,30 +287,35 @@ check_template_alignment <- function(burden_set, template) {
 #' @keywords diagnostics
 #'
 #' @export
-check_demography_alignment <- function(burden_set, wpp, gender = "both") {
+check_demography_alignment <- function(
+  burden_set,
+  wpp,
+  gender = c("Both", "Male", "Female")
+) {
   # TODO: input checks
+  checkmate::assert_data_frame(burden_set)
+  checkmate::assert_data_frame(wpp)
 
-  # TODO: check if these can be made constants
+  gender <- rlang::arg_match(gender)
+
   cols_to_select <- c("country", "year", "age", "cohort_size")
   provided <- dplyr::select(
     burden_set,
     {{ cols_to_select }}
   )
   provided <- dplyr::mutate(
-    provided = cohort_size # check if this can be made a string const
+    provided,
+    provided = cohort_size
   )
 
   # TODO: explain what expected is
   # TODO: replace with a right-join?
   expected <- dplyr::filter(
     wpp,
-    country %in%
-      provided$country &
-      year %in% provided$year &
-      age %in% provided$age,
     gender == {{ gender }}
   )
 
+  # in case there are many extra cols
   cols_to_select <- c("country", "year", "age", "value")
   expected <- dplyr::select(
     expected,
@@ -315,7 +324,7 @@ check_demography_alignment <- function(burden_set, wpp, gender = "both") {
   expected <- dplyr::rename(
     expected,
     expected = value
-  ) # TODO: prefer not to use NSE
+  )
 
   # return left join
   alignment <- dplyr::left_join(
