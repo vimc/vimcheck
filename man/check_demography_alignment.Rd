@@ -4,7 +4,11 @@
 \alias{check_demography_alignment}
 \title{Check incoming burden cohort size against interpolated population}
 \usage{
-check_demography_alignment(burden_set, wpp, gender = "both")
+check_demography_alignment(
+  burden_set,
+  wpp,
+  gender = c("Both", "Male", "Female")
+)
 }
 \arguments{
 \item{burden_set}{}

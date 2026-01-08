@@ -21,6 +21,10 @@ reference:
     desc: Internal helper functions.
     contents:
     - has_keyword("internal")
+  - title: Data
+    desc: Package data.
+    contents:
+    - has_keyword("data")
   - title: Constants
     desc: Package constants.
     contents:
