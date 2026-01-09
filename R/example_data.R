@@ -26,7 +26,7 @@
 #' @format ## `eg_burden_template`
 #' A data frame with 10,201 rows and 10 columns:
 #' \describe{
-#'   \item{disease}
+#'   \item{disease}{Disease name}
 #'   \item{year}{Year}
 #'   \item{age}{Age}
 #'   \item{country}{Country name in short format; this is a placeholder name.}

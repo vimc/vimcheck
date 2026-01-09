@@ -11,7 +11,7 @@
 #'
 #' @param path_burden A directory with burden estimate data.
 #'
-#' @return Nothing; called primarily for its side-effets.
+#' @return Nothing; called primarily for its side-effects.
 #' If the file `path_burden/file_dictionary.csv` does not exist, a file
 #' dictionary CSV file is written to the same location.
 #' Prints a message to screen informing the user whether any action has been
@@ -19,15 +19,14 @@
 #'
 #' @keywords diagnostics
 #'
-#' @examples
-#'
 #' @export
 validate_file_dict_template <- function(
   disease,
   path_burden = "incoming_burden_estimates"
 ) {
-  # TODO: check conditions on arg disease - what is the original source `pars`?
+  # NOTE: maybe need to check allowed options for disease?
 
+  checkmate::assert_string(disease)
   checkmate::assert_directory_exists(path_burden)
   template <- file.path(path_burden, "file_dictionary.csv")
 
@@ -64,8 +63,6 @@ validate_file_dict_template <- function(
       )
     }
   } else {
-    # TODO: explain why this branch of the decision tree triggers in fn docs
-
     # NOTE: see expected dir structure in `tests/testthat/testdata/`
     scenario_dir <- file.path(path_burden, "model_inputs")
     checkmate::assert_directory_exists(scenario_dir)
@@ -125,8 +122,6 @@ validate_file_dict_template <- function(
 #' @return A `<tibble>` of the scenario file dictionary in `path_burden` if all
 #' checks pass. Otherwise, exits with informative errors on failed checks.
 #'
-#' @examples
-#'
 #' @keywords diagnostics
 #'
 #' @export
@@ -145,7 +140,7 @@ validate_complete_incoming_files <- function(
       show_col_types = FALSE
     )
 
-    col_filenames <- "file" # TODO: remove/explain magic colnm
+    col_filenames <- "file"
     scenario_filenames <- df_dict[[col_filenames]]
     df_dict <- dplyr::select(df_dict, -{{ col_filenames }})
 
@@ -212,10 +207,8 @@ validate_complete_incoming_files <- function(
 #' @param template A `<data.frame>` of the burden template as provided to
 #' modelling groups by VIMC.
 #'
-#' @return A named list of checks carried out on `burden_set` to comapre it
+#' @return A named list of checks carried out on `burden_set` to compare it
 #' against `template`, with information on missing and extra data.
-#'
-#' @examples
 #'
 #' @keywords diagnostics
 #'
@@ -235,7 +228,6 @@ validate_template_alignment <- function(burden_set, template) {
     length(extra_cols_in_burden) ==
     0L
 
-  # TODO: make magic strings constants
   key_cols <- c("disease", "country", "year", "age")
   template_grid <- dplyr::distinct(
     template,
@@ -250,8 +242,6 @@ validate_template_alignment <- function(burden_set, template) {
     })
   )
 
-  # TODO: if these are data.frames, this might not be the best way to check
-  # for differences
   missing_grid_in_burden <- dplyr::setdiff(template_grid, burden_grid)
   extra_grid_in_burden <- dplyr::setdiff(burden_grid, template_grid)
   burden_grid_matches_template <- all(
@@ -274,15 +264,19 @@ validate_template_alignment <- function(burden_set, template) {
 
 #' Check incoming burden cohort size against interpolated population
 #'
-#' @description
+#' @description Check the modelled disease burden data has similar population
+#' sizes as the provided population data.
 #'
-#' @param burden_set
+#' @inheritParams validate_template_alignment
 #'
-#' @param wpp
+#' @param wpp Population estimates for the country in `burden_set`, provided by
+#' VIMC.
 #'
-#' @param gender
+#' @param gender The assigned sex for which demography is to be checked. Options
+#' are `"Both"` (default), `"Male"`, or `"Female"`.
 #'
-#' @return
+#' @return A `<tibble>` giving the alignment, i.e., percentage difference of
+#' modelled population size from the WPP-derived population estimates.
 #'
 #' @keywords diagnostics
 #'
@@ -507,6 +501,7 @@ impact_check <- function(burden, scenario_order) {
   scenario_order <- dplyr::select(scenario_order, {{ scenario_cols }})
 
   d <- dplyr::summarise(
+    burden,
     millions = sum(.data$value) / 1e6,
     .by = c("scenario", "burden_outcome"),
     .groups = "drop" # probably unnecessary as grouping is temporary

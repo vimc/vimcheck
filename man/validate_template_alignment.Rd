@@ -13,7 +13,7 @@ validate_template_alignment(burden_set, template)
 modelling groups by VIMC.}
 }
 \value{
-A named list of checks carried out on \code{burden_set} to comapre it
+A named list of checks carried out on \code{burden_set} to compare it
 against \code{template}, with information on missing and extra data.
 }
 \description{
