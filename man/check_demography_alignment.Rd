@@ -11,13 +11,20 @@ check_demography_alignment(
 )
 }
 \arguments{
-\item{burden_set}{}
+\item{burden_set}{A \verb{<data.frame>} of modeller-provided burden-set data.}
 
-\item{wpp}{}
+\item{wpp}{Population estimates for the country in \code{burden_set}, provided by
+VIMC.}
 
-\item{gender}{}
+\item{gender}{The assigned sex for which demography is to be checked. Options
+are \code{"Both"} (default), \code{"Male"}, or \code{"Female"}.}
+}
+\value{
+A \verb{<tibble>} giving the alignment, i.e., percentage difference of
+modelled population size from the WPP-derived population estimates.
 }
 \description{
-Check incoming burden cohort size against interpolated population
+Check the modelled disease burden data has similar population
+sizes as the provided population data.
 }
 \keyword{diagnostics}

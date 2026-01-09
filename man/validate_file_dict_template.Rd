@@ -12,7 +12,7 @@ validate_file_dict_template(disease, path_burden = "incoming_burden_estimates")
 \item{path_burden}{A directory with burden estimate data.}
 }
 \value{
-Nothing; called primarily for its side-effets.
+Nothing; called primarily for its side-effects.
 If the file \code{path_burden/file_dictionary.csv} does not exist, a file
 dictionary CSV file is written to the same location.
 Prints a message to screen informing the user whether any action has been

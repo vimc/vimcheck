@@ -8,7 +8,7 @@
 \alias{plot_global_burden}
 \alias{plot_coverage_set}
 \alias{plot_fvp}
-\title{Plot burden and impact diagostics}
+\title{Plot burden and impact diagnostics}
 \usage{
 plot_compare_demography(d, fig_number)
 

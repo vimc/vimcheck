@@ -1,3 +1,4 @@
+# TODO: add documentations for these functions
 #' Plotting theme for vimcheck
 #'
 #' @description
@@ -32,7 +33,7 @@ theme_vimc <- function(x_text_angle = 45, y_text_angle = 0, ...) {
     )
 }
 
-#' Plot burden and impact diagostics
+#' Plot burden and impact diagnostics
 #'
 #' @name plotting
 #' @rdname plotting
