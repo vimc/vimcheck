@@ -8,6 +8,8 @@ test_that("`validate_file_dict_template()` works", {
   dummy_data <- data.frame()
   readr::write_csv(dummy_data, file_dict)
 
+  disease <- "dummy_disease"
+
   success_msg <- glue::glue(
     "(File dictionary found at)*({file_dict})*(no action needed)"
   )
