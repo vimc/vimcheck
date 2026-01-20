@@ -19,14 +19,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/vimc/vimcheck/blob/main/DESCRIPTION)
 
-Gupte P, Gaythorpe K, Li X, Gibney Z (2025). *vimcheck: Diagnostics for
+Gupte P, Gaythorpe K, Li X, Gibney Z (2026). *vimcheck: Diagnostics for
 Vaccine Impact Modelling Consortium Burden and Impact Estimates*. R
 package version 0.0.1, <https://github.com/vimc/vimcheck>.
 
     @Manual{,
       title = {vimcheck: Diagnostics for Vaccine Impact Modelling Consortium Burden and Impact Estimates},
       author = {Pratik Gupte and Katy Gaythorpe and Xiang Li and Zoë Gibney},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.0.1},
       url = {https://github.com/vimc/vimcheck},
     }

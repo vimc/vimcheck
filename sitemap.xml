@@ -7,7 +7,18 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
+<url><loc>/reference/basic_burden_sanity.html</loc></url>
+<url><loc>/reference/check_demography_alignment.html</loc></url>
+<url><loc>/reference/constants.html</loc></url>
+<url><loc>/reference/eg_burden_template.html</loc></url>
+<url><loc>/reference/eg_wpp.html</loc></url>
+<url><loc>/reference/helpers.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/plotting.html</loc></url>
+<url><loc>/reference/plotting_theme.html</loc></url>
+<url><loc>/reference/validate_complete_incoming_files.html</loc></url>
+<url><loc>/reference/validate_file_dict_template.html</loc></url>
+<url><loc>/reference/validate_template_alignment.html</loc></url>
 <url><loc>/reference/vimcheck-package.html</loc></url>
 </urlset>
 
