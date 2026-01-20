@@ -410,7 +410,7 @@ basic_burden_sanity <- function(burden) {
 #' @keywords diagnostics
 #'
 #' @export
-transfrom_coverage_fvps <- function(coverage, wpp) {
+transform_coverage_fvps <- function(coverage, wpp) {
   # TODO: checks on coverage
   # TODO: checks on wpp
 
