@@ -6,10 +6,14 @@
 #' @description
 #' Convert the output of [check_demography_alignment()] to a long-format tibble.
 #'
-#' @param data For `prep_plot_demography()`, a `<tibble>` output from
+#' @param burden For `prep_plot_demography()`, a `<tibble>` output from
 #' [check_demography_alignment()].
 #'
-#' @param burden For `prep_plot_age()`,
+#' For `prep_plot_age()`, ... ADD DETAILS.
+#'
+#' For `prep_plot_burden_decades()`, ... ADD DETAILS.
+#'
+#' For `prep_plot_global_burden()`, ... ADD DETAILS.
 #'
 #' @return
 #'
@@ -20,8 +24,8 @@
 #' - For `prep_plot_age()`:
 #'
 #' @export
-prep_plot_demography <- function(data) {
-  checkmate::assert_tibble(data)
+prep_plot_demography <- function(burden) {
+  checkmate::assert_tibble(burden)
 
   # NOTE: this data is expected to come from `check_demography_alignment()`
   # there are expected to be more colnames: abs_diff, prop_diff
@@ -31,43 +35,49 @@ prep_plot_demography <- function(data) {
     "year",
     "expected",
     "provided",
-    "difference"
+    "difference",
+    "country"
   )
 
   checkmate::assert_names(
-    colnames(data),
+    colnames(burden),
     must.include = names_melting_data
   )
 
-  num_countries <- length(unique(data$country))
+  names_melting_by <- c("scenario", "age", "year", "country")
 
-  names_melting_by <- c("scenario", "age", "year")
-
-  data <- dplyr::select(
-    data,
+  burden <- dplyr::select(
+    burden,
     {{ names_melting_data }}
   )
 
-  data <- tidyr::pivot_longer(
-    data,
-    !{{ names_melting_by }}
+  burden_long <- tidyr::pivot_longer(
+    burden,
+    !{{ names_melting_by }},
+    names_to = "variable"
   )
 
-  data <- dplyr::summarise(
-    data,
+  burden_long <- dplyr::summarise(
+    burden_long,
     value = sum(.data$value),
-    .groups = c("variable", "scenario", "year", "age")
+    .by = c("variable", "scenario", "year", "age", "country")
   )
-  data <- dplyr::mutate(
-    data,
+  burden_long <- dplyr::mutate(
+    burden_long,
     value_millions = .data$value / 1e6
   )
-  data <- dplyr::arrange(
-    data,
+  burden_long <- dplyr::arrange(
+    burden_long,
     "age"
   )
 
-  data
+  # set factor levels for variable
+  burden_long$variable <- forcats::fct_relevel(
+    burden_long$variable,
+    c("expected", "provided", "difference")
+  )
+
+  burden_long
 }
 
 #' @name plotting_prep
@@ -76,13 +86,13 @@ prep_plot_demography <- function(data) {
 prep_plot_age <- function(burden) {
   checkmate::assert_tibble(burden)
 
-  data <- dplyr::summarise(
+  burden_summary <- dplyr::summarise(
     burden,
     value_millions = sum(.data$value) / 1e6,
     .groups = c("scenario", "burden_outcome", "age")
   )
 
-  data
+  burden_summary
 }
 
 #' @name plotting_prep
@@ -103,9 +113,9 @@ prep_plot_burden_decades <- function(burden, year_max) {
 
   last_decade <- year_max - 10
 
-  data <- data[data$year <= year_max, ]
-  data <- dplyr::mutate(
-    data,
+  burden_data <- burden[burden$year <= year_max, ]
+  burden_data <- dplyr::mutate(
+    burden_data,
     year = pmin(
       .data$year,
       .data$year_max - 1
@@ -118,13 +128,13 @@ prep_plot_burden_decades <- function(burden, year_max) {
     )
   )
 
-  data <- dplyr::summarise(
-    data,
+  burden_data <- dplyr::summarise(
+    burden_data,
     value_millions = sum(.data$value) / 1e6,
     .groups = c("scenario", "burden_outcome", "decade_label")
   )
 
-  data
+  burden_data
 }
 
 #' @name plotting_prep
@@ -140,13 +150,15 @@ prep_plot_global_burden <- function(burden) {
   burden_nested <- tidyr::nest(
     burden,
     .by = {{ nesting_cols }},
-    .key = burden_data
+    .key = "burden_data"
   )
 
   burden_nested
 }
 
 #' @name plotting_prep
+#'
+#' @param coverage
 #'
 #' @export
 prep_plot_coverage_set <- function(coverage) {
@@ -191,14 +203,20 @@ prep_plot_coverage_set <- function(coverage) {
 
 #' @name plotting_prep
 #'
+#' @param fvp
+#'
+#' @param year_min
+#'
+#' @param year_max
+#'
 #' @export
 prep_plot_fvp <- function(fvp, year_min, year_max) {
   checkmate::assert_tibble(fvp)
   checkmate::assert_count(year_min)
   checkmate::assert_count(year_max)
 
-  years <- unique(coverage$year)
-  countries <- unique(coverage$country)
+  years <- unique(fvp$year)
+  countries <- unique(fvp$country)
   fvps_adjusted <- 0
   scenario_description <- "No vaccination"
 
@@ -224,7 +242,7 @@ prep_plot_fvp <- function(fvp, year_min, year_max) {
 
   # TODO: need to see an example to figure this out
   fvp_final$scenario <- gsub(tolower(fvp$disease[1L]), "", fvp_final$scenario)
-  fvp_final$scenario <- gsub("-", " ", fvp_final$scenario)
+  fvp_final$scenario <- gsub("-", " ", fvp_final$scenario, fixed = TRUE)
 
   # determine scenario order in terms of total adjusted FVPs per scenario
   scenario_order <- names(sort(
