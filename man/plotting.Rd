@@ -10,40 +10,50 @@
 \alias{plot_fvp}
 \title{Plot burden and impact diagnostics}
 \usage{
-plot_compare_demography(d, fig_number)
+plot_compare_demography(data, fig_number)
 
-plot_age_patterns(burden, fig_number)
+plot_age_patterns(burden_age, fig_number)
 
-plot_global_burden_decades(burden, year_max, fig_number)
+plot_global_burden_decades(burden_decades, fig_number)
 
-plot_global_burden(d, outcome, fig_number)
+plot_global_burden(burden_data, outcome_name, fig_number)
 
-plot_coverage_set(cov, figure_number)
+plot_coverage_set(coverage_set, fig_number)
 
-plot_fvp(fvp, year_min, year_max, figure_number)
+plot_fvp(fvp_data, fig_number)
 }
 \arguments{
-\item{d}{}
+\item{data}{A \verb{<data.frame>} that gives the comparison between VIMC-provided
+and modeller-used demography values, in long-format. This is expected to be
+the output of \code{check_demography_alignment()} processed by
+\code{prep_plot_demography()}.}
 
-\item{fig_number}{}
+\item{fig_number}{The figure number displayed in the plot title.}
 
-\item{burden}{}
+\item{burden_age}{A \verb{<tibble>} with the minimum column names
+"age", "value_millions", "burden_outcome", and "scenario"; expected to be the
+output of \code{\link[=prep_plot_age]{prep_plot_age()}}.}
 
-\item{year_max}{}
+\item{burden_decades}{A \verb{<tibble>} giving the burden by decade, up to
+\code{year_max}; expected to be the output of \code{\link[=prep_plot_burden_decades]{prep_plot_burden_decades()}}.}
 
-\item{outcome}{}
+\item{burden_data}{This is expected to be a \verb{<tibble>} from a
+nested-\verb{<tibble>} constructed using \code{\link[=prep_plot_global_burden]{prep_plot_global_burden()}}.}
 
-\item{cov}{}
+\item{coverage_set}{A \verb{<tibble>} that is the output of
+\code{\link[=prep_plot_coverage_set]{prep_plot_coverage_set()}}.}
 
-\item{fvp}{}
-
-\item{year_min}{}
+\item{fvp_data}{A \verb{<tibble>} of estimates of fully-vaccinated persons (FVPs)
+per scenario, with scenarios as factors in order of the number of
+adjusted-FVPs. Expected to be the output of \code{\link[=prep_plot_fvp]{prep_plot_fvp()}}.}
 }
 \value{
 A \verb{<ggplot>} object that can be printed to screen in the plot frame
 or saved to an output device (i.e., saved as an image file).
 }
 \description{
-Plotting functions for burden and impact diagnostics. This documentation
-holds all plotting functions for now.
+Plotting functions for burden and impact diagnostics. All functions operate
+on data prepared for plotting by a corresponding
+\link[=plotting_prep]{plotting-preparation function}.
 }
+\keyword{plotting}

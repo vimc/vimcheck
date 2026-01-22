@@ -24,7 +24,7 @@
 #' groups.
 #'
 #' @format ## `eg_burden_template`
-#' A data frame with 10,201 rows and 10 columns:
+#' A data frame with 10,201 rows and 11 columns:
 #' \describe{
 #'   \item{disease}{Disease name}
 #'   \item{year}{Year}
@@ -36,6 +36,7 @@
 #'   \item{deaths}{Deaths averted}.
 #'   \item{yll}{Years of life-loss averted}.
 #'   \item{cohort_size}{Population size of the country in a year}.
+#'   \itme{scenario}{Vaccination scenario.}
 #' }
 #'
 #' @keywords data
