@@ -3,17 +3,22 @@
 \name{plotting_theme}
 \alias{plotting_theme}
 \alias{theme_vimc}
+\alias{theme_vimc_noxaxis}
 \title{Plotting theme for vimcheck}
 \usage{
 theme_vimc(x_text_angle = 45, y_text_angle = 0, ...)
+
+theme_vimc_noxaxis()
 }
 \arguments{
-\item{x_text_angle}{}
+\item{x_text_angle}{The angle for X-axis labels. Defaults to 45 degrees.}
 
-\item{y_text_angle}{}
+\item{y_text_angle}{The angle for Y-axis labels. Defaults to 0 degrees.}
 
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Other arguments passed to
-\code{\link[ggplot2:theme]{ggplot2::theme()}}.}
+\code{\link[ggplot2:theme]{ggplot2::theme()}}. These will be applied in addition to, or in place of,
+pre-existing elements defined by this theme. See the examples for this
+theme's appearance.}
 }
 \value{
 A \code{ggplot2} theme that can be added to \code{ggplot2} plots or objects.
@@ -21,3 +26,19 @@ A \code{ggplot2} theme that can be added to \code{ggplot2} plots or objects.
 \description{
 A simple plotting theme building on \code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}.
 }
+\examples{
+# using an inbuilt dataset
+data(mtcars)
+
+# standard theme
+ggplot2::ggplot(mtcars, ggplot2::aes(disp, mpg)) +
+  ggplot2::geom_point() +
+  theme_vimc()
+
+# with X-axis suppression
+ggplot2::ggplot(mtcars, ggplot2::aes(disp, mpg)) +
+  ggplot2::geom_point() +
+  theme_vimc_noxaxis()
+
+}
+\keyword{plotting}

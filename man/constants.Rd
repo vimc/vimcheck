@@ -5,16 +5,26 @@
 \alias{constants}
 \alias{file_dict_colnames}
 \alias{scenario_data_colnames}
+\alias{burden_outcome_names}
+\alias{colnames_plot_demog_compare}
 \title{Package constants}
 \format{
 An object of class \code{character} of length 5.
 
 An object of class \code{character} of length 4.
+
+An object of class \code{character} of length 4.
+
+An object of class \code{character} of length 7.
 }
 \usage{
 file_dict_colnames
 
 scenario_data_colnames
+
+burden_outcome_names
+
+colnames_plot_demog_compare
 }
 \description{
 Package constants
