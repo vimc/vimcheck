@@ -244,7 +244,8 @@ test_that("`check_demography_alignment()` works", {
     "expected",
     "difference",
     "abs_diff",
-    "prop_diff"
+    "prop_diff",
+    "scenario"
   )
 
   checkmate::expect_tibble(
