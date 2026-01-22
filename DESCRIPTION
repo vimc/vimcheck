@@ -1,7 +1,7 @@
 Package: vimcheck
 Title: Diagnostics for Vaccine Impact Modelling Consortium Burden and
     Impact Estimates
-Version: 0.0.1
+Version: 0.0.3
 Authors@R: c(
     person("Pratik", "Gupte", , "p.gupte24@imperial.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5294-7819")),
@@ -38,6 +38,7 @@ Suggests:
     spelling,
     testthat (>= 3.0.0),
     tibble,
+    vdiffr,
     withr
 VignetteBuilder: 
     knitr

@@ -1,3 +1,15 @@
+# vimcheck 0.0.3
+
+- Separated data-prep for plotting from plotting functions.
+
+- Added tests for plotting preparation and plotting functions.
+
+# vimcheck 0.0.2
+
+- Added initial data validation functions and some tests.
+
+- Added VIMC _ggplot2_ theme.
+
 # vimcheck 0.0.1
 
 - Added GHA workflows to notify of changed dependencies, auto-render `README.md` from `README.Rmd`, and update the copyright year annually.
