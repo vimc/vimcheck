@@ -76,7 +76,7 @@ validate_file_dict_template <- function(
     checkmate::assert_data_frame(
       sce,
       any.missing = TRUE, # allowing missing as contained in examples
-      min.cols = length(scenario_data_colnames),
+      min.cols = length(scenario_data_colnames)
     )
     checkmate::assert_names(
       colnames(sce),
@@ -170,10 +170,13 @@ validate_complete_incoming_files <- function(
     )
 
     if (!are_good_scefiles) {
+      # prevent linting as lintr cannot see usage inside glue::glue()
+      # nolint start
       extra_files <- setdiff(sce_files, scenario_filenames)
       n_extra_files <- length(extra_files)
       missing_files <- setdiff(scenario_filenames, sce_files)
       n_missing_files <- length(missing_files)
+      # nolint end
 
       cli::cli_abort(
         c(
@@ -186,7 +189,7 @@ validate_complete_incoming_files <- function(
           {cli::no(n_missing_files)} missing files{? /} \\
           {.file {basename(missing_files)}}",
           i = "Directory searched: {.file {path_burden}}"
-        ),
+        )
       )
     }
   } else {
@@ -244,13 +247,9 @@ validate_template_alignment <- function(burden_set, template) {
 
   missing_grid_in_burden <- dplyr::setdiff(template_grid, burden_grid)
   extra_grid_in_burden <- dplyr::setdiff(burden_grid, template_grid)
-  burden_grid_matches_template <- all(
-    c(
-      nrow(missing_grid_in_burden),
-      nrow(extra_grid_in_burden)
-    ) ==
-      0L
-  )
+  burden_grid_matches_template <- nrow(missing_grid_in_burden) +
+    nrow(extra_grid_in_burden) ==
+    0L
 
   list(
     missing_cols_in_burden = missing_cols_in_burden,
@@ -286,24 +285,21 @@ check_demography_alignment <- function(
   wpp,
   gender = c("Both", "Male", "Female")
 ) {
-  # TODO: input checks
   checkmate::assert_data_frame(burden_set)
   checkmate::assert_data_frame(wpp)
 
   gender <- rlang::arg_match(gender)
 
-  cols_to_select <- c("country", "year", "age", "cohort_size")
+  cols_to_select <- c("country", "year", "age", "cohort_size", "scenario")
   provided <- dplyr::select(
     burden_set,
     {{ cols_to_select }}
   )
   provided <- dplyr::mutate(
     provided,
-    provided = cohort_size
+    provided = .data$cohort_size
   )
 
-  # TODO: explain what expected is
-  # TODO: replace with a right-join?
   expected <- dplyr::filter(
     wpp,
     gender == {{ gender }}
@@ -315,9 +311,10 @@ check_demography_alignment <- function(
     expected,
     {{ cols_to_select }}
   )
+
   expected <- dplyr::rename(
     expected,
-    expected = value
+    expected = value # nolint due to tidyselect conventions
   )
 
   # return left join
@@ -328,9 +325,9 @@ check_demography_alignment <- function(
   )
   alignment <- dplyr::mutate(
     alignment,
-    difference = provided - expected,
-    abs_diff = abs(difference),
-    prop_diff = difference / expected
+    difference = .data$provided - .data$expected,
+    abs_diff = abs(.data$difference),
+    prop_diff = .data$difference / .data$expected
   )
 
   alignment
@@ -352,13 +349,14 @@ check_demography_alignment <- function(
 #' @export
 basic_burden_sanity <- function(burden) {
   # TODO: expectations on burden
-  mes <- "Basic sanity check for burden estimates:"
+  mes_start <- "Basic sanity check for burden estimates:"
+  mes <- mes_start
 
   value_col <- "value"
   value <- burden[[value_col]]
 
-  if (is.numeric(burden$value)) {
-    if (anyNA(burden$value)) {
+  if (is.numeric(value)) {
+    if (anyNA(value)) {
       mes_any_missing <- glue::glue(
         "Warning: Burden estimates should not have missing values, but some \\
         values are missing. Fix missing values by converting to zeros!"
@@ -367,7 +365,7 @@ basic_burden_sanity <- function(burden) {
       mes <- c(mes, mes_any_missing)
     }
 
-    if (any(burden$value < 0, na.rm = TRUE)) {
+    if (any(value < 0, na.rm = TRUE)) {
       mes_any_negative <- glue::glue(
         "Warning: Burden estimates should all be positive or zero, but found \\
         some negative estimates!"
@@ -384,7 +382,7 @@ basic_burden_sanity <- function(burden) {
     mes <- c(mes, mes_not_numeric)
   }
 
-  if (length(mes) == 1L) {
+  if (mes == mes_start) {
     mes <- c(mes, "PASS.")
   }
 
@@ -417,7 +415,7 @@ transform_coverage_fvps <- function(coverage, wpp) {
   cols_to_select <- c("age_from", "age_to", "gender")
   todo_list <- dplyr::select(
     coverage,
-    cols_to_select
+    {{ cols_to_select }}
   )
   todo_list <- dplyr::distinct(todo_list)
   todo_list <- dplyr::mutate(
@@ -429,23 +427,22 @@ transform_coverage_fvps <- function(coverage, wpp) {
   # TODO: clarify structure of `coverage` and mapping of gender to age
   pop_all <- list()
   for (i in seq_along(todo_list$age_from)) {
-    pop_all[[i]] <- wpp %>%
-      x <- dplyr::filter(
+    x <- dplyr::filter(
       wpp,
-      .data$age >= todo_list$age_from[i],
-      .data$age <= todo_list$age_to[i],
+      dplyr::between(.data$age, todo_list$age_from[i], todo_list$age_to[i]),
       .data$gender == todo_list$gender[i]
     )
-    x <- dplyr::group_by(x, .data$country, .data$year)
     x <- dplyr::summarise(
       x,
       target_wpp = sum(.data$value),
-      .groups = "drop"
+      .by = c("country", "year")
     )
     x <- dplyr::mutate(
       x,
       job = todo_list$job[i]
     )
+
+    pop_all[[i]] <- x
   }
   pop_all <- dplyr::bind_rows(pop_all)
 
