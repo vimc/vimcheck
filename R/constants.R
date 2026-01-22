@@ -21,3 +21,22 @@ scenario_data_colnames <- c(
   "scenario",
   "scenario_description"
 )
+
+#' @name constants
+burden_outcome_names <- c(
+  "cases",
+  "deaths",
+  "dalys",
+  "yll"
+)
+
+#' @name constants
+colnames_plot_demog_compare <- c(
+  "variable",
+  "scenario",
+  "year",
+  "age",
+  "country",
+  "value",
+  "value_millions"
+)
