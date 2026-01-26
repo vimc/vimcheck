@@ -36,7 +36,7 @@
 #'   \item{deaths}{Deaths averted}.
 #'   \item{yll}{Years of life-loss averted}.
 #'   \item{cohort_size}{Population size of the country in a year}.
-#'   \itme{scenario}{Vaccination scenario.}
+#'   \item{scenario}{Vaccination scenario.}
 #' }
 #'
 #' @keywords data
