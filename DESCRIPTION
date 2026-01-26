@@ -29,8 +29,8 @@ Imports:
     ggplot2,
     glue,
     readr,
-    reshape2,
     rlang,
+    scales,
     tidyr
 Suggests: 
     knitr,
