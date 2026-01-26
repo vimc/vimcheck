@@ -186,6 +186,9 @@ plot_global_burden_decades <- function(burden_decades, fig_number) {
 #'
 #' @param burden_data This is expected to be a `<tibble>` from a
 #' nested-`<tibble>` constructed using [prep_plot_global_burden()].
+#' 
+#' @param outcome_name A string for an outcome name. Allowed outcome names are
+#' given in the package constant [constants][burden_outcome_names].
 #'
 #' @export
 plot_global_burden <- function(burden_data, outcome_name, fig_number) {

@@ -40,6 +40,9 @@ output of \code{\link[=prep_plot_age]{prep_plot_age()}}.}
 \item{burden_data}{This is expected to be a \verb{<tibble>} from a
 nested-\verb{<tibble>} constructed using \code{\link[=prep_plot_global_burden]{prep_plot_global_burden()}}.}
 
+\item{outcome_name}{A string for an outcome name. Allowed outcome names are
+given in the package constant \link[=burden_outcome_names]{constants}.}
+
 \item{coverage_set}{A \verb{<tibble>} that is the output of
 \code{\link[=prep_plot_coverage_set]{prep_plot_coverage_set()}}.}
 

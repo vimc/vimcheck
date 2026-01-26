@@ -4,16 +4,13 @@
 #' @rdname plotting_prep
 #'
 #' @description
-#' Convert the output of [check_demography_alignment()] to a long-format tibble.
+#' Transform burden estimate data from modelling groups to make them suitable
+#' for plotting using an appropriate [plotting function][plotting]. Each
+#' preparation function corresponds to a plotting function.
 #'
 #' @param burden For `prep_plot_demography()`, a `<tibble>` output from
 #' [check_demography_alignment()].
-#'
-#' For `prep_plot_age()`, ... ADD DETAILS.
-#'
-#' For `prep_plot_burden_decades()`, ... ADD DETAILS.
-#'
-#' For `prep_plot_global_burden()`, ... ADD DETAILS.
+#' For other functions, a burden dataset similar to [eg_burden_template].
 #'
 #' @return
 #'
@@ -21,7 +18,18 @@
 #' identifier-columns, "scenario", "age", and "year", with the added column
 #' "value_millions".
 #'
-#' - For `prep_plot_age()`:
+#' - For `prep_plot_age()`: a `<tibble>` with the columns "scenario",
+#' "burden_outcome", "age", "value_millions".
+#'
+#' - For `prep_plot_burden_decades()`: a `<tibble>` with the columns "scenario",
+#' "burden_outcome", "decade_label", and "value_millions".
+#'
+#' - For `prep_plot_global_burden()`: a nested `<tibble>` with the string
+#' column "burden_outcome", and a list column of tibbles "burden_data".
+#'
+#' - For `prep_plot_coverage_set()`: WIP
+#'
+#' - For `prep_plot_fvp()`: WIP.
 #'
 #' @export
 prep_plot_demography <- function(burden) {
@@ -86,16 +94,25 @@ prep_plot_demography <- function(burden) {
 prep_plot_age <- function(burden) {
   checkmate::assert_tibble(burden)
 
-  burden_summary <- dplyr::summarise(
+  burden_long <- tidyr::pivot_longer(
     burden,
+    {{ burden_outcome_names }},
+    names_to = "burden_outcome"
+  )
+
+  burden_summary <- dplyr::summarise(
+    burden_long,
     value_millions = sum(.data$value) / 1e6,
-    .groups = c("scenario", "burden_outcome", "age")
+    .by = c("scenario", "burden_outcome", "age")
   )
 
   burden_summary
 }
 
 #' @name plotting_prep
+#' 
+#' @param year_max The maximum year to be represented in a subsequent figure.
+#' For `prep_plot_burden_decades()`, must be a decade, i.e., multiple of 10.
 #'
 #' @export
 prep_plot_burden_decades <- function(burden, year_max) {
@@ -118,7 +135,7 @@ prep_plot_burden_decades <- function(burden, year_max) {
     burden_data,
     year = pmin(
       .data$year,
-      .data$year_max - 1
+      year_max - 1
     ),
     decade = floor(.data$year / 10) * 10,
     decade_label = dplyr::if_else(
@@ -128,10 +145,16 @@ prep_plot_burden_decades <- function(burden, year_max) {
     )
   )
 
+  burden_data <- tidyr::pivot_longer(
+    burden_data,
+    {{ burden_outcome_names }},
+    names_to = "burden_outcome"
+  )
+
   burden_data <- dplyr::summarise(
     burden_data,
     value_millions = sum(.data$value) / 1e6,
-    .groups = c("scenario", "burden_outcome", "decade_label")
+    .by = c("scenario", "burden_outcome", "decade_label")
   )
 
   burden_data
@@ -144,11 +167,19 @@ prep_plot_global_burden <- function(burden) {
   # TODO: add colnames check
   checkmate::assert_tibble(burden)
 
-  nesting_cols <- "outcome"
+  nesting_cols <- "burden_outcome"
+
+  burden_long <- tidyr::pivot_longer(
+    burden,
+    {{ burden_outcome_names }},
+    names_to = nesting_cols
+  )
+
+  burden_long$value_millions <- burden_long$value / 1e6
 
   # create a nested tibble with a list column named "burden_data"
   burden_nested <- tidyr::nest(
-    burden,
+    burden_long,
     .by = {{ nesting_cols }},
     .key = "burden_data"
   )
@@ -158,7 +189,7 @@ prep_plot_global_burden <- function(burden) {
 
 #' @name plotting_prep
 #'
-#' @param coverage
+#' @param coverage WIP. Coverage data.
 #'
 #' @export
 prep_plot_coverage_set <- function(coverage) {
@@ -203,11 +234,9 @@ prep_plot_coverage_set <- function(coverage) {
 
 #' @name plotting_prep
 #'
-#' @param fvp
+#' @param fvp WIP. Data on counts of fully vaccinated persons.
 #'
-#' @param year_min
-#'
-#' @param year_max
+#' @param year_min Minimum year.
 #'
 #' @export
 prep_plot_fvp <- function(fvp, year_min, year_max) {

@@ -25,29 +25,34 @@ prep_plot_fvp(fvp, year_min, year_max)
 \arguments{
 \item{burden}{For \code{prep_plot_demography()}, a \verb{<tibble>} output from
 \code{\link[=check_demography_alignment]{check_demography_alignment()}}.
+For other functions, a burden dataset similar to \link{eg_burden_template}.}
 
-For \code{prep_plot_age()}, ... ADD DETAILS.
+\item{year_max}{The maximum year to be represented in a subsequent figure.
+For \code{prep_plot_burden_decades()}, must be a decade, i.e., multiple of 10.}
 
-For \code{prep_plot_burden_decades()}, ... ADD DETAILS.
+\item{coverage}{WIP. Coverage data.}
 
-For \code{prep_plot_global_burden()}, ... ADD DETAILS.}
+\item{fvp}{WIP. Data on counts of fully vaccinated persons.}
 
-\item{year_max}{}
-
-\item{coverage}{}
-
-\item{fvp}{}
-
-\item{year_min}{}
+\item{year_min}{Minimum year.}
 }
 \value{
 \itemize{
 \item For \code{prep_plot_demography()}: a \verb{<tibble>} in long-format, with the
 identifier-columns, "scenario", "age", and "year", with the added column
 "value_millions".
-\item For \code{prep_plot_age()}:
+\item For \code{prep_plot_age()}: a \verb{<tibble>} with the columns "scenario",
+"burden_outcome", "age", "value_millions".
+\item For \code{prep_plot_burden_decades()}: a \verb{<tibble>} with the columns "scenario",
+"burden_outcome", "decade_label", and "value_millions".
+\item For \code{prep_plot_global_burden()}: a nested \verb{<tibble>} with the string
+column "burden_outcome", and a list column of tibbles "burden_data".
+\item For \code{prep_plot_coverage_set()}: WIP
+\item For \code{prep_plot_fvp()}: WIP.
 }
 }
 \description{
-Convert the output of \code{\link[=check_demography_alignment]{check_demography_alignment()}} to a long-format tibble.
+Transform burden estimate data from modelling groups to make them suitable
+for plotting using an appropriate \link[=plotting]{plotting function}. Each
+preparation function corresponds to a plotting function.
 }
