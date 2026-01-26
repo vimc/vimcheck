@@ -40,7 +40,7 @@ test_that("plot_global_burden_decades() works", {
   vdiffr::expect_doppelganger("plot_global_burden_decades", p)
 })
 
-test_that("plot_global_burden_decades() works", {
+test_that("plot_global_burden() works", {
   burden <- eg_burden_template
   burden <- prep_plot_global_burden(burden)
 

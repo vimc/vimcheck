@@ -110,14 +110,12 @@ prep_plot_age <- function(burden) {
 }
 
 #' @name plotting_prep
-#' 
+#'
 #' @param year_max The maximum year to be represented in a subsequent figure.
 #' For `prep_plot_burden_decades()`, must be a decade, i.e., multiple of 10.
 #'
 #' @export
 prep_plot_burden_decades <- function(burden, year_max) {
-  # TODO: add colnames check
-  # TODO: general: make validator for burden data
   checkmate::assert_tibble(burden)
 
   is_decade <- year_max %% 10 == 0

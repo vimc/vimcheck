@@ -1,0 +1,90 @@
+---
+title: "Using plotting and preparation functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using plotting and preparation functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to use the plotting-preparation and plotting functions in _vimcheck_.
+
+Note that all data used here are placeholders.
+
+```{r setup}
+library(vimcheck)
+```
+
+## Compare demography
+
+Users can check demographic alignment of burden data using `check_demography_alignment()`, then prepare it for plotting using `prep_plot_demography()`, and plot it using `plot_compare_demography()`.
+
+```{r comparing_demography}
+burden <- eg_burden_template
+
+burden <- check_demography_alignment(burden, eg_wpp)
+burden <- prep_plot_demography(burden)
+
+plot_compare_demography(burden, 1)
+```
+
+## Examine age patterns
+
+Users can check age patterns in burden data using `prep_plot_age()` and plotting using `plot_age_patterns()`.
+
+Note that values are placeholders and you should expect to see real age-wise burden patterns look very different.
+
+```{r age_patterns}
+burden <- eg_burden_template
+burden <- prep_plot_age(burden)
+
+# manually set values as template default is NA, prevents ggplot warnings
+burden$value_millions <- 1.0
+
+plot_age_patterns(burden, 1)
+```
+
+## Global burden by decade
+
+Users can check the global burden in each decade for each scenario using `prep_plot_burden_decades()` and `plot_global_burden_decades()`.
+
+```{r global_burden_decades}
+burden <- eg_burden_template
+year_max <- 2100
+burden <- prep_plot_burden_decades(burden, year_max)
+
+# manually set values as template default is NA, prevents ggplot warnings
+burden$value_millions <- 1.0
+
+plot_global_burden_decades(burden, 1)
+```
+
+## Global burden timeseries
+
+Users can check a timeseries of global burdens by scenario and age group.
+In contrast with the plotting scheme above, `prep_plot_global_burden()` converts the burden data to long-format and transforms the data tibble into a [nested-tibble](https://tidyr.tidyverse.org/articles/nest.html).
+This gives a tibble with as many rows as burden outcomes: cases, deaths, DALYs and YLLs, and a tibble giving the annual values by age for each burden outcome.
+
+The function `plot_global_burden()` is intended to be applied row-wise, taking the burden outcome name (e.g. "cases") and the burden outcome data to plot a timeseries with values by age.
+
+```{r global_burden_ts}
+burden <- eg_burden_template
+burden <- prep_plot_global_burden(burden)
+
+# NOTE: expected use case is to loop over nested column DFs
+# set values to a dummy placeholder
+burden$burden_data[[1]]$value_millions <- 1
+
+plot_global_burden(
+  burden$burden_data[[1]],
+  burden$burden_outcome[[1]],
+  1
+)
+```

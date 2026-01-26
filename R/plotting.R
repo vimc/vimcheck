@@ -141,7 +141,6 @@ plot_age_patterns <- function(burden_age, fig_number) {
       scales = "free_y",
       labeller = labeller(scenario = label_wrap_gen(10))
     ) +
-    # TODO: check if needed if max age comes from data
     ggplot2::coord_cartesian(xlim = c(NA_real_, max_age)) +
     labs(
       y = "people (in millions)",
@@ -186,7 +185,7 @@ plot_global_burden_decades <- function(burden_decades, fig_number) {
 #'
 #' @param burden_data This is expected to be a `<tibble>` from a
 #' nested-`<tibble>` constructed using [prep_plot_global_burden()].
-#' 
+#'
 #' @param outcome_name A string for an outcome name. Allowed outcome names are
 #' given in the package constant [constants][burden_outcome_names].
 #'
