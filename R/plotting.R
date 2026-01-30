@@ -72,6 +72,8 @@ theme_vimc_noxaxis <- function() {
 #' scale_fill_distiller scale_x_continuous scale_y_continuous labs vars
 #' labeller label_wrap_gen
 #'
+#' @importFrom rlang .data
+#'
 #' @description
 #' Plotting functions for burden and impact diagnostics. All functions operate
 #' on data prepared for plotting by a corresponding
@@ -98,7 +100,6 @@ plot_compare_demography <- function(data, fig_number) {
   n_cols_allowed <- 3
   num_countries <- length(unique(data$country))
 
-  # TODO: use .data and .vars, import or namespace functions
   g <- ggplot(
     data,
     aes(.data$year, .data$value_millions, fill = .data$age)
@@ -246,7 +247,6 @@ plot_coverage_set <- function(coverage_set, fig_number) {
     aes(.data$year, .data$coverage, fill = .data$delivery)
   ) +
     geom_col(
-      # TODO: check if dodging is really needed
       position = ggplot2::position_dodge(dodge_width),
       alpha = col_opacity
     ) +

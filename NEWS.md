@@ -4,6 +4,10 @@
 
 - Added tests for plotting preparation and plotting functions.
 
+- Removed impact and FVPs checker functions.
+
+- Importing `rlang::.data` data pronoun in plotting function; works overall.
+
 # vimcheck 0.0.2
 
 - Added initial data validation functions and some tests.

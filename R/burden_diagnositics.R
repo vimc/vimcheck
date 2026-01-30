@@ -31,7 +31,6 @@ validate_file_dict_template <- function(
   template <- file.path(path_burden, "file_dictionary.csv")
 
   if (file.exists(template)) {
-    # TODO: check that file_dictionary entries are acceptable?
     data_dict <- readr::read_csv(
       template,
       show_col_types = FALSE
@@ -349,7 +348,6 @@ check_demography_alignment <- function(
 #'
 #' @export
 basic_burden_sanity <- function(burden) {
-  # TODO: expectations on burden
   mes_start <- "Basic sanity check for burden estimates:"
   mes <- mes_start
 
