@@ -17,6 +17,6 @@ A named list of checks carried out on \code{burden_set} to compare it
 against \code{template}, with information on missing and extra data.
 }
 \description{
-Check incoming burden set against template
+Identify extra and missing columns and rows in burden data.
 }
 \keyword{diagnostics}
