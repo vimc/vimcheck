@@ -162,7 +162,6 @@ prep_plot_burden_decades <- function(burden, year_max) {
 #'
 #' @export
 prep_plot_global_burden <- function(burden) {
-  # TODO: add colnames check
   checkmate::assert_tibble(burden)
 
   nesting_cols <- "burden_outcome"
@@ -267,7 +266,6 @@ prep_plot_fvp <- function(fvp, year_min, year_max) {
     ) # convert characters to factors and set first level
   )
 
-  # TODO: need to see an example to figure this out
   fvp_final$scenario <- gsub(tolower(fvp$disease[1L]), "", fvp_final$scenario)
   fvp_final$scenario <- gsub("-", " ", fvp_final$scenario, fixed = TRUE)
 
