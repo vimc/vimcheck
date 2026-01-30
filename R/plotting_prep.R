@@ -96,7 +96,7 @@ prep_plot_age <- function(burden) {
 
   burden_long <- tidyr::pivot_longer(
     burden,
-    {{ burden_outcome_names }},
+    tidyr::any_of(burden_outcome_names),
     names_to = "burden_outcome"
   )
 
@@ -145,7 +145,7 @@ prep_plot_burden_decades <- function(burden, year_max) {
 
   burden_data <- tidyr::pivot_longer(
     burden_data,
-    {{ burden_outcome_names }},
+    tidyr::any_of(burden_outcome_names),
     names_to = "burden_outcome"
   )
 
@@ -169,7 +169,7 @@ prep_plot_global_burden <- function(burden) {
 
   burden_long <- tidyr::pivot_longer(
     burden,
-    {{ burden_outcome_names }},
+    tidyr::any_of(burden_outcome_names),
     names_to = nesting_cols
   )
 

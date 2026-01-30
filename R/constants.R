@@ -27,7 +27,13 @@ burden_outcome_names <- c(
   "cases",
   "deaths",
   "dalys",
-  "yll"
+  "yll",
+  "deaths_cwyx",
+  "cases_cwyx",
+  "dalys_cwyx",
+  "yll_cwyx",
+  "rubella_deaths_congenital",
+  "rubella_cases_congenital"
 )
 
 #' @name constants
