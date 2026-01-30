@@ -312,6 +312,7 @@ check_demography_alignment <- function(
     {{ cols_to_select }}
   )
 
+  value <- NULL
   expected <- dplyr::rename(
     expected,
     expected = value # nolint due to tidyselect conventions
