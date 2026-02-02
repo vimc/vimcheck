@@ -58,3 +58,23 @@ test_that("plot_global_burden() works", {
 
   vdiffr::expect_doppelganger("plot_global_burden", p)
 })
+
+test_that("plot_coverage_set() works", {
+  coverage <- eg_coverage
+  coverage <- prep_plot_coverage_set(coverage)
+
+  p <- plot_coverage_set(coverage, 1)
+
+  checkmate::expect_class(p, "ggplot")
+  vdiffr::expect_doppelganger("plot_coverage_set", p)
+})
+
+test_that("plot_fvp() works", {
+  fvps <- eg_fvps
+  fvps <- prep_plot_fvp(fvps, 2030, 2040)
+
+  p <- plot_fvp(fvps, 1)
+
+  checkmate::expect_class(p, "ggplot")
+  vdiffr::expect_doppelganger("plot_fvp", p)
+})

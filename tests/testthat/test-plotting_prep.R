@@ -56,9 +56,39 @@ test_that("prep_plot_global_burden() works ", {
 })
 
 test_that("prep_plot_coverage_set() works ", {
-  skip("TODO: Determine where coverage set data is generated")
+  coverage <- eg_coverage
+  x <- prep_plot_coverage_set(coverage)
+
+  expected_colnames <- c(
+    "scenario_description",
+    "delivery",
+    "country",
+    "year",
+    "coverage",
+    "disease"
+  )
+
+  checkmate::expect_tibble(x)
+  checkmate::expect_names(
+    colnames(x),
+    permutation.of = expected_colnames
+  )
 })
 
 test_that("prep_plot_fvp() works ", {
-  skip("TODO: Fix how FVP data is generated")
+  fvps <- eg_fvps
+  x <- prep_plot_fvp(eg_fvps, 2030, 2040)
+
+  checkmate::expect_tibble(x)
+
+  expected_names <- c(
+    "year",
+    "scenario",
+    "disease",
+    "fvp"
+  )
+  checkmate::expect_names(
+    colnames(x),
+    permutation.of = expected_names
+  )
 })
