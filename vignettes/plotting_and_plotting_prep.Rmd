@@ -88,3 +88,27 @@ plot_global_burden(
   1
 )
 ```
+
+## Coverage sets
+
+Users can check trends in coverage sets using `prep_plot_coverage_set()` to prepare coverage sets data, and `plot_coverage_set()` to prepare a plot facetted by country and scenario.
+
+```{r coverage_sets}
+# load some example data
+coverage <- eg_coverage
+coverage <- prep_plot_coverage_set(coverage)
+
+plot_coverage_set(coverage, 1)
+```
+
+## Fully-vaccinated persons
+
+Users can check trends in fully-vaccinated persons (FVPs) over time using `prep_plot_fvp()` to prepare FVPs sets data, and `plot_fvps()` to prepare a plot facetted by country and scenario.
+
+```{r fvps}
+# load some example data
+fvps <- eg_fvps
+fvps <- prep_plot_fvp(fvps, 2030, 2040) # example data has year limits 2030-40
+
+plot_fvp(fvps, 1)
+```
