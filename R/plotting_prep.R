@@ -215,7 +215,8 @@ prep_plot_coverage_set <- function(coverage) {
     "delivery",
     "country",
     "year",
-    "coverage"
+    "coverage",
+    "disease"
   )
   coverage_set <- dplyr::select(
     coverage_set,
@@ -224,6 +225,21 @@ prep_plot_coverage_set <- function(coverage) {
   coverage_set <- dplyr::bind_rows(
     coverage_set,
     no_vax
+  )
+
+  # NOTE: edit factor levels for scenario description
+  # Set "No vaccination" as first factor level
+  coverage_set <- dplyr::mutate(
+    coverage_set,
+    scenario_description = stringr::str_replace(
+      .data$scenario_description,
+      "-|_",
+      " "
+    ),
+    scenario_description = forcats::fct_relevel(
+      .data$scenario_description,
+      "No vaccination"
+    )
   )
 
   coverage_set
@@ -266,8 +282,12 @@ prep_plot_fvp <- function(fvp, year_min, year_max) {
     ) # convert characters to factors and set first level
   )
 
-  fvp_final$scenario <- gsub(tolower(fvp$disease[1L]), "", fvp_final$scenario)
-  fvp_final$scenario <- gsub("-", " ", fvp_final$scenario, fixed = TRUE)
+  # NOTE: renaming fvp_final$scenario to replace - and _ with spaces
+  fvp_final$scenario <- stringr::str_replace(
+    fvp_final$scenario,
+    "_|-",
+    " "
+  )
 
   # determine scenario order in terms of total adjusted FVPs per scenario
   scenario_order <- names(sort(
@@ -282,8 +302,9 @@ prep_plot_fvp <- function(fvp, year_min, year_max) {
   fvp_final$scenario <- forcats::fct_relevel(fvp_final$scenario, scenario_order)
 
   fvp_agg <- dplyr::summarise(
+    fvp_final,
     fvp = sum(.data$fvps_adjusted, na.rm = TRUE),
-    .groups = c("year", "scenario", "disease")
+    .by = c("year", "scenario", "disease")
   )
 
   fvp_agg
