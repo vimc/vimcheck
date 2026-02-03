@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">vimcheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/vimcheck.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/plotting_and_plotting_prep.html">Using plotting and preparation functions</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -93,6 +97,22 @@
         </dt>
         <dd>Check incoming burden set against template</dd>
       </dl></div><div class="section level2">
+      <h2 id="plotting-prepartion">Plotting prepartion<a class="anchor" aria-label="anchor" href="#plotting-prepartion"></a></h2>
+
+      <div class="section-desc"><p>Prepare validated data for plotting.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="plotting_prep.html">prep_plot_demography()</a></code> <code><a href="plotting_prep.html">prep_plot_age()</a></code> <code><a href="plotting_prep.html">prep_plot_burden_decades()</a></code> <code><a href="plotting_prep.html">prep_plot_global_burden()</a></code> <code><a href="plotting_prep.html">prep_plot_coverage_set()</a></code> <code><a href="plotting_prep.html">prep_plot_fvp()</a></code>
+
+        </dt>
+        <dd>Prepare data for plotting</dd>
+      </dl></div><div class="section level2">
       <h2 id="plotting-functions">Plotting functions<a class="anchor" aria-label="anchor" href="#plotting-functions"></a></h2>
 
       <div class="section-desc"><p>Package plotting functions.</p></div>
@@ -111,7 +131,7 @@
 
         <dt>
 
-          <code><a href="plotting_theme.html">theme_vimc()</a></code>
+          <code><a href="plotting_theme.html">theme_vimc()</a></code> <code><a href="plotting_theme.html">theme_vimc_noxaxis()</a></code>
 
         </dt>
         <dd>Plotting theme for vimcheck</dd>
@@ -150,6 +170,20 @@
 
         <dt>
 
+          <code><a href="eg_coverage.html">eg_coverage</a></code>
+
+        </dt>
+        <dd>Example of scenario coverage data</dd>
+
+        <dt>
+
+          <code><a href="eg_fvps.html">eg_fvps</a></code>
+
+        </dt>
+        <dd>Example of FVP estimate data</dd>
+
+        <dt>
+
           <code><a href="eg_wpp.html">eg_wpp</a></code>
 
         </dt>
@@ -166,7 +200,7 @@
 
       <dl><dt>
 
-          <code><a href="constants.html">file_dict_colnames</a></code> <code><a href="constants.html">scenario_data_colnames</a></code>
+          <code><a href="constants.html">file_dict_colnames</a></code> <code><a href="constants.html">scenario_data_colnames</a></code> <code><a href="constants.html">burden_outcome_names</a></code> <code><a href="constants.html">colnames_plot_demog_compare</a></code>
 
         </dt>
         <dd>Package constants</dd>

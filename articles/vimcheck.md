@@ -4,17 +4,9 @@
 library(vimcheck)
 ```
 
-This is a special vignette, which shares the same name as the package.
-It will render as the “Get started” page in the navigation bar of
-*pkgdown* websites.
-
-To develop it further:
-
-1.  Rename the file to your package name;
-
-2.  Add code and explainers to help users get started with using your
-    package in this vignette;
-
-3.  Remember to add and link references if needed.
+This vignette is a work in progress, please see the [vignette on
+plotting and preparing data for
+plotting](https://vimc.github.io/vimcheck/articles/plotting_and_plotting_prep.md)
+instead.
 
 ## References

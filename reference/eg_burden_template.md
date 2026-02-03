@@ -13,7 +13,7 @@ eg_burden_template
 
 ### `eg_burden_template`
 
-A data frame with 10,201 rows and 10 columns:
+A data frame with 10,201 rows and 11 columns:
 
 - disease:
 
@@ -54,6 +54,10 @@ A data frame with 10,201 rows and 10 columns:
 - cohort_size:
 
   Population size of the country in a year
+
+- scenario:
+
+  Vaccination scenario.
 
 ## Source
 
