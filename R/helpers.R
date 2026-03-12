@@ -35,3 +35,28 @@ make_novax_scenario <- function(disease) {
     names_from = "variable"
   )
 }
+
+adaptive_round <- function(
+  x,
+  large_threshold = 1,
+  small_sigfig = 2,
+  large_digits = 1
+) {
+  ifelse(
+    abs(x) >= large_threshold,
+    round(x, large_digits),
+    signif(x, small_sigfig)
+  )
+}
+
+round_numeric <- function(df) {
+  df %>%
+    mutate(across(
+      where(is.numeric) & !matches("year", ignore.case = TRUE),
+      ~ adaptive_round(.x)
+    ))
+}
+
+str_as_ts_year <- function(x) {
+  as.numeric(substr(x, 1, 6))
+}
