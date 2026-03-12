@@ -46,3 +46,9 @@ colnames_plot_demog_compare <- c(
   "value",
   "value_millions"
 )
+
+#' @name constants
+EXCLUDED_DISEASES <- c("Hib", "PCV", "Rota", "JE")
+
+#' @name constants
+TOUCHSTONE_OLD <- "201910"
