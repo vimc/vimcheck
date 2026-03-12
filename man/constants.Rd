@@ -7,6 +7,8 @@
 \alias{scenario_data_colnames}
 \alias{burden_outcome_names}
 \alias{colnames_plot_demog_compare}
+\alias{EXCLUDED_DISEASES}
+\alias{TOUCHSTONE_OLD}
 \title{Package constants}
 \format{
 An object of class \code{character} of length 5.
@@ -16,6 +18,10 @@ An object of class \code{character} of length 4.
 An object of class \code{character} of length 10.
 
 An object of class \code{character} of length 7.
+
+An object of class \code{character} of length 4.
+
+An object of class \code{character} of length 1.
 }
 \usage{
 file_dict_colnames
@@ -25,6 +31,10 @@ scenario_data_colnames
 burden_outcome_names
 
 colnames_plot_demog_compare
+
+EXCLUDED_DISEASES
+
+TOUCHSTONE_OLD
 }
 \description{
 Package constants

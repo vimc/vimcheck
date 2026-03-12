@@ -60,3 +60,10 @@ round_numeric <- function(df) {
 str_as_ts_year <- function(x) {
   as.numeric(substr(x, 1, 6))
 }
+
+add_campaign_id <- function(df, key_cols) {
+  df <- group_by(df, across(all_of(key_cols)))
+  df <- mutate(df, campaign_id = row_number())
+
+  ungroup(df)
+}
