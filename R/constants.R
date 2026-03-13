@@ -52,3 +52,9 @@ EXCLUDED_DISEASES <- c("Hib", "PCV", "Rota", "JE")
 
 #' @name constants
 TOUCHSTONE_OLD <- "201910"
+
+#' @name constants
+TOUCHSTONE_NEW <- "202310"
+
+#' @name constants
+TOUCHSTONE_OLD_OLD <- "202110"

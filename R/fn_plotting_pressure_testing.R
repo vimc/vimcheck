@@ -1,11 +1,14 @@
-## Plot significant changes
+#' Plot significant changes
+#'
+#' @importFrom ggplot2 ggplot aes geom_col geom_hline facet_wrap facet_grid
+#' scale_fill_distiller scale_x_continuous scale_y_continuous labs vars
+#' labeller label_wrap_gen
+#'
+#' @export
 significant_diff_plot <- function(df, outcome) {
-  df$label <- paste(
-    df$country_name,
-    df$vaccine,
-    df$activity_type,
-    df$year,
-    sep = " | "
+  # retained here as this is a small df and a small operation
+  df$label <- glue::glue(
+    "{df$country_name} | {df$vaccine} | {df$activity_type} | {df$year}"
   )
 
   ggplot(df, aes(x = diff, y = reorder(label, diff), color = modelling_group)) +
@@ -13,12 +16,13 @@ significant_diff_plot <- function(df, outcome) {
     geom_point(size = 2) +
     labs(
       x = "Difference",
-      y = "",
-      title = glue(
-        "Significant Differences in {outcome} by Country, Vaccine, Activity Type and Year"
+      y = NULL,
+      title = glue::glue(
+        "Significant Differences in {outcome} by Country, Vaccine, \\
+        Activity Type and Year"
       )
     ) +
-    theme_minimal()
+    theme_vimc(x_text_angle = 0)
 }
 
 plot_diff <- function(
