@@ -7,8 +7,19 @@
 \alias{scenario_data_colnames}
 \alias{burden_outcome_names}
 \alias{colnames_plot_demog_compare}
+\alias{colnames_df_missing_cols}
+\alias{COLNAMES_KEY_PRESSURE_TEST}
+\alias{COLNAMES_INTEREST_PRESSURE_TEST}
 \alias{EXCLUDED_DISEASES}
-\alias{TOUCHSTONE_OLD}
+\alias{N_TS_MIN_CHARS}
+\alias{N_TS_YEAR_CHARS}
+\alias{MIN_TS_YEAR}
+\alias{MAX_TS_YEAR}
+\alias{MIN_TS_MONTH}
+\alias{MAX_TS_MONTH}
+\alias{DEF_TOUCHSTONE_OLD}
+\alias{DEF_TOUCHSTONE_NEW}
+\alias{DEF_TOUCHSTONE_OLD_OLD}
 \title{Package constants}
 \format{
 An object of class \code{character} of length 5.
@@ -19,7 +30,29 @@ An object of class \code{character} of length 10.
 
 An object of class \code{character} of length 7.
 
+An object of class \code{character} of length 5.
+
+An object of class \code{character} of length 7.
+
+An object of class \code{character} of length 14.
+
 An object of class \code{character} of length 4.
+
+An object of class \code{integer} of length 1.
+
+An object of class \code{integer} of length 1.
+
+An object of class \code{numeric} of length 1.
+
+An object of class \code{numeric} of length 1.
+
+An object of class \code{numeric} of length 1.
+
+An object of class \code{numeric} of length 1.
+
+An object of class \code{character} of length 1.
+
+An object of class \code{character} of length 1.
 
 An object of class \code{character} of length 1.
 }
@@ -32,9 +65,31 @@ burden_outcome_names
 
 colnames_plot_demog_compare
 
+colnames_df_missing_cols
+
+COLNAMES_KEY_PRESSURE_TEST
+
+COLNAMES_INTEREST_PRESSURE_TEST
+
 EXCLUDED_DISEASES
 
-TOUCHSTONE_OLD
+N_TS_MIN_CHARS
+
+N_TS_YEAR_CHARS
+
+MIN_TS_YEAR
+
+MAX_TS_YEAR
+
+MIN_TS_MONTH
+
+MAX_TS_MONTH
+
+DEF_TOUCHSTONE_OLD
+
+DEF_TOUCHSTONE_NEW
+
+DEF_TOUCHSTONE_OLD_OLD
 }
 \description{
 Package constants
