@@ -1,72 +1,7 @@
-#' Plotting theme for vimcheck
-#'
-#' @description
-#' A simple plotting theme building on [ggplot2::theme_bw()].
-#'
-#' @name plotting_theme
-#' @rdname plotting_theme
-#'
-#' @param x_text_angle The angle for X-axis labels. Defaults to 45 degrees.
-#'
-#' @param y_text_angle The angle for Y-axis labels. Defaults to 0 degrees.
-#'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Other arguments passed to
-#' [ggplot2::theme()]. These will be applied in addition to, or in place of,
-#' pre-existing elements defined by this theme. See the examples for this
-#' theme's appearance.
-#'
-#' @return A `ggplot2` theme that can be added to `ggplot2` plots or objects.
-#'
-#' @keywords plotting
-#'
-#' @examples
-#' # using an inbuilt dataset
-#' data(mtcars)
-#'
-#' # standard theme
-#' ggplot2::ggplot(mtcars, ggplot2::aes(disp, mpg)) +
-#'   ggplot2::geom_point() +
-#'   theme_vimc()
-#'
-#' # with X-axis suppression
-#' ggplot2::ggplot(mtcars, ggplot2::aes(disp, mpg)) +
-#'   ggplot2::geom_point() +
-#'   theme_vimc_noxaxis()
-#'
-#' @export
-theme_vimc <- function(x_text_angle = 45, y_text_angle = 0, ...) {
-  ggplot2::theme_bw() +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(
-        size = 10,
-        angle = x_text_angle
-      ),
-      strip.text.y = ggplot2::element_text(
-        angle = y_text_angle
-      ),
-      plot.margin = ggplot2::margin(1, 0, 1, 0, "cm"),
-      ...
-    )
-}
-
-#' @name plotting_theme
-#'
-#' @importFrom ggplot2 '%+replace%'
-#'
-#' @export
-theme_vimc_noxaxis <- function() {
-  theme_vimc() %+replace%
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_blank(),
-      axis.ticks.x = ggplot2::element_blank()
-    )
-}
-
 #' Plot burden and impact diagnostics
 #'
-#' @name plotting
-#' @rdname plotting
+#' @name plot_burden_diagnostics
+#' @rdname plot_burden_diagnostics
 #'
 #' @importFrom ggplot2 ggplot aes geom_col geom_hline facet_wrap facet_grid
 #' scale_fill_distiller scale_x_continuous scale_y_continuous labs vars
@@ -77,7 +12,7 @@ theme_vimc_noxaxis <- function() {
 #' @description
 #' Plotting functions for burden and impact diagnostics. All functions operate
 #' on data prepared for plotting by a corresponding
-#' [plotting-preparation function][plotting_prep].
+#' [plotting-preparation function][plot_prep_burden_diagnostics].
 #'
 #' @param fig_number The figure number displayed in the plot title.
 #'
@@ -121,7 +56,7 @@ plot_compare_demography <- function(data, fig_number) {
   g
 }
 
-#' @name plotting
+#' @name plot_burden_diagnostics
 #'
 #' @param burden_age A `<tibble>` with the minimum column names
 #' "age", "value_millions", "burden_outcome", and "scenario"; expected to be the
@@ -154,7 +89,7 @@ plot_age_patterns <- function(burden_age, fig_number) {
   g
 }
 
-#' @name plotting
+#' @name plot_burden_diagnostics
 #'
 #' @param burden_decades A `<tibble>` giving the burden by decade, up to
 #' `year_max`; expected to be the output of [prep_plot_burden_decades()].
@@ -182,7 +117,7 @@ plot_global_burden_decades <- function(burden_decades, fig_number) {
   g
 }
 
-#' @name plotting
+#' @name plot_burden_diagnostics
 #'
 #' @param burden_data This is expected to be a `<tibble>` from a
 #' nested-`<tibble>` constructed using [prep_plot_global_burden()].
@@ -226,7 +161,7 @@ plot_global_burden <- function(burden_data, outcome_name, fig_number) {
   g
 }
 
-#' @name plotting
+#' @name plot_burden_diagnostics
 #'
 #' @param coverage_set A `<tibble>` that is the output of
 #' [prep_plot_coverage_set()].
@@ -271,7 +206,7 @@ plot_coverage_set <- function(coverage_set, fig_number) {
   g
 }
 
-#' @name plotting
+#' @name plot_burden_diagnostics
 #'
 #' @param fvp_data A `<tibble>` of estimates of fully-vaccinated persons (FVPs)
 #' per scenario, with scenarios as factors in order of the number of

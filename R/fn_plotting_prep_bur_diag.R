@@ -1,12 +1,13 @@
 #' Prepare data for plotting
 #'
-#' @name plotting_prep
-#' @rdname plotting_prep
+#' @name plot_prep_burden_diagnostics
+#' @rdname plot_prep_burden_diagnostics
 #'
 #' @description
 #' Transform burden estimate data from modelling groups to make them suitable
-#' for plotting using an appropriate [plotting function][plotting]. Each
-#' preparation function corresponds to a plotting function.
+#' for plotting using an appropriate
+#' [plotting function][plot_prep_burden_diagnostics]. Each preparation function
+#' corresponds to a plotting function.
 #'
 #' @param burden For `prep_plot_demography()`, a `<tibble>` output from
 #' [check_demography_alignment()].
@@ -30,6 +31,8 @@
 #' - For `prep_plot_coverage_set()`: WIP
 #'
 #' - For `prep_plot_fvp()`: WIP.
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_demography <- function(burden) {
@@ -88,7 +91,9 @@ prep_plot_demography <- function(burden) {
   burden_long
 }
 
-#' @name plotting_prep
+#' @name plot_prep_burden_diagnostics
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_age <- function(burden) {
@@ -109,10 +114,12 @@ prep_plot_age <- function(burden) {
   burden_summary
 }
 
-#' @name plotting_prep
+#' @name plot_prep_burden_diagnostics
 #'
 #' @param year_max The maximum year to be represented in a subsequent figure.
 #' For `prep_plot_burden_decades()`, must be a decade, i.e., multiple of 10.
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_burden_decades <- function(burden, year_max) {
@@ -158,7 +165,9 @@ prep_plot_burden_decades <- function(burden, year_max) {
   burden_data
 }
 
-#' @name plotting_prep
+#' @name plot_prep_burden_diagnostics
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_global_burden <- function(burden) {
@@ -184,9 +193,11 @@ prep_plot_global_burden <- function(burden) {
   burden_nested
 }
 
-#' @name plotting_prep
+#' @name plot_prep_burden_diagnostics
 #'
 #' @param coverage WIP. Coverage data.
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_coverage_set <- function(coverage) {
@@ -245,11 +256,13 @@ prep_plot_coverage_set <- function(coverage) {
   coverage_set
 }
 
-#' @name plotting_prep
+#' @name plot_prep_burden_diagnostics
 #'
 #' @param fvp WIP. Data on counts of fully vaccinated persons.
 #'
 #' @param year_min Minimum year.
+#'
+#' @keywords plot_prep_burden_diagnostics
 #'
 #' @export
 prep_plot_fvp <- function(fvp, year_min, year_max) {

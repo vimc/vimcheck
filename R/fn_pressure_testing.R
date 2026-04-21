@@ -13,7 +13,7 @@
 #' @param threshold A six-digit number that is checked as a valid touchstone
 #' identifier (YYYYMM format) using [validate_ts_year()].
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @return A filtered `<data.frame>`.
 #'
@@ -207,7 +207,7 @@ filter_invalid_trajectories <- function(
 #' @return A list of data.frames of differences between `prev_df` and `curr_df`,
 #' with one list element per element of `interest_cols`.
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @export
 generate_diffs <- function(
@@ -272,7 +272,7 @@ generate_diffs <- function(
 
 #' Generate IQR for key outcomes
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @param df A data.frame of impact estimates.
 #'
@@ -358,7 +358,7 @@ gen_national_iqr <- function(
 #' @return A filtered data.frame of differences in impact estimates flagged
 #' as too large. Rows with differences within tolerance are removed.
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @export
 flag_large_diffs <- function(
@@ -477,7 +477,7 @@ flag_large_diffs <- function(
 #' @return A data.frame which is a full join of `prev_dat` and `df2`. Columns
 #' are disambiguated with the suffixes `"_old"` and `"_new"`.
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @export
 gen_combined_df <- function(
@@ -537,7 +537,7 @@ gen_combined_df <- function(
 #' @return A data.frame of sub-regional vaccination impact estimates where the
 #' impact is considered to be outside the tolerance limit.
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @export
 compare_natl_subreg <- function(
@@ -657,7 +657,7 @@ compare_natl_subreg <- function(
 #' @return None. Called for the convenience side-effect of saving data.frames as
 #' `.Rds` format.
 #'
-#' @keywords pressure_testing
+#' @keywords impact_diagnostics
 #'
 #' @export
 save_outputs <- function(
