@@ -1,10 +1,11 @@
 #' Plot significant changes
 #'
+#' @name plot_impact_diagnostics
+#' @rdname plot_impact_diagnostics
+#'
 #' @importFrom ggplot2 ggplot aes geom_col geom_hline facet_wrap facet_grid
 #' scale_fill_distiller scale_x_continuous scale_y_continuous labs vars
 #' labeller label_wrap_gen
-#'
-#' @keywords internal
 #'
 #' @export
 plot_sig_diff <- function(df, outcome) {
@@ -27,6 +28,9 @@ plot_sig_diff <- function(df, outcome) {
     theme_vimc(x_text_angle = 0)
 }
 
+#' @name plot_impact_diagnostics
+#'
+#' @export
 plot_diff <- function(
   combined,
   variable,
@@ -77,6 +81,9 @@ plot_diff <- function(
   return(p)
 }
 
+#' @name plot_impact_diagnostics
+#'
+#' @export
 plot_modelling_group_variation <- function(df, outcome) {
   ggplot(df) +
     aes(
@@ -111,9 +118,11 @@ plot_modelling_group_variation <- function(df, outcome) {
     )
 }
 
-
-#' Gavi plot - future deaths and DALYS averted, 2021-2024
-#' (current time window Gavi looking at, can be amended)
+# Gavi plot - future deaths and DALYS averted, 2021-2024
+# (current time window Gavi looking at, can be amended)
+#' @name plot_impact_diagnostics
+#'
+#' @export
 plot_vaccine_gavi <- function(df, outcome = "deaths_averted") {
   ggplot(
     df,
@@ -139,7 +148,10 @@ plot_vaccine_gavi <- function(df, outcome = "deaths_averted") {
     labs(x = "Disease", y = paste("Impact -", outcome), fill = "Year")
 }
 
-### Gavi Cumulative Plot (modelling group + average)
+# Gavi Cumulative Plot (modelling group + average)
+#' @name plot_impact_diagnostics
+#'
+#' @export
 plot_cumul <- function(df, outcome, disease_filter) {
   p <- ggplot(
     df,

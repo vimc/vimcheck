@@ -1,3 +1,18 @@
+#' Prepare impact diagnostics for plotting
+#'
+#' @name plot_prep_impact_diagnostics
+#' @rdname plot_prep_impact_diagnostics
+#'
+#' @description
+#' A suite of helper functions that sit between impact diagnostics functions and
+#' plotting functions. These functions have some basic checks on the input data,
+#' but otherwise assume that users will not modify inputs.
+#'
+#' @param name description
+#'
+#' @return [prep_plot_mod_grp_varn()] returns a ... TODO add
+#'
+#' @export
 prep_plot_mod_grp_varn <- function(df2, df3, outc = "deaths") {
   offset <- 1e-6
 
@@ -8,6 +23,11 @@ prep_plot_mod_grp_varn <- function(df2, df3, outc = "deaths") {
     mutate(mean_outc = weighted.mean(adj_outc, fvps, na.rm = TRUE))
 }
 
+#' @name plot_prep_impact_diagnostics
+#'
+#' @return [prep_plot_vax_gavi()] returns a ... TODO add
+#'
+#' @export
 prep_plot_vax_gavi <- function(
   df,
   prev_dat = NULL,
@@ -57,6 +77,11 @@ prep_plot_vax_gavi <- function(
   df_combined
 }
 
+#' @name plot_prep_impact_diagnostics
+#'
+#' @param df description
+#'
+#' @export
 prep_plot_cumul <- function(df, outcome, disease_filter) {
   outcome_cols <- names(df)[str_detect(names(df), paste0("^", outcome, "_"))]
 
