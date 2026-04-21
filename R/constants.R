@@ -82,6 +82,11 @@ COLNAMES_INTEREST_PRESSURE_TEST <- union(
 )
 
 #' @name constants
+IMPACT_OUTCOMES <- c("deaths_averted", "dalys_averted")
+
+IMPACT_GROUP_VARS <- c("activity_type", "vaccine")
+
+#' @name constants
 EXCLUDED_DISEASES <- c("Hib", "PCV", "Rota", "JE")
 
 #' @name constants
@@ -110,3 +115,6 @@ DEF_TOUCHSTONE_NEW <- "202310"
 
 #' @name constants
 DEF_TOUCHSTONE_OLD_OLD <- "202110"
+
+#' @name constants
+COLOUR_VIMC <- "#008080"
