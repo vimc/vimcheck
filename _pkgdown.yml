@@ -7,10 +7,14 @@ reference:
   - title: Package-level documentation
     contents:
     - has_keyword("package_doc")
-  - title: Diagnostic functions
-    desc: Package diagnostic functions.
+  - title: Burden estimate diagnostics
+    desc: Functions to pressure-test burden estimates.
     contents:
     - has_keyword("diagnostics")
+  - title: Impact estimate diagnostics
+    desc: Functions to pressure-test impact estimates.
+    contents:
+    - has_keyword("pressure_testing")
   - title: Plotting prepartion
     desc: Prepare validated data for plotting.
     contents:

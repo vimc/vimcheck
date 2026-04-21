@@ -16,3 +16,4 @@
 ^scratch\.R$
 ^scratch$
 ^data-raw$
+^jarl\.toml$
