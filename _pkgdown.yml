@@ -7,32 +7,44 @@ reference:
   - title: Package-level documentation
     contents:
     - has_keyword("package_doc")
+  
   - title: Burden estimate diagnostics
-    desc: Functions to pressure-test burden estimates.
+
+  - subtitle: Check burden estimates
     contents:
-    - has_keyword("diagnostics")
+    - has_keyword("burden_diagnostics")
+  - subtitle: Prepare burden estimates for plotting
+    contents:
+    - plot_prep_burden_diagnostics
+  - subtitle: Plot burden estimates
+    contents:
+    - plot_burden_diagnostics
+
+    
   - title: Impact estimate diagnostics
-    desc: Functions to pressure-test impact estimates.
+    
+  - subtitle: Check impact estimates
     contents:
-    - has_keyword("pressure_testing")
-  - title: Plotting prepartion
-    desc: Prepare validated data for plotting.
+    - has_keyword("impact_diagnostics")
+  - subtitle: Prepare impact estimate checks for plotting
     contents:
-    - plotting_prep
-  - title: Plotting functions
-    desc: Package plotting functions.
+    - plot_prep_impact_diagnostics
+  - subtitle: Plot impact estimates
     contents:
-    - plotting
+    - plot_impact_diagnostics
+
+  - title: Plotting helper functions
+    contents:
     - plotting_theme
+  
   - title: Internal functions
-    desc: Internal helper functions.
     contents:
     - has_keyword("internal")
-  - title: Data
-    desc: Package data.
+  
+  - title: Package data
     contents:
     - has_keyword("data")
-  - title: Constants
-    desc: Package constants.
+  
+  - title: Package constants
     contents:
     - has_keyword("constants")
