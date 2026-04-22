@@ -11,7 +11,8 @@
 #' checked for contents
 #'
 #' @param threshold A six-digit number that is checked as a valid touchstone
-#' identifier (YYYYMM format) using [validate_ts_year()].
+#' identifier (YYYYMM format) using [validate_ts_year()]. Defaults to
+#' [DEF_TOUCHSTONE_NEW] (`"202310"`).
 #'
 #' @keywords impact_diagnostics
 #'
@@ -31,7 +32,7 @@
 #' (`NA` to non-`NA`) removed.
 #'
 #' @export
-filter_recent_ts <- function(df, threshold = 202310) {
+filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
   checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
   checkmate::assert_names(
     names(df),
@@ -58,7 +59,10 @@ filter_recent_ts <- function(df, threshold = 202310) {
 #' @name pres_test_filter_data
 #'
 #' @export
-filter_excluded_diseases_ts <- function(df, threshold = 202110) {
+filter_excluded_diseases_ts <- function(
+  df,
+  threshold = DEF_TOUCHSTONE_OLD_OLD
+) {
   checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
   checkmate::assert_names(
     names(df),
@@ -123,10 +127,9 @@ filter_invalid_trajectories <- function(
 ) {
   checkmate::assert_data_frame(df, min.cols = 1L, min.rows = 1L)
 
-  # TODO: can we assume prev_data is at least the size of df?
+  # TODO: can we find checks for prev_data size in reln to df? rows? cols?
   checkmate::assert_data_frame(
     prev_data,
-    min.cols = ncol(df),
     min.rows = nrow(df)
   )
 
@@ -226,11 +229,11 @@ generate_diffs <- function(
   # check interest cols in dfs. key cols are check in `add_campaign_id`
   checkmate::assert_names(
     colnames(prev_df),
-    interest_cols
+    must.include = interest_cols
   )
   checkmate::assert_names(
     colnames(curr_df),
-    interest_cols
+    must.include = interest_cols
   )
 
   touchstone <- validate_ts_year(touchstone)
@@ -267,7 +270,7 @@ generate_diffs <- function(
     interest_cols
   )
 
-  changes
+  tibble::as_tibble(changes)
 }
 
 #' Generate IQR for key outcomes
@@ -300,10 +303,9 @@ gen_national_iqr <- function(
   checkmate::assert_character(group_cols, min.len = 1L, any.missing = FALSE)
 
   # NOTE: restricting value columns to deaths and dalys averted
-  value_cols <- rlang::arg_match(
+  checkmate::assert_subset(
     value_cols,
-    c("deaths_averted", "dalys_averted"),
-    multiple = TRUE
+    c("deaths_averted", "dalys_averted")
   )
 
   checkmate::assert_string(prefix)
@@ -325,6 +327,8 @@ gen_national_iqr <- function(
     ),
     .groups = "drop"
   )
+
+  tibble::as_tibble(df)
 }
 
 #' Flag significant changes in impact estimates
@@ -341,7 +345,7 @@ gen_national_iqr <- function(
 #' [gen_national_iqr()].
 #'
 #' @param variable A string specifying the variable of interest. Must be one of
-#' "deaths_averted" and "dalys_averted", and must be present as a name and
+#' "deaths_averted" or "dalys_averted", and must be present as a name and
 #' element of `changes_list`.
 #'
 #' @inheritParams gen_national_iqr
@@ -370,7 +374,7 @@ flag_large_diffs <- function(
   touchstone_old = DEF_TOUCHSTONE_OLD_OLD,
   touchstone_new = DEF_TOUCHSTONE_NEW
 ) {
-  checkmate::assert_list(changes_list, "data.frame")
+  checkmate::assert_list(changes_list, c("data.frame", "NULL"))
   checkmate::assert_data_frame(iqr_df, min.rows = 1L, min.cols = 1L)
 
   variable <- rlang::arg_match(variable)
@@ -454,7 +458,9 @@ flag_large_diffs <- function(
     rename_lookup
   )
 
-  dplyr::arrange(df_compare, dplyr::desc(diff))
+  df_compare <- dplyr::arrange(df_compare, dplyr::desc(diff))
+
+  tibble::as_tibble(df_compare)
 }
 
 #' Combine and align data from two touchstones
@@ -492,15 +498,13 @@ gen_combined_df <- function(
     min.rows = 1L
   )
 
-  # TODO: df2 needs a better name
-  prev_df <- dplyr::select(prev_dat, {{ interest_cols }})
-  cur_df <- dplyr::select(df2, {{ interest_cols }})
-
-  combined <- dplyr::full_join(
-    prev_df,
-    cur_df,
-    by = key_cols,
-    suffix = c("_old", "_new")
+  checkmate::assert_subset(
+    interest_cols,
+    COLNAMES_INTEREST_PRESSURE_TEST
+  )
+  checkmate::assert_subset(
+    key_cols,
+    COLNAMES_KEY_PRESSURE_TEST
   )
 
   cols_to_select <- c(
@@ -517,10 +521,37 @@ gen_combined_df <- function(
     "dalys_averted_new"
   )
 
-  dplyr::select(
-    combined,
-    {{ cols_to_select }}
+  checkmate::assert_names(
+    colnames(prev_dat),
+    must.include = c(interest_cols, key_cols)
   )
+  checkmate::assert_names(
+    colnames(df2),
+    must.include = c(interest_cols, key_cols)
+  )
+
+  # TODO: df2 needs a better name
+  prev_df <- dplyr::select(prev_dat, {{ interest_cols }})
+  cur_df <- dplyr::select(df2, {{ interest_cols }})
+
+  combined <- dplyr::full_join(
+    prev_df,
+    cur_df,
+    by = key_cols,
+    suffix = c("_old", "_new")
+  )
+
+  checkmate::assert_names(
+    colnames(combined),
+    must.include = cols_to_select
+  )
+
+  combined <- dplyr::select(
+    combined,
+    dplyr::all_of(cols_to_select)
+  )
+
+  tibble::as_tibble(combined)
 }
 
 #' Compare sub-regional and national estimates
@@ -572,7 +603,7 @@ compare_natl_subreg <- function(
   subregional_summary <- dplyr::summarise(
     subregional_summary,
     subregional_mean = mean(.data[[outcome]], na.rm = TRUE),
-    subregional_iqr = IQR(.data[[outcome]], na.rm = TRUE),
+    subregional_iqr = stats::IQR(.data[[outcome]], na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -614,7 +645,7 @@ compare_natl_subreg <- function(
   comparison <- dplyr::select(comparison, {{ cols_to_select }})
   comparison <- dplyr::arrange(comparison, dplyr::desc(.data$iqr_score))
 
-  comparison
+  tibble::as_tibble(comparison)
 }
 
 #' Save pressure-testing diagnostics to local file
@@ -653,6 +684,8 @@ compare_natl_subreg <- function(
 #' @param subregional_flags_dalys_rout A data.frame that is the output of
 #' [compare_natl_subreg()] with the outcome `"dalys_averted_rate"` for the
 #' `"campaign"` activity type.
+#'
+#' @param output_dir A writeable directory. Defaults to "./outputs".
 #'
 #' @return None. Called for the convenience side-effect of saving data.frames as
 #' `.Rds` format.

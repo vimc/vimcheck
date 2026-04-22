@@ -1,5 +1,11 @@
 #' Create impact diagnostics plots
 #'
+#' @description
+#' Functions that create impact diagnostics plots (or plotting objects). All
+#' functions are associated with one other upstream data processing function,
+#' and can be used in a pipe with that function. Where appropriate, outcome
+#' selection and label preparation is automated to reduce function arguments.
+#'
 #' @name plot_impact_diagnostics
 #' @rdname plot_impact_diagnostics
 #'
@@ -14,9 +20,26 @@
 #' [plotting-preparation functions][plot_prep_impact_diagnostics] for a set of
 #' helper functions that prepare impact diagnostics for plotting.
 #'
-#' @param data A data.frame that gives the
+#' @param data A data.frame suitable for plotting.
 #'
-#' @param outcome
+#' - `plot_sig_diff()`: Output of
+#' [`flag_large_diff()`][plot_prep_impact_diagnostics].
+#'
+#' - `plot_diff()`: Output of
+#' [`gen_combined_df()`][plot_prep_impact_diagnostics].
+#'
+#' - `plot_modelling_group_variation()`: Output of
+#' [`plot_prep_mod_grp_varn()`][plot_prep_impact_diagnostics].
+#'
+#' - `plot_vaccine_gavi()`: Output of
+#' [`plot_prep_vax_gavi()`][plot_prep_impact_diagnostics]
+#'
+#' - `plot_cumul()`: Output of
+#' [`plot_prep_cumul()`][plot_prep_impact_diagnostics]
+#'
+#' @param outcome A string for the impact outcome. One of [IMPACT_OUTCOMES].
+#'
+#' @return A `<ggplot2>` object that can be viewed or saved.
 #'
 #' @export
 plot_sig_diff <- function(data, outcome = IMPACT_OUTCOMES) {
@@ -25,14 +48,14 @@ plot_sig_diff <- function(data, outcome = IMPACT_OUTCOMES) {
 
   # retained here as this is a small df and a small operation
   data$label <- glue::glue(
-    "{df$country_name} | {df$vaccine} | {df$activity_type} | {df$year}"
+    "{data$country_name} | {data$vaccine} | {data$activity_type} | {data$year}"
   )
 
   ggplot(
-    df,
+    data,
     aes(
       .data$diff,
-      reorder(.data$label, .data$diff),
+      stats::reorder(.data$label, .data$diff),
       color = .data$modelling_group
     )
   ) +
@@ -55,13 +78,13 @@ plot_sig_diff <- function(data, outcome = IMPACT_OUTCOMES) {
 #' @name plot_impact_diagnostics
 #'
 #' @param group_vars A single string for the grouping variables. May be any of
-#' `"activity_type"` and `"vaccine"`.
+#' [IMPACT_OUTCOMES], which are `"activity_type"` and `"vaccine"`.
 #'
 #' @param touchstone_old A string for the previous touchstone in
-#' format `"YYYYMM"`.
+#' format `"YYYYMM"`. Defaults to [DEF_TOUCHSTONE_OLD].
 #'
 #' @param touchstone_new A string for the current or new touchstone in
-#' format `"YYYYMM"`.
+#' format `"YYYYMM"`. Defaults to [DEF_TOUCHSTONE_NEW].
 #'
 #' @export
 plot_diff <- function(
@@ -73,7 +96,10 @@ plot_diff <- function(
 ) {
   checkmate::assert_tibble(data)
   outcome <- rlang::arg_match(outcome, IMPACT_OUTCOMES)
-  group_vars <- rlang::arg_match(group_vars, IMPACT_GROUP_VARS, multiple = TRUE)
+  checkmate::assert_subset(
+    group_vars,
+    IMPACT_GROUP_VARS
+  )
 
   touchstone_old <- validate_ts_year(touchstone_old)
   touchstone_new <- validate_ts_year(touchstone_new)
@@ -82,18 +108,24 @@ plot_diff <- function(
   y_var <- glue::glue("{outcome}_old")
 
   # small operations retained
-  combined <- dplyr::filter(
-    combined,
-    dplyr::filter(
-      !is.na({{ x_var }}),
-      !is.na({{ y_var }})
+  # NOTE: data masking using `{{` does not appear to work
+  # see last example in https://dplyr.tidyverse.org/reference/filter.html
+  #
+  # NOTE: exclude values < 1 to prevent log transform errors
+  data <- dplyr::filter_out(
+    data,
+    dplyr::when_any(
+      is.na(.data[[x_var]]),
+      is.na(.data[[y_var]]),
+      .data[[x_var]] < 1,
+      .data[[y_var]] < 1
     )
   )
 
   # nolint start
   n_facets <- nrow(
     dplyr::distinct(
-      combined,
+      data,
       .data$activity_type,
       .data$vaccine
     )
@@ -109,29 +141,28 @@ plot_diff <- function(
   )
 
   p <- ggplot(
-    combined,
-    aes({{ x_var }}, {{ y_var }})
+    data,
+    aes(.data[[x_var]], .data[[y_var]])
   ) +
     ggplot2::geom_point(alpha = 0.5, colour = COLOUR_VIMC) +
     ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     facet_wrap(
-      facets = c("activity_type", "vaccine,"),
+      facets = c("activity_type", "vaccine"),
       scales = "free",
       ncol = ncol_dynamic
     ) +
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10() +
-    # TODO: check if VIMC theme okay here
-    theme_vimc() +
+    theme_vimc(0) +
     theme(
       strip.text = ggplot2::element_text(size = 7),
       panel.spacing = ggplot2::unit(0.05, "lines"),
       axis.text = ggplot2::element_text(size = 6.5)
     ) +
     labs(
-      title = glue::glue("{variable}: Current vs Previous Report"),
-      x = glue::glue("{new} - {variable}"),
-      y = glue::glue("{old} - {variable}")
+      title = glue::glue("{outcome}: Current vs Previous Report"),
+      x = glue::glue("{touchstone_new} - {outcome}"),
+      y = glue::glue("{touchstone_old} - {outcome}")
     )
 
   p
@@ -140,12 +171,29 @@ plot_diff <- function(
 #' @name plot_impact_diagnostics
 #'
 #' @export
-plot_modelling_group_variation <- function(data, outcome) {
+plot_modelling_group_variation <- function(data) {
+  checkmate::assert_tibble(data, min.rows = 1L, min.cols = 1L)
+
+  outcome <- unique(data[["outcome_name"]])
+  checkmate::assert_string(outcome)
+
+  outcome_short <- stringr::word(outcome, sep = "_")
+  outcome_short <- dplyr::if_else(
+    outcome_short == "dalys",
+    stringr::str_to_upper(outcome_short),
+    outcome_short
+  )
+  x_lab <- glue::glue("Burden averted ({outcome_short})")
+
+  # for scales formatting
+  .x <- NULL
+
+  # TODO: should NA-producing values (< 1) be removed?
   ggplot(data) +
     aes(
       fill = as.character(.data$mod_num),
       x = .data$adj_outc,
-      y = reorder(.data$vaccine, .data$mean_outc)
+      y = stats::reorder(.data$vaccine, .data$mean_outc)
     ) +
     ggridges::geom_density_ridges(
       alpha = 0.5,
@@ -154,22 +202,18 @@ plot_modelling_group_variation <- function(data, outcome) {
       draw_baseline = FALSE
     ) +
     facet_grid(cols = ggplot2::vars("activity_type"), scales = "fixed") +
-    theme_vimc +
-    theme(
-      legend.position = "none",
-      axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)
-    ) +
     ggplot2::scale_x_log10(
       breaks = scales::trans_breaks("log10", function(x) 10^x),
       labels = scales::trans_format("log10", scales::math_format(10^.x))
     ) +
     ggplot2::scale_fill_viridis_d() +
+    theme_vimc() +
+    theme(
+      legend.position = "none",
+      axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)
+    ) +
     labs(
-      x = paste0(
-        "Burden averted (",
-        ifelse(outcome == "dalys", "DALYs", outcome),
-        ")"
-      ),
+      x = x_lab,
       y = "Vaccine"
     )
 }
@@ -179,11 +223,14 @@ plot_modelling_group_variation <- function(data, outcome) {
 #' @name plot_impact_diagnostics
 #'
 #' @export
-plot_vaccine_gavi <- function(df, outcome = "deaths_averted") {
+plot_vaccine_gavi <- function(data) {
+  checkmate::assert_tibble(data)
+  outcome <- unique(data[["outcome_name"]])
+
   ggplot(
-    df,
+    data,
     aes(
-      x = reorder(.data$disease, .data$yearly_outcome),
+      x = stats::reorder(.data$disease, .data$yearly_outcome),
       y = .data$yearly_outcome,
       fill = factor(.data$year)
     )
@@ -208,9 +255,13 @@ plot_vaccine_gavi <- function(df, outcome = "deaths_averted") {
 #' @name plot_impact_diagnostics
 #'
 #' @export
-plot_cumul <- function(df, outcome, disease_filter) {
+plot_cumul <- function(data) {
+  checkmate::assert_tibble(data)
+  outcome <- unique(data[["outcome_name"]])
+  disease <- unique(data[["disease"]])
+
   p <- ggplot(
-    df,
+    data,
     aes(
       x = .data$year,
       y = .data$value,
@@ -229,7 +280,7 @@ plot_cumul <- function(df, outcome, disease_filter) {
       x = "Year",
       y = paste("Cumulative", outcome),
       color = "Modelling Group",
-      title = paste("Cumulative", outcome, "Over Time –", disease_filter)
+      title = paste("Cumulative", outcome, "Over Time -", disease)
     ) +
     theme(legend.position = "bottom")
 

@@ -22,7 +22,7 @@ interest (see \code{variable}). Usually generated using \code{\link[=generate_di
 \code{\link[=gen_national_iqr]{gen_national_iqr()}}.}
 
 \item{variable}{A string specifying the variable of interest. Must be one of
-"deaths_averted" and "dalys_averted", and must be present as a name and
+"deaths_averted" or "dalys_averted", and must be present as a name and
 element of \code{changes_list}.}
 
 \item{group_cols}{A character vector of grouping columns. Defaults to
@@ -47,4 +47,4 @@ between touchstones is greater than expected. A row is flagged if the
 difference is greater than \code{threshold} \eqn{\times} the inter-quartile range
 for cases where the IQR is greater than zero.
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}

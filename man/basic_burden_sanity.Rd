@@ -18,4 +18,4 @@ estimates, with the length of the vector depending on how many checks fail.
 Helper function for sanity checks on burden estimate values.
 Checks whether any burden estimates are non-numeric, missing, or negative.
 }
-\keyword{diagnostics}
+\keyword{burden_diagnostics}

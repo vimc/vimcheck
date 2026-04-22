@@ -31,4 +31,4 @@ are disambiguated with the suffixes \code{"_old"} and \code{"_new"}.
 \description{
 Generates a full join of two data.frames, selecting for columns of interest.
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}

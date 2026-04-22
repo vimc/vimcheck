@@ -36,4 +36,4 @@ with one list element per element of \code{interest_cols}.
 \description{
 Explore significant changes in deaths and DALYs
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}
