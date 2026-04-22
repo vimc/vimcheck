@@ -19,4 +19,4 @@ against \code{template}, with information on missing and extra data.
 \description{
 Identify extra and missing columns and rows in burden data.
 }
-\keyword{diagnostics}
+\keyword{burden_diagnostics}

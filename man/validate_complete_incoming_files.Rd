@@ -20,4 +20,4 @@ This function expects that incoming burden files are in the
 directory given by \code{path_burden}, which holds a file dictionary which maps
 each data file to a specific scenario.
 }
-\keyword{diagnostics}
+\keyword{burden_diagnostics}

@@ -86,7 +86,8 @@ round_numeric <- function(df) {
   dplyr::mutate(
     df,
     dplyr::across(
-      .cols = dplyr::where(is.numeric) & !matches("year", ignore.case = TRUE),
+      .cols = dplyr::where(is.numeric) &
+        !dplyr::matches("year", ignore.case = TRUE),
       .fns = adaptive_round
     )
   )
@@ -106,10 +107,10 @@ validate_ts_year <- function(x) {
     min.chars = N_TS_MIN_CHARS
   )
   if (!has_n_chars) {
-    n_chars <- nchars(x)
+    n_chars <- nchar(x) # nolint used in cli
     cli::cli_abort(
-      "Touchstone year string should have at least {N_TS_MIN_CHARS}, but got \
-      {n_chars} characters."
+      "Touchstone year should be a string with at least {N_TS_MIN_CHARS} \
+      characters, but got class {.cls {class(x)}} with {n_chars} characters."
     )
   }
 
@@ -170,7 +171,7 @@ add_campaign_id <- function(df, key_cols) {
     must.include = key_cols
   )
   if (!has_cols) {
-    missing_cols <- setdiff(colnames(df), key_cols)
+    missing_cols <- setdiff(colnames(df), key_cols) # nolint used in cli
     cli::cli_abort(
       "Expected {.code df} to have columns {.str {key_cols}} but columns \
     {.str {missing_cols}} are missing."

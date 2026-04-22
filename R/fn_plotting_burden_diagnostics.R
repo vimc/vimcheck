@@ -10,7 +10,7 @@
 #' @importFrom rlang .data
 #'
 #' @description
-#' Plotting functions for burden and impact diagnostics. All functions operate
+#' Plotting functions for burden diagnostics. All functions operate
 #' on data prepared for plotting by a corresponding
 #' [plotting-preparation function][plot_prep_burden_diagnostics].
 #'

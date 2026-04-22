@@ -5,24 +5,69 @@
 #'
 #' @description
 #' A suite of helper functions that sit between impact diagnostics functions and
-#' plotting functions. These functions have some basic checks on the input data,
-#' but otherwise assume that users will not modify inputs.
+#' plotting functions. These functions transform and aggregate impact estimates
+#' to prepare them for visualisation. Functions have basic checks on input data
+#' but otherwise assume users will not modify inputs.
 #'
-#' @param data A data.frame of impact estimates.
+#' @param df2 A `<tibble>` of impact estimates with at least columns
+#' `modelling_group`, `vaccine`, outcome variable, and `fvps` (doses
+#' delivered). Used as the primary data source for calculations in
+#' [prep_plot_mod_grp_varn()].
 #'
-#' @param comparison A data.frame of impact estimates used as a comparator for
-#' `comparison`.
+#' @param df3 A `<tibble>` of modelling group and vaccine combinations,
+#' typically with one row per modelling group per vaccine. Joined with `df2`
+#' to ensure complete group coverage in [prep_plot_mod_grp_varn()].
 #'
-#' @param outcome A string for the impact outcome; may be one of
-#' "deaths_averted" or "dalys_averted".
+#' @param data A `<tibble>` of impact estimates with columns including at least
+#' those in [COLNAMES_KEY_PRESSURE_TEST], the outcome variable, and
+#' potentially outcome-specific columns (for [prep_plot_cumul()]). Used in
+#' [prep_plot_vax_gavi()] and [prep_plot_cumul()].
+#'
+#' @param prev_data A `<tibble>` of impact estimates from a previous touchstone,
+#' used as a comparison baseline in [prep_plot_vax_gavi()]. Should have the
+#' same structure as `data`.
+#'
+#' @param outcome A character string for the impact outcome. Must be one of
+#' `"deaths_averted"` or `"dalys_averted"`. For [prep_plot_cumul()],
+#' `data` must include columns named `{outcome}_old` and `{outcome}_new`.
+#'
+#' @param disease A character string specifying a single disease for filtering
+#' in [prep_plot_cumul()].
+#'
+#' @param touchstone_old A six-character touchstone identifier (YYYYMM format)
+#' for the previous dataset. Defaults to [DEF_TOUCHSTONE_OLD]. Used in
+#' [prep_plot_vax_gavi()] and [prep_plot_cumul()].
+#'
+#' @param touchstone_new A six-character touchstone identifier (YYYYMM format)
+#' for the current dataset. Defaults to [DEF_TOUCHSTONE_NEW]. Used in
+#' [prep_plot_vax_gavi()] and [prep_plot_cumul()].
+#'
+#' @importFrom rlang :=
 #'
 #' @return
 #'
-#' - [prep_plot_mod_grp_varn()] returns a `<tibble>` TODO add
+#' - [prep_plot_mod_grp_varn()] returns a grouped `<tibble>` (grouped by
+#' `vaccine`) with all columns from `df2` and `df3` plus derived columns:
+#' `adj_outc` (adjusted outcome with small offset), `outcome_name` (input
+#' outcome), and `mean_outc` (vaccine-level weighted mean outcome).
+#'
+#' - [prep_plot_vax_gavi()] returns a `<tibble>` with columns `disease`,
+#' `year`, `yearly_outcome`, `dataset` (factor with levels for old touchstone,
+#' "Difference", and new touchstone), and `outcome_name`. Summarizes outcomes
+#' by disease and year across two touchstones.
+#'
+#' - [prep_plot_cumul()] returns a `<tibble>` with columns `year`,
+#' `modelling_group`, `touchstone`, `value` (cumulative or average outcome),
+#' `line_type` ("solid" for individual models, "dashed" for model average),
+#' and `outcome_name`. Returns `NULL` if the specified disease has no non-zero
+#' data to plot.
 #'
 #' @export
 prep_plot_mod_grp_varn <- function(df2, df3, outcome = IMPACT_OUTCOMES) {
-  # TODO: df2 and df3 need informative names
+  checkmate::assert_tibble(df2, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_tibble(df3, min.rows = 1L, min.cols = 1L)
+
+  outcome <- rlang::arg_match(outcome, IMPACT_OUTCOMES)
 
   offset_manual <- 1e-6
   df_combined <- dplyr::left_join(
@@ -33,7 +78,8 @@ prep_plot_mod_grp_varn <- function(df2, df3, outcome = IMPACT_OUTCOMES) {
 
   df_combined <- dplyr::mutate(
     df_combined,
-    adj_outc = {{ outcome }} + offset_manual
+    adj_outc = .data[[outcome]] + offset_manual,
+    outcome_name = outcome
   )
 
   df_combined <- dplyr::group_by(
@@ -51,17 +97,12 @@ prep_plot_mod_grp_varn <- function(df2, df3, outcome = IMPACT_OUTCOMES) {
 
 #' @name plot_prep_impact_diagnostics
 #'
-#' @param data description
+#' @param data A `<tibble>` of impact estimates with columns including at least
+#' those in [COLNAMES_KEY_PRESSURE_TEST], the outcome variable, and
+#' potentially other columns for analysis.
 #'
-#' @param outcome
-#'
-#' @param disease
-#'
-#' @param touchstone_old
-#'
-#' @param touchstone_new
-#'
-#' @return [prep_plot_vax_gavi()] returns a ... TODO add
+#' @param prev_data A `<tibble>` of impact estimates from a previous touchstone,
+#' used as a comparison baseline. Should have the same structure as `data`.
 #'
 #' @export
 prep_plot_vax_gavi <- function(
@@ -89,15 +130,19 @@ prep_plot_vax_gavi <- function(
 
       df <- dplyr::filter(
         df,
-        dplyr::between(.data$year, 2021, 2024),
-        Negate(grepl("COVID", .data$disease, ignore.case = TRUE))
+        dplyr::between(.data$year, 2021, 2024)
+      )
+
+      df <- dplyr::filter_out(
+        df,
+        grepl("COVID", .data$disease, ignore.case = TRUE)
       )
 
       df <- dplyr::group_by(df, .data$disease, .data$year)
 
       df <- dplyr::summarise(
         df,
-        yearly_outcome = sum({{ outcome }}, na.rm = TRUE),
+        yearly_outcome = sum(.data[[outcome]], na.rm = TRUE),
         .groups = "drop"
       )
 
@@ -141,20 +186,15 @@ prep_plot_vax_gavi <- function(
     )
   )
 
+  df_combined$outcome_name <- outcome
+
   df_combined
 }
 
 #' @name plot_prep_impact_diagnostics
 #'
-#' @param data description
-#'
-#' @param outcome
-#'
-#' @param disease
-#'
-#' @param touchstone_old
-#'
-#' @param touchstone_new
+#' @param disease A character string specifying a single disease for filtering
+#' and analysis.
 #'
 #' @export
 prep_plot_cumul <- function(
@@ -164,6 +204,12 @@ prep_plot_cumul <- function(
   touchstone_old = DEF_TOUCHSTONE_OLD,
   touchstone_new = DEF_TOUCHSTONE_NEW
 ) {
+  checkmate::assert_tibble(data)
+  checkmate::assert_subset(
+    outcome,
+    IMPACT_OUTCOMES
+  )
+
   outcome_cols <- colnames(data)[stringr::str_detect(
     colnames(data),
     glue::glue("^{outcome}_")
@@ -177,6 +223,7 @@ prep_plot_cumul <- function(
     {{ COLNAMES_KEY_PRESSURE_TEST }},
     {{ outcome_cols }}
   )
+  combined2 <- combined2[combined2$disease == disease, ]
 
   combined2 <- tidyr::pivot_longer(
     combined2,
@@ -193,9 +240,8 @@ prep_plot_cumul <- function(
     ),
     touchstone = dplyr::replace_values(
       .data$touchstone,
-      c("old", "new"),
-      as.character(c(touchstone_old, touchstone_new)),
-      .default = .data$touchstone
+      from = c("old", "new"),
+      to = as.character(c(touchstone_old, touchstone_new))
     ),
     touchstone = factor(
       .data$touchstone,
@@ -204,9 +250,8 @@ prep_plot_cumul <- function(
   )
 
   # Cumulative values by modelling group
-  df_cum <- dplyr::filter(combined2, .data$disease == disease)
   df_cum <- dplyr::group_by(
-    df_cum,
+    combined2,
     .data$modelling_group,
     .data$touchstone
   )
@@ -217,7 +262,7 @@ prep_plot_cumul <- function(
   df_cum <- dplyr::arrange(df_cum, .data$year)
   df_cum <- dplyr::mutate(
     df_cum,
-    first_valid = min(.data$year[!is.na(data$value)]),
+    first_valid = min(.data$year[!is.na(.data$value)]),
     {{ cum_col }} := dplyr::if_else(
       .data$year < .data$first_valid,
       NA_real_,
@@ -237,7 +282,7 @@ prep_plot_cumul <- function(
     df_cum,
     {{ avg_col }} := mean({{ cum_col }}, na.rm = TRUE),
     n_models = sum(!is.na({{ cum_col }})),
-    .groups = c("year", "touchstone")
+    .by = c("year", "touchstone")
   )
   df_avg <- dplyr::filter(
     df_avg,
@@ -280,10 +325,13 @@ prep_plot_cumul <- function(
     )
   )
 
+  # add outcome name
+  df_plot$outcome_name <- outcome
+
   if (nrow(df_plot) == 0 || all(df_plot$value == 0)) {
     message("No non-zero data to plot for ", disease, ". Skipping plot.")
     return(NULL)
   }
 
-  df_plot
+  tibble::as_tibble(df_plot)
 }

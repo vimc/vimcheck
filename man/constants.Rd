@@ -10,6 +10,7 @@
 \alias{colnames_df_missing_cols}
 \alias{COLNAMES_KEY_PRESSURE_TEST}
 \alias{COLNAMES_INTEREST_PRESSURE_TEST}
+\alias{IMPACT_OUTCOMES}
 \alias{EXCLUDED_DISEASES}
 \alias{N_TS_MIN_CHARS}
 \alias{N_TS_YEAR_CHARS}
@@ -20,6 +21,7 @@
 \alias{DEF_TOUCHSTONE_OLD}
 \alias{DEF_TOUCHSTONE_NEW}
 \alias{DEF_TOUCHSTONE_OLD_OLD}
+\alias{COLOUR_VIMC}
 \title{Package constants}
 \format{
 An object of class \code{character} of length 5.
@@ -36,6 +38,8 @@ An object of class \code{character} of length 7.
 
 An object of class \code{character} of length 14.
 
+An object of class \code{character} of length 2.
+
 An object of class \code{character} of length 4.
 
 An object of class \code{integer} of length 1.
@@ -49,6 +53,8 @@ An object of class \code{numeric} of length 1.
 An object of class \code{numeric} of length 1.
 
 An object of class \code{numeric} of length 1.
+
+An object of class \code{character} of length 1.
 
 An object of class \code{character} of length 1.
 
@@ -71,6 +77,8 @@ COLNAMES_KEY_PRESSURE_TEST
 
 COLNAMES_INTEREST_PRESSURE_TEST
 
+IMPACT_OUTCOMES
+
 EXCLUDED_DISEASES
 
 N_TS_MIN_CHARS
@@ -90,9 +98,52 @@ DEF_TOUCHSTONE_OLD
 DEF_TOUCHSTONE_NEW
 
 DEF_TOUCHSTONE_OLD_OLD
+
+COLOUR_VIMC
 }
 \description{
-Package constants
+Constant values used in \emph{vimcheck}. See the \strong{Examples} section for the
+constant values.
+}
+\examples{
+file_dict_colnames
+
+scenario_data_colnames
+
+burden_outcome_names
+
+colnames_plot_demog_compare
+
+colnames_df_missing_cols
+
+COLNAMES_KEY_PRESSURE_TEST
+
+COLNAMES_INTEREST_PRESSURE_TEST
+
+IMPACT_OUTCOMES
+
+EXCLUDED_DISEASES
+
+N_TS_MIN_CHARS
+
+N_TS_YEAR_CHARS
+
+MIN_TS_YEAR
+
+MAX_TS_YEAR
+
+MIN_TS_MONTH
+
+MAX_TS_MONTH
+
+DEF_TOUCHSTONE_OLD
+
+DEF_TOUCHSTONE_NEW
+
+DEF_TOUCHSTONE_OLD_OLD
+
+COLOUR_VIMC
+
 }
 \keyword{constants}
 \keyword{datasets}

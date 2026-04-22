@@ -27,4 +27,4 @@ modelled population size from the WPP-derived population estimates.
 Check the modelled disease burden data has similar population
 sizes as the provided population data.
 }
-\keyword{diagnostics}
+\keyword{burden_diagnostics}

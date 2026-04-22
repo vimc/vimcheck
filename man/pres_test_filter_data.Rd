@@ -8,9 +8,9 @@
 \alias{filter_invalid_trajectories}
 \title{Filter data for touchstones or diseases}
 \usage{
-filter_recent_ts(df, threshold = 202310)
+filter_recent_ts(df, threshold = DEF_TOUCHSTONE_NEW)
 
-filter_excluded_diseases_ts(df, threshold = 202110)
+filter_excluded_diseases_ts(df, threshold = DEF_TOUCHSTONE_OLD_OLD)
 
 filter_duplicates(df, key_cols = COLNAMES_KEY_PRESSURE_TEST)
 
@@ -25,7 +25,8 @@ filter_invalid_trajectories(
 checked for contents}
 
 \item{threshold}{A six-digit number that is checked as a valid touchstone
-identifier (YYYYMM format) using \code{\link[=validate_ts_year]{validate_ts_year()}}.}
+identifier (YYYYMM format) using \code{\link[=validate_ts_year]{validate_ts_year()}}. Defaults to
+\link{DEF_TOUCHSTONE_NEW} (\code{"202310"}).}
 
 \item{key_cols}{Key columns in \code{df} to check for duplicates.}
 
@@ -53,4 +54,4 @@ to the \link{EXCLUDED_DISEASES}, when the touchstone year in \code{df} is less t
 A pair of helper functions allowing filtering out of recent touchstone values
 and excluded diseases.
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}

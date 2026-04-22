@@ -31,4 +31,4 @@ using string interpolation.
 \description{
 Generate IQR for key outcomes
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}

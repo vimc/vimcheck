@@ -27,4 +27,4 @@ impact is considered to be outside the tolerance limit.
 \description{
 Compare sub-regional and national estimates
 }
-\keyword{pressure_testing}
+\keyword{impact_diagnostics}

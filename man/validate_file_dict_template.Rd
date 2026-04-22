@@ -25,4 +25,4 @@ scenarios i.e. the number of files that we expect from a model.
 Users should populate the file column to match the scenario-file.
 This function will run if a \code{file_dictionary.csv} file does not exist
 }
-\keyword{diagnostics}
+\keyword{burden_diagnostics}
