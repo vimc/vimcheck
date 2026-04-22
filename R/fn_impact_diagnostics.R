@@ -1,7 +1,7 @@
 #' Filter data for touchstones or diseases
 #'
-#' @name pres_test_filter_data
-#' @rdname pres_test_filter_data
+#' @name filter_impact_data
+#' @rdname filter_impact_data
 #'
 #' @description
 #' A pair of helper functions allowing filtering out of recent touchstone values
@@ -56,7 +56,7 @@ filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
   }
 }
 
-#' @name pres_test_filter_data
+#' @name filter_impact_data
 #'
 #' @export
 filter_excluded_diseases_ts <- function(
@@ -81,7 +81,7 @@ filter_excluded_diseases_ts <- function(
   }
 }
 
-#' @name pres_test_filter_data
+#' @name filter_impact_data
 #'
 #' @param key_cols Key columns in `df` to check for duplicates.
 #'
@@ -111,7 +111,7 @@ filter_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
   dplyr::filter(df, .data$n_key > 1)
 }
 
-#' @name pres_test_filter_data
+#' @name filter_impact_data
 #'
 #' @param prev_data A `<data.frame>` holding data from a previous touchstone for
 #' the same scenarios as `df`.
@@ -471,7 +471,7 @@ flag_large_diffs <- function(
 #' @param prev_dat A data.frame of impact estimates corresponding to an earlier
 #' touchstone.
 #'
-#' @param df2 A data.frame of impact estimates corresponding to a more recent
+#' @param df_clean A data.frame of impact estimates corresponding to a more recent
 #' touchstone.
 #'
 #' @param interest_cols A character vector of columns of interest. Defaults to
@@ -480,7 +480,7 @@ flag_large_diffs <- function(
 #' @param key_cols A character vector of columns of interest. Defaults to
 #' [COLNAMES_KEY_PRESSURE_TEST].
 #'
-#' @return A data.frame which is a full join of `prev_dat` and `df2`. Columns
+#' @return A data.frame which is a full join of `prev_dat` and `df_clean`. Columns
 #' are disambiguated with the suffixes `"_old"` and `"_new"`.
 #'
 #' @keywords impact_diagnostics
@@ -488,7 +488,7 @@ flag_large_diffs <- function(
 #' @export
 gen_combined_df <- function(
   prev_dat,
-  df2,
+  df_clean,
   interest_cols = COLNAMES_INTEREST_PRESSURE_TEST,
   key_cols = COLNAMES_KEY_PRESSURE_TEST
 ) {
@@ -526,13 +526,12 @@ gen_combined_df <- function(
     must.include = c(interest_cols, key_cols)
   )
   checkmate::assert_names(
-    colnames(df2),
+    colnames(df_clean),
     must.include = c(interest_cols, key_cols)
   )
 
-  # TODO: df2 needs a better name
   prev_df <- dplyr::select(prev_dat, {{ interest_cols }})
-  cur_df <- dplyr::select(df2, {{ interest_cols }})
+  cur_df <- dplyr::select(df_clean, {{ interest_cols }})
 
   combined <- dplyr::full_join(
     prev_df,
