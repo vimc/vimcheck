@@ -215,3 +215,11 @@ DEF_TOUCHSTONE_OLD_OLD <- "202110"
 #'
 #' @export
 COLOUR_VIMC <- "#008080"
+
+#' @name constants
+#' 
+#' @examples
+#' pine
+#' 
+#' @export
+pine <- c("PAK", "IND", "NGA", "ETH")
