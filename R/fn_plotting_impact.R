@@ -12,6 +12,16 @@
 #' @return ggplot object showing central impact estimates 
 #'  
 #' @examples
+#' 
+#' # Create example data
+#' impact_data <- tibble::tibble(
+#'   country = c("A", "A", "B", "B"),
+#'   year = c(2020, 2021, 2020, 2021),
+#'   birth_cohort = c(2000, 2001, 2000, 2001),
+#'   burden_outcome = c("deaths", "cases", "deaths", "cases"),
+#'   impact = c(15, 5, 14, 8),
+#'   short_name = c("short1", "short2", "short3", "short4")
+#' )
 #' plot_impact(
 #'   data = impact_data,
 #'   burden_type = "cases",
@@ -137,6 +147,18 @@ plot_impact <- function(
 #'     \item{fvps}{A plot of fully vaccinated persons over time.}
 #'   }
 #' @examples
+#' 
+#' # Create example data
+#' fvps <- tibble::tibble(
+  #'   country = c("AGO", "AGO", "BEN", "BEN"),
+  #'   year = c(2020, 2021, 2020, 2021),
+  #'   activity_type = c("routine", "campaign", "routine", "campaign"),
+  #'   scenario_type = c("default", "default", "default", "default"),
+  #'   vaccine = c("measles", "measles", "measles", "measles"),
+  #'   coverage_adjusted = c(0.8, 0.85, 0.4, 0.7),
+  #'   fvps = c(1000000, 1200000, 800000, 900000)
+  #' )
+  
 #' plots <- plot_coverage_fvps(fvps)
 #' plots$coverage
 #' plots$fvps
