@@ -1,5 +1,4 @@
 #' Plot central impact estimates by cohort and year. 
-#' TODO: need to add importFrom ... to avoid package issues with testing? 
 #' 
 #' Produces faceted plots of central impact estimates for priority countries,
 #' stratified either by birth cohort or by year of vaccination.
@@ -23,39 +22,41 @@
 #' @export
 plot_impact <- function(
     data, 
-    burden_type, 
+    burden_type = c("cases", "deaths", "dalys", "yll"),
     title, 
-    view
+    view = c("cohort", "year")
 ){
   checkmate::assert_tibble(data, min.rows = 1L, min.cols = 1L)
-  checkmate::assert_character(burden_type, len = 1)
+  
+  required_cols <- c("country", "burden_outcome", "impact", "short_name")
+  
+  checkmate::assert_names(
+    names(data),
+    must.include = required_cols
+  )
+  
   checkmate::assert_character(title, len = 1)
   
-  checkmate::assert_choice(
-    burden_type,
-    choices = c("cases", "deaths", "dalys", "yll")
-  )
+  burden_type <- rlang::arg_match(burden_type)
+  view <- rlang::arg_match(view)
   
-  checkmate::assert_choice(
-    view,
-    choices = c("cohort", "year")
-  )
+  Impact <- dplyr::filter(data, 
+                          .data$country %in% pine,
+                          .data$burden_outcome == burden_type,
+                          .data$impact != 0)
   
-  Impact <- 
-    data %>% 
-    dplyr::filter(.data$country %in% pine) %>%
-    dplyr::filter(
-      .data$burden_outcome == burden_type & .data$impact != 0) #%>%
   if(nrow(Impact) > 0){
 # ---- Cohort view ----
     if(view == "cohort"){
-      Impact <- Impact %>% dplyr::rename(cohort = .data$birth_cohort) %>%
-        dplyr::select(
-          .data$country, 
-          .data$cohort, 
-          .data$impact, 
-          .data$short_name
-          )
+      
+      checkmate::assert_names(names(data), must.include = "birth_cohort")
+
+      Impact <- Impact %>% dplyr::rename(Impact, cohort = .data$birth_cohort)
+      
+      cols_to_select <- c("country", "cohort", "impact", "short_name")
+        
+      Impact <- dplyr::select(Impact, all_of(cols_to_select))
+       
       p <- ggplot(
         Impact,
         aes(
@@ -83,13 +84,11 @@ plot_impact <- function(
         )
  
     } else { # ---- Year (non-cohort) view ----
-      Impact <- Impact %>%
-        dplyr::select(
-          .data$country,
-          .data$year, 
-          .data$impact, 
-          .data$short_name
-          )
+      cols_to_select <- c("country", "year", "impact", "short_name")
+      
+      checkmate::assert_names(names(data), must.include = "year")
+      
+      Impact <- dplyr::select(Impact, all_of(cols_to_select))
       
       p <- ggplot (
         Impact,
@@ -146,40 +145,53 @@ plot_impact <- function(
 plot_coverage_fvps <- function(fvps){
   checkmate::assert_tibble(fvps, min.rows = 1L, min.cols = 1L)
   
-  fvps <- fvps %>%
-    dplyr::filter(.data$country %in% pine)
+  required_cols <- c(
+    "country",
+    "activity_type",
+    "scenario_type",
+    "vaccine",
+    "coverage_adjusted",
+    "year",
+    "fvps"
+  )
   
-  cov <- fvps %>% 
-    dplyr::filter(.data$activity_type == "routine") %>%
-    dplyr::mutate(
+  checkmate::assert_names(
+    names(fvps),
+    must.include = required_cols
+  )
+  
+  
+  fvps <- dplyr::filter(fvps, .data$country %in% pine)
+  
+  cov <- dplyr::filter(fvps, .data$activity_type == "routine")
+  
+  cov <- dplyr::mutate(cov,
       vaccine_delivery = paste(.data$scenario_type, .data$vaccine, sep = "_"),
       coverage_adjusted = round(.data$coverage_adjusted*100, 2)
-      ) %>%
-    dplyr::select(
-      .data$country, 
-      .data$vaccine_delivery, 
-      .data$year, 
-      .data$coverage_adjusted) %>%
-    dplyr::rename(coverage = .data$coverage_adjusted) 
+      )
   
-  fvp <- fvps %>% 
-    dplyr::mutate(
-      vaccine_delivery = paste(.data$scenario_type, .data$activity_type, sep = "_")
-      ) %>%
-    dplyr::select(
-      .data$country, 
-      .data$vaccine_delivery, 
-      .data$year, 
-      .data$fvps
-      ) %>%
-    dplyr::group_by(
-      .data$country, 
-      .data$vaccine_delivery, 
-      .data$year) %>%
-    dplyr::summarise(
-      fvps = round(sum(.data$fvps)/1e6, 2),
-      .groups = "drop"
-      ) 
+  cols_to_select <- c("country", "vaccine_delivery", "year", "coverage_adjusted")
+  
+  cov <- dplyr::select(cov, all_of(cols_to_select))
+  
+  cov <- dplyr::rename(cov, coverage = .data$coverage_adjusted) 
+  
+  fvps <-  dplyr::mutate(fvps,
+                        vaccine_delivery = paste(.data$scenario_type, .data$activity_type, sep = "_")
+                        )
+  cols_to_select <- c("country", "vaccine_delivery", "year", "fvps")
+  
+  fvps <- dplyr::select(fvps, all_of(cols_to_select)) 
+  
+  fvps <- dplyr::group_by(fvps,
+                          .data$country, 
+                          .data$vaccine_delivery, 
+                          .data$year) 
+  
+  fvps <- dplyr::summarise(fvps, 
+                           fvps = round(sum(.data$fvps)/1e6, 2),
+                           .groups = "drop"
+                           ) 
   if(nrow(cov) > 0){
     p <- ggplot(
       cov, 
@@ -210,7 +222,7 @@ plot_coverage_fvps <- function(fvps){
   
   
   q <- ggplot(
-    fvp,
+    fvps,
     aes(
       x = .data$year, 
       y = .data$fvps, 
