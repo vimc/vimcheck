@@ -231,8 +231,16 @@ generate_diffs <- function(
   key_cols = COLNAMES_KEY_PRESSURE_TEST,
   touchstone = DEF_TOUCHSTONE_OLD
 ) {
-  checkmate::assert_data_frame(prev_df, min.rows = 1L, min.cols = 1L)
-  checkmate::assert_data_frame(curr_df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    prev_df,
+    min.rows = 1L,
+    min.cols = length(interest_cols)
+  )
+  checkmate::assert_data_frame(
+    curr_df,
+    min.rows = 1L,
+    min.cols = length(interest_cols)
+  )
 
   checkmate::assert_character(interest_cols, min.len = 1L)
   checkmate::assert_character(key_cols, min.len = 1L)
@@ -240,11 +248,11 @@ generate_diffs <- function(
   # check interest cols in dfs. key cols are check in `add_campaign_id`
   checkmate::assert_names(
     colnames(prev_df),
-    must.include = interest_cols
+    must.include = c(interest_cols, "support_type", "coverage")
   )
   checkmate::assert_names(
     colnames(curr_df),
-    must.include = interest_cols
+    must.include = c(interest_cols, "support_type", "coverage")
   )
 
   touchstone <- validate_ts_year(touchstone)
@@ -310,7 +318,11 @@ gen_national_iqr <- function(
   value_cols = c("deaths_averted", "dalys_averted"),
   prefix = "national_iqr"
 ) {
-  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    df,
+    min.rows = 1L,
+    min.cols = length(c(group_cols, value_cols))
+  )
   checkmate::assert_character(group_cols, min.len = 1L, any.missing = FALSE)
 
   # NOTE: restricting value columns to deaths and dalys averted
@@ -326,6 +338,7 @@ gen_national_iqr <- function(
     must.include = union(group_cols, value_cols)
   )
 
+  # long-winded syntax to pass grouping variables as char vec
   df <- dplyr::group_by(df, dplyr::across(dplyr::all_of(group_cols)))
   df <- dplyr::summarise(
     df,
