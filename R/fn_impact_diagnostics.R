@@ -25,15 +25,16 @@
 #' to the [EXCLUDED_DISEASES], when the touchstone year in `df` is less than the
 #' `threshold`, excluded.
 #'
-#' - `filter_duplicates()` returns `df` with duplicated combinations of
-#' `key_cols` removed.
+#' - `flag_duplicates()` returns `df` with duplicated combinations of
+#' `key_cols` flagged using the column `n_key` (or a user-defined name).
 #'
 #' - `filter_invalid_trajectories()` returns `df` with bad outcome trajectories
 #' (`NA` to non-`NA`) removed.
 #'
 #' @export
 filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
-  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
+  # NOTE: exact min cols to be updated - fn implies at least 2
+  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 2L)
   checkmate::assert_names(
     names(df),
     must.include = "touchstone"
@@ -86,8 +87,8 @@ filter_excluded_diseases_ts <- function(
 #' @param key_cols Key columns in `df` to check for duplicates.
 #'
 #' @export
-filter_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
-  checkmate::assert_data_frame(df, min.cols = 1L, min.rows = 1L)
+flag_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
+  checkmate::assert_data_frame(df, min.cols = length(key_cols), min.rows = 1L)
   checkmate::assert_character(key_cols)
 
   has_cols <- checkmate::test_names(
@@ -102,13 +103,23 @@ filter_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
     )
   }
 
+  # data may have a `burden_outcome` column which should not be counted as
+  # a duplicate
   df <- dplyr::add_count(
     df,
-    dplyr::across(dplyr::all_of(key_cols)),
+    dplyr::across(dplyr::all_of(c(key_cols, "burden_outcome"))),
     name = "n_key"
   )
 
-  dplyr::filter(df, .data$n_key > 1)
+  # dplyr::filter(df, .data$n_key == 1L)
+  if (any(df$n_key > 1)) {
+    n_duplicates <- sum(df$n_key > 1)
+    cli::cli_warn(
+      "{n_duplicates} duplicates found in data; please check for plausibility!"
+    )
+  }
+
+  return(df)
 }
 
 #' @name filter_impact_data
