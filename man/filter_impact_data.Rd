@@ -4,7 +4,7 @@
 \alias{filter_impact_data}
 \alias{filter_recent_ts}
 \alias{filter_excluded_diseases_ts}
-\alias{filter_duplicates}
+\alias{flag_duplicates}
 \alias{filter_invalid_trajectories}
 \title{Filter data for touchstones or diseases}
 \usage{
@@ -12,7 +12,7 @@ filter_recent_ts(df, threshold = DEF_TOUCHSTONE_NEW)
 
 filter_excluded_diseases_ts(df, threshold = DEF_TOUCHSTONE_OLD_OLD)
 
-filter_duplicates(df, key_cols = COLNAMES_KEY_PRESSURE_TEST)
+flag_duplicates(df, key_cols = COLNAMES_KEY_PRESSURE_TEST)
 
 filter_invalid_trajectories(
   df,
@@ -44,8 +44,8 @@ is not met excluded.
 \item \code{filter_excluded_diseases_ts()} returns \code{df} with rows where rows relating
 to the \link{EXCLUDED_DISEASES}, when the touchstone year in \code{df} is less than the
 \code{threshold}, excluded.
-\item \code{filter_duplicates()} returns \code{df} with duplicated combinations of
-\code{key_cols} removed.
+\item \code{flag_duplicates()} returns \code{df} with duplicated combinations of
+\code{key_cols} flagged using the column \code{n_key} (or a user-defined name).
 \item \code{filter_invalid_trajectories()} returns \code{df} with bad outcome trajectories
 (\code{NA} to non-\code{NA}) removed.
 }
