@@ -111,15 +111,14 @@ flag_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
     name = "n_key"
   )
 
-  # dplyr::filter(df, .data$n_key == 1L)
   if (any(df$n_key > 1)) {
-    n_duplicates <- sum(df$n_key > 1)
+    n_duplicates <- sum(df$n_key > 1) # nolint used below
     cli::cli_warn(
       "{n_duplicates} duplicates found in data; please check for plausibility!"
     )
   }
 
-  return(df)
+  df
 }
 
 #' @name filter_impact_data
@@ -138,7 +137,6 @@ filter_invalid_trajectories <- function(
 ) {
   checkmate::assert_data_frame(df, min.cols = 1L, min.rows = 1L)
 
-  # TODO: can we find checks for prev_data size in reln to df? rows? cols?
   checkmate::assert_data_frame(
     prev_data,
     min.rows = nrow(df)
@@ -289,7 +287,7 @@ generate_diffs <- function(
     interest_cols
   )
 
-  tibble::as_tibble(changes)
+  changes
 }
 
 #' Generate IQR for key outcomes
@@ -352,7 +350,7 @@ gen_national_iqr <- function(
     .groups = "drop"
   )
 
-  tibble::as_tibble(df)
+  df
 }
 
 #' Flag significant changes in impact estimates
@@ -399,12 +397,15 @@ flag_large_diffs <- function(
   touchstone_new = DEF_TOUCHSTONE_NEW
 ) {
   checkmate::assert_list(changes_list, c("data.frame", "NULL"))
-  checkmate::assert_data_frame(iqr_df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    iqr_df,
+    min.rows = 1L,
+    min.cols = length(group_cols)
+  )
 
   variable <- rlang::arg_match(variable)
   checkmate::assert_character(group_cols, min.len = 1L, any.missing = FALSE)
 
-  # TODO: check what a sensible upper limit might be
   checkmate::assert_number(threshold, lower = 1.0, finite = TRUE)
 
   touchstone_old <- validate_ts_year(touchstone_old)
@@ -479,12 +480,12 @@ flag_large_diffs <- function(
   )
   df_compare <- dplyr::rename(
     df_compare,
-    rename_lookup
+    dplyr::all_of(rename_lookup)
   )
 
   df_compare <- dplyr::arrange(df_compare, dplyr::desc(diff))
 
-  tibble::as_tibble(df_compare)
+  df_compare
 }
 
 #' Combine and align data from two touchstones
@@ -495,8 +496,8 @@ flag_large_diffs <- function(
 #' @param prev_dat A data.frame of impact estimates corresponding to an earlier
 #' touchstone.
 #'
-#' @param df_clean A data.frame of impact estimates corresponding to a more recent
-#' touchstone.
+#' @param df_clean A data.frame of impact estimates corresponding to a more
+#' recent touchstone.
 #'
 #' @param interest_cols A character vector of columns of interest. Defaults to
 #' [COLNAMES_INTEREST_PRESSURE_TEST].
@@ -504,8 +505,8 @@ flag_large_diffs <- function(
 #' @param key_cols A character vector of columns of interest. Defaults to
 #' [COLNAMES_KEY_PRESSURE_TEST].
 #'
-#' @return A data.frame which is a full join of `prev_dat` and `df_clean`. Columns
-#' are disambiguated with the suffixes `"_old"` and `"_new"`.
+#' @return A data.frame which is a full join of `prev_dat` and `df_clean`.
+#' Columns are disambiguated with the suffixes `"_old"` and `"_new"`.
 #'
 #' @keywords impact_diagnostics
 #'
@@ -574,7 +575,7 @@ gen_combined_df <- function(
     dplyr::all_of(cols_to_select)
   )
 
-  tibble::as_tibble(combined)
+  combined
 }
 
 #' Compare sub-regional and national estimates
@@ -599,6 +600,21 @@ compare_natl_subreg <- function(
   outcome = c("deaths_averted_rate", "dalys_averted_rate"),
   activity_filter = c("campaign", "routine")
 ) {
+  checkmate::assert_data_frame(
+    df,
+    min.rows = 1L,
+    min.cols = length(
+      c(outcome, "subregion", COLNAMES_KEY_PRESSURE_TEST)
+    )
+  )
+  outcome <- rlang::arg_match(outcome)
+  activity_filter <- rlang::arg_match(activity_filter)
+
+  checkmate::assert_names(
+    names(df),
+    must.include = c(outcome, "subregion", COLNAMES_KEY_PRESSURE_TEST)
+  )
+
   df <- dplyr::filter(df, .data$activity_type == activity_filter)
   df <- dplyr::select(
     df,
@@ -611,7 +627,7 @@ compare_natl_subreg <- function(
   national_summary <- dplyr::select(
     df,
     dplyr::all_of(COLNAMES_KEY_PRESSURE_TEST),
-    .data$subregion,
+    "subregion",
     !!outcome
   )
   national_summary <- dplyr::rename(
@@ -668,7 +684,7 @@ compare_natl_subreg <- function(
   comparison <- dplyr::select(comparison, {{ cols_to_select }})
   comparison <- dplyr::arrange(comparison, dplyr::desc(.data$iqr_score))
 
-  tibble::as_tibble(comparison)
+  comparison
 }
 
 #' Save pressure-testing diagnostics to local file
