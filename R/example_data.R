@@ -114,3 +114,28 @@
 #'
 #' @source Prepared by the VIMC secretariat.
 "eg_fvps"
+
+#' Example of impact data
+#'
+#' Example of vaccine impact data taken from data used to test \pkg{vimpact}.
+#' This data is primarily used for testing here too.
+#'
+#' @format ## `eg_impact`
+#' A data frame with 5396 rows and 9 columns:
+#' \describe{
+#'   \item{disease}{Disease name.}
+#'   \item{vaccine}{Vaccine identifier.}
+#'   \item{modelling_group}{Modelling group name.}
+#'   \item{country}{Country ISO 3-character code.}
+#'   \item{country_name}{Country name.}
+#'   \item{year}{Year for which impacts are modelled.}
+#'   \item{activity_type}{Activity type: either "routine" or "campaign."}
+#'   \item{burden_outcome}{Name of the burden outcome; one of "deaths_averted"
+#' or "dalys_averted".}
+#'   \item{impact}{Value of the impact}.
+#' }
+#'
+#' @keywords data
+#'
+#' @source Prepared by the VIMC secretariat.
+"eg_impact"
