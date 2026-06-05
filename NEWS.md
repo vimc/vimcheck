@@ -2,6 +2,8 @@
 
 - Added impact diagnostics functions in `R/fn_impact_diagnostics.R`.
 
+- Added test data originally used in [vimpact](https://github.com/vimc/vimpact) for use with vimcheck.
+
 - Added plotting preparation functions and plotting functions in `R/fn_plotting_prep_impact_diagnostics.R` and `R/fn_plotting_impact_diagnostics.R`.
 
 - Added dependencies _diffdf_ and _here_.
