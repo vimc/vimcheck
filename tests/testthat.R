@@ -8,6 +8,7 @@
 
 library(testthat)
 library(checkmate)
+library(dplyr)
 library(vimcheck)
 
 test_check("vimcheck")
