@@ -15,8 +15,8 @@ gen_combined_df(
 \item{prev_dat}{A data.frame of impact estimates corresponding to an earlier
 touchstone.}
 
-\item{df_clean}{A data.frame of impact estimates corresponding to a more recent
-touchstone.}
+\item{df_clean}{A data.frame of impact estimates corresponding to a more
+recent touchstone.}
 
 \item{interest_cols}{A character vector of columns of interest. Defaults to
 \link{COLNAMES_INTEREST_PRESSURE_TEST}.}
@@ -25,8 +25,8 @@ touchstone.}
 \link{COLNAMES_KEY_PRESSURE_TEST}.}
 }
 \value{
-A data.frame which is a full join of \code{prev_dat} and \code{df_clean}. Columns
-are disambiguated with the suffixes \code{"_old"} and \code{"_new"}.
+A data.frame which is a full join of \code{prev_dat} and \code{df_clean}.
+Columns are disambiguated with the suffixes \code{"_old"} and \code{"_new"}.
 }
 \description{
 Generates a full join of two data.frames, selecting for columns of interest.

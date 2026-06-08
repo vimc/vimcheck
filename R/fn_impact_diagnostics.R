@@ -45,6 +45,8 @@ filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
 
   ts_number <- validate_ts_year(touchstone_year) # see R/helpers.R
 
+  df <- tibble::as_tibble(df)
+
   # NOTE: consider converting to Date and checking - numeric comparison
   # works okay for now
   if (ts_number >= threshold) {
@@ -74,6 +76,8 @@ filter_excluded_diseases_ts <- function(
 
   touchstone_year <- unique(df$touchstone)
   ts_number <- validate_ts_year(touchstone_year)
+
+  df <- tibble::as_tibble(df)
 
   if (ts_number <= threshold) {
     dplyr::filter(df, !.data$disease %in% EXCLUDED_DISEASES)
@@ -118,7 +122,7 @@ flag_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
     )
   }
 
-  df
+  tibble::as_tibble(df)
 }
 
 #' @name filter_impact_data
@@ -191,11 +195,13 @@ filter_invalid_trajectories <- function(
   )
 
   # `,` replaces `&` for dplyr syntax
-  dplyr::filter(
+  result <- dplyr::filter(
     result,
     !is.na(.data$outcome_prev),
     is.na(.data$outcome_cur)
   )
+
+  tibble::as_tibble(result)
 }
 
 #' Explore significant changes in deaths and DALYs
@@ -216,7 +222,7 @@ filter_invalid_trajectories <- function(
 #' @param touchstone A six character string that can be converted to a six digit
 #' numeric giving a touchstone identifier in `YYYYMM` format.
 #'
-#' @return A list of data.frames of differences between `prev_df` and `curr_df`,
+#' @return A list of tibbles of differences between `prev_df` and `curr_df`,
 #' with one list element per element of `interest_cols`.
 #'
 #' @keywords impact_diagnostics
@@ -279,6 +285,7 @@ generate_diffs <- function(
     keys = diff_keys
   )
 
+  # diffdf's Vardiff_* returns a tibble, no need to convert
   changes <- stats::setNames(
     lapply(interest_cols, function(v) {
       nm <- glue::glue("VarDiff_{v}")
@@ -287,7 +294,7 @@ generate_diffs <- function(
     interest_cols
   )
 
-  changes
+  changes # a list of tibbles
 }
 
 #' Generate IQR for key outcomes
@@ -335,6 +342,8 @@ gen_national_iqr <- function(
     colnames(df),
     must.include = union(group_cols, value_cols)
   )
+
+  df <- tibble::as_tibble(df)
 
   # long-winded syntax to pass grouping variables as char vec
   df <- dplyr::group_by(df, dplyr::across(dplyr::all_of(group_cols)))
@@ -419,7 +428,7 @@ flag_large_diffs <- function(
     {.str {variable}}, but it does not."
     )
   }
-  df_compare <- changes_list[[variable]]
+  df_compare <- tibble::as_tibble(changes_list[[variable]])
 
   checkmate::assert_names(
     colnames(df_compare),
@@ -565,6 +574,8 @@ gen_combined_df <- function(
     suffix = c("_old", "_new")
   )
 
+  combined <- tibble::as_tibble(combined)
+
   checkmate::assert_names(
     colnames(combined),
     must.include = cols_to_select
@@ -614,6 +625,8 @@ compare_natl_subreg <- function(
     names(df),
     must.include = c(outcome, "subregion", COLNAMES_KEY_PRESSURE_TEST)
   )
+
+  df <- tibble::as_tibble(df)
 
   df <- dplyr::filter(df, .data$activity_type == activity_filter)
   df <- dplyr::select(
