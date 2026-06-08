@@ -15,7 +15,7 @@ identifier.}
 \item{country}{ISO 3 character country code.}
 \item{Global.Name}{A constant, 'World'.}
 \item{Region.Name}{Continent-scale region identifier.}
-\item{Sub.region}{Sub-continental scale region identifer.}
+\item{Sub.region}{Sub-continental scale region identifier.}
 \item{Intermediate.Region.Name}{Alternative regional scale identifier.}
 \item{subregion}{Sub-regional identifier.}
 \item{vimc117}{Logical identifier.}

@@ -18,15 +18,14 @@
 #' @description
 #' Plotting functions for impact diagnostics. See
 #' [plotting-preparation functions][plot_prep_impact_diagnostics] for a set of
-#' helper functions that prepare impact diagnostics for plotting.
+#' helper functions that prepare impact diagnostics for plotting. See the
+#' details of the `data` argument for functions that help to prepare the data.
 #'
 #' @param data A data.frame suitable for plotting.
 #'
-#' - `plot_sig_diff()`: Output of
-#' [`flag_large_diff()`][plot_prep_impact_diagnostics].
+#' - `plot_sig_diff()`: Output of [`flag_large_diff()`][flag_large_diffs].
 #'
-#' - `plot_diff()`: Output of
-#' [`gen_combined_df()`][plot_prep_impact_diagnostics].
+#' - `plot_diff()`: Output of [`gen_combined_df()`][gen_combined_df].
 #'
 #' - `plot_modelling_group_variation()`: Output of
 #' [`plot_prep_mod_grp_varn()`][plot_prep_impact_diagnostics].
@@ -61,7 +60,7 @@ plot_sig_diff <- function(data, outcome = IMPACT_OUTCOMES) {
   ) +
     geom_segment(
       aes(x = 0, xend = .data$diff, y = .data$label, yend = .data$label),
-      size = 1
+      linewidth = 1
     ) +
     geom_point(size = 2) +
     labs(

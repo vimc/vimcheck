@@ -28,10 +28,8 @@ plot_cumul(data)
 \arguments{
 \item{data}{A data.frame suitable for plotting.
 \itemize{
-\item \code{plot_sig_diff()}: Output of
-\code{\link[=plot_prep_impact_diagnostics]{flag_large_diff()}}.
-\item \code{plot_diff()}: Output of
-\code{\link[=plot_prep_impact_diagnostics]{gen_combined_df()}}.
+\item \code{plot_sig_diff()}: Output of \code{\link[=flag_large_diffs]{flag_large_diff()}}.
+\item \code{plot_diff()}: Output of \code{\link[=gen_combined_df]{gen_combined_df()}}.
 \item \code{plot_modelling_group_variation()}: Output of
 \code{\link[=plot_prep_impact_diagnostics]{plot_prep_mod_grp_varn()}}.
 \item \code{plot_vaccine_gavi()}: Output of
@@ -62,5 +60,6 @@ selection and label preparation is automated to reduce function arguments.
 
 Plotting functions for impact diagnostics. See
 \link[=plot_prep_impact_diagnostics]{plotting-preparation functions} for a set of
-helper functions that prepare impact diagnostics for plotting.
+helper functions that prepare impact diagnostics for plotting. See the
+details of the \code{data} argument for functions that help to prepare the data.
 }
