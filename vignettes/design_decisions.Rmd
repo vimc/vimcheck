@@ -75,7 +75,7 @@ There is a number of package constants, which are single values or small vectors
 
 We only list notable dependencies here.
 
-- [Tidyverse packages](https://www.tidyverse.org/) over base R or _data.table_; this is to keep functions within the dependency framework used in the reports from which they come --- we assume the report writers are also the package user-base and _vimcheck_ aims to be used, and friendly to use, for these people.
+- [Tidyverse packages](https://tidyverse.org/) over base R or _data.table_; this is to keep functions within the dependency framework used in the reports from which they come --- we assume the report writers are also the package user-base and _vimcheck_ aims to be used, and friendly to use, for these people.
 
 - _cli_ and _glue_ for string interpolation and printing error messages to screen.
 
