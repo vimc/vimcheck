@@ -24,7 +24,7 @@ library(tidyr)
 
 ## Example data
 
-Example impact data are taken from [_vimpact_](github.com/vimc/vimpact) and included in the package as [eg_impact].
+Example impact data are taken from [_vimpact_](https://github.com/vimc/vimpact) and included in the package as `eg_impact`.
 This dataset holds projections for four countries, four diseases, and three modelling groups; combinations are shown below.
 
 ```{r impact_data}
@@ -34,7 +34,7 @@ eg_impact
 distinct(eg_impact, country_name, disease, modelling_group)
 ```
 
-Data on WHO regions is provided as [who_subregions] to enable comparing countries with their regions.
+Data on WHO regions is provided as `who_subregions` to enable comparing countries with their regions.
 
 ```{r who_regions}
 who_subregions
@@ -46,7 +46,7 @@ Impact data can be filtered, or flagged for filtering, in different ways.
 
 ### Filtering on touchstone
 
-Data can be filtered on touchstone using [filter_recent_ts()]; rows with `scenario_type` matching "default" are retained.
+Data can be filtered on touchstone using `filter_recent_ts()`; rows with `scenario_type` matching "default" are retained.
 
 Some useful default touchstone values are `DEF_TOUCHSTONE_NEW` (`r DEF_TOUCHSTONE_NEW`), `DEF_TOUCHSTONE_OLD` (`r DEF_TOUCHSTONE_OLD`), and `DEF_TOUCHSTONE_OLD_OLD` (`r DEF_TOUCHSTONE_OLD_OLD`)
 
@@ -70,7 +70,7 @@ filter_recent_ts(df, DEF_TOUCHSTONE_NEW)
 
 ### Filtering on diseases
 
-Data can be filtered to exclude a fixed set of diseases, if the touchstone is older than a threshold value, using [filter_excluded_diseases_ts()].
+Data can be filtered to exclude a fixed set of diseases, if the touchstone is older than a threshold value, using `filter_excluded_diseases_ts()`.
 
 The excluded diseases are stored as the package constant `EXCLUDED_DISEASES` (`r cli::cli_text("{.str {EXCLUDED_DISEASES}}")`).
 
@@ -87,7 +87,7 @@ filter_excluded_diseases_ts(df_copy, "202501")
 
 ### Flagging duplicates
 
-Duplicated rows in the data can be identifier by adding a flag variable column `n_key`, using [flag_duplicates()].
+Duplicated rows in the data can be identifier by adding a flag variable column `n_key`, using `flag_duplicates()`.
 
 Duplicates are identified across columns specified by the argument `key_cols`, which defaults to `r cli::cli_text("{.str {COLNAMES_KEY_PRESSURE_TEST}}")`.
 
@@ -102,7 +102,7 @@ flag_duplicates(eg_impact) %>%
 
 ### Filtering invalid trajectories
 
-The function [filter_invalid_trajectories()] can be used to remove rows where outcome values are missing in one of two paired datasets (each ideally from a different touchstone).
+The function `filter_invalid_trajectories()` can be used to remove rows where outcome values are missing in one of two paired datasets (each ideally from a different touchstone).
 
 This function should be applied to data which has the impact outcomes as columns (i.e., in wide format), with duplicates removed.
 
@@ -144,7 +144,7 @@ This section provides a general demonstration of tools that help to identify dif
 
 ### Generating differences
 
-The function [generate_diffs()] uses the _diffdf_ package to identify differences between two data frames.
+The function `generate_diffs()` uses the [_diffdf_ package](https://cran.r-project.org/package=diffdf) to identify differences between two data frames.
 The output is a list of tibbles with the added column `VARIABLE` for the column examined for differences, with the baseline and comparator as `BASE` and `COMPARE`.
 
 ```{r gen_diffs}
@@ -176,7 +176,7 @@ difflist
 
 ### Generate national IQRs
 
-The function [generate_national_iqr()] generates the inter-quartile range of the impact outcome for a dataset.
+The function `generate_national_iqr()` generates the inter-quartile range of the impact outcome for a dataset.
 
 ```{r gen_iqr}
 # assign dummy values to check functionality
@@ -192,7 +192,7 @@ iqr_df
 
 ### Flag large differences
 
-The function [flag_large_diffs()] can be used with the outputs of [generate_diffs()] and [gen_national_iqr()] to find rows where the impact estimate is outside the range expected, given the IQR.
+The function `flag_large_diffs()` can be used with the outputs of `generate_diffs()` and `gen_national_iqr()` to find rows where the impact estimate is outside the range expected, given the IQR.
 
 ```{r flag_diffs}
 # assign some dummy values that will trigger flagging
@@ -205,7 +205,7 @@ flag_large_diffs(difflist2, iqr_df, "deaths_averted")
 
 ### Generate a combined dataset
 
-[gen_combined_df()] can be used to generate a combined dataset across two different touchstones.
+`gen_combined_df()` can be used to generate a combined dataset across two different touchstones.
 
 ```{r gen_combined}
 # regenerate data
@@ -234,7 +234,7 @@ gen_combined_df(prev_df, curr_df)
 
 ## Comparing national values to regional values
 
-[compare_natl_subreg()] allows comparing national impact rates with regional rates, where regions are the WHO regions.
+`compare_natl_subreg()` allows comparing national impact rates with regional rates, where regions are the WHO regions.
 
 There is no example for this functionality as yet.
 
@@ -289,7 +289,7 @@ national_iqr$national_iqr_deaths_averted <- seq_len(nrow(national_iqr))
 
 ### Plotting significant differences
 
-Find and flag large diffs using [flag_large_diffs()] and visualise the output using [plot_sig_diff()].
+Find and flag large diffs using `flag_large_diffs()` and visualise the output using `plot_sig_diff()`.
 
 ```{r plot_sig_diff}
 flag_large_diffs(changes, national_iqr) |>
@@ -298,9 +298,9 @@ flag_large_diffs(changes, national_iqr) |>
 
 ### Plotting modelling group variation
 
-Visualise variation in impact by modelling group using [plot_modelling_group_variation()].
+Visualise variation in impact by modelling group using `plot_modelling_group_variation()`.
 
-Data should be prepared using [prep_plot_mod_grp_varn()] first.
+Data should be prepared using `prep_plot_mod_grp_varn()` first.
 
 ```{r plot_mod_grp_var}
 prev_df_copy <- dplyr::select(curr_df, vaccine, modelling_group) %>%
@@ -314,7 +314,7 @@ prep_plot_mod_grp_varn(curr_df, prev_df_copy) |>
 
 ### Plotting GAVI vaccination
 
-Use [plot_vaccine_gavi()] on data that has been prepared using [prep_plot_vax_gavi()].
+Use `plot_vaccine_gavi()` on data that has been prepared using `prep_plot_vax_gavi()`.
 
 ```{r plot_gavi}
 prep_plot_vax_gavi(curr_df, prev_df, "deaths_averted") |>
@@ -323,7 +323,7 @@ prep_plot_vax_gavi(curr_df, prev_df, "deaths_averted") |>
 
 ### Plot cumulative values
 
-Use [plot_cumul()] on data prepared using [prep_plot_cumul()] and [gen_combined_df()].
+Use `plot_cumul()` on data prepared using `prep_plot_cumul()` and `gen_combined_df()`.
 
 ```{r plot_cumul}
 gen_combined_df(prev_df, curr_df) |>
