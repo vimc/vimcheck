@@ -187,7 +187,6 @@ plot_modelling_group_variation <- function(data) {
   # for scales formatting
   .x <- NULL
 
-  # TODO: should NA-producing values (< 1) be removed?
   ggplot(data) +
     aes(
       fill = as.character(.data$mod_num),

@@ -8,6 +8,8 @@
 
 - Added dependencies _diffdf_ and _here_.
 
+- Added vignette on design decisions and pressure testing functions.
+
 # vimcheck 0.0.3
 
 - Separated data-prep for plotting from plotting functions.
