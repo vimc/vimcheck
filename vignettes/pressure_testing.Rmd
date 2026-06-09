@@ -1,0 +1,76 @@
+---
+title: "Pressure testing functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pressure testing functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to use functions added from the pressure testing report.
+
+```{r setup}
+library(vimcheck)
+library(dplyr)
+library(tidyr)
+```
+
+## Example data
+
+Example impact data are taken from [_vimpact_](github.com/vimc/vimpact) and included in the package as [eg_impact].
+This dataset holds projections for four countries, four diseases, and three modelling groups; combinations are shown below.
+
+```{r impact_data}
+eg_impact
+
+# check countries
+unique(eg_impact$country_name)
+
+# check diseases
+unique(eg_impact$disease)
+
+# check modelling group
+unique(eg_impact$modelling_group)
+
+# check combinations
+distinct(eg_impact, country_name, disease, modelling_group)
+```
+
+Data on WHO regions is provided as [who_subregions] to enable comparing countries with their regions.
+
+```{r who_regions}
+who_subregions
+```
+
+## Filtering impact data
+
+Impact data can be filtered, or flagged for filtering, in different ways.
+
+Flag data for filtering on touchstone using [filter_recent_ts()].
+
+```{r filter_ts}
+# assign dummy touchstones and scenario type for demo
+df <- eg_impact
+df$touchstone <- rep(
+  c("202412", "202012"),
+  each = nrow(df) / 2
+)
+
+test_scenario_types <- rep(
+  c("default", "dummy"),
+  each = nrow(df) / 2
+)
+
+# use a package default touchstone
+DEF_TOUCHSTONE_NEW
+
+# only touchstones from 2020 remain
+filter_recent_ts(df, DEF_TOUCHSTONE_NEW)
+```
