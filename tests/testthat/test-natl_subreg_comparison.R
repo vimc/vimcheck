@@ -1,6 +1,6 @@
 # TODO: unsure how this should be tested with data provided
 test_that("`compare_natl_subreg()`: Comparing national-subregional works", {
-  df <- flag_duplicates(eg_impact)
+  df <- suppressWarnings(flag_duplicates(eg_impact))
   df <- dplyr::filter(df, n_key == 1)
   df <- tidyr::pivot_wider(
     df,

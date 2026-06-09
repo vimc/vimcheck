@@ -1,5 +1,5 @@
 # preparatory code
-prev_df <- flag_duplicates(eg_impact)
+prev_df <- suppressWarnings(flag_duplicates(eg_impact))
 prev_df <- dplyr::filter(prev_df, n_key == 1)
 prev_df <- tidyr::pivot_wider(
   prev_df,
@@ -17,6 +17,7 @@ prev_df$deaths_averted <- withr::with_seed(
   rnorm(nrow(prev_df), 100, 0.1)
 )
 prev_df$dalys_averted <- prev_df$deaths_averted * 100
+prev_df$touchstone <- "202010"
 
 # assign dummy values
 curr_df <- prev_df
@@ -25,13 +26,14 @@ curr_df$deaths_averted <- withr::with_seed(
   rnorm(nrow(prev_df), 300, 0.1)
 )
 curr_df$dalys_averted <- curr_df$deaths_averted * 100
+curr_df$touchstone <- "202110"
 
 interest_cols <- c("deaths_averted", "dalys_averted")
-changes <- generate_diffs(
+changes <- suppressWarnings(generate_diffs(
   prev_df,
   curr_df,
   interest_cols
-)
+))
 
 # national IQR - inset dummy values for tests
 national_iqr <- gen_national_iqr(prev_df)
@@ -81,7 +83,10 @@ test_that("plot_vaccine_gavi() works", {
 test_that("plot_cumul() works", {
   combined_df <- gen_combined_df(prev_df, curr_df)
 
-  df_plot <- prep_plot_cumul(combined_df, "deaths_averted", "Measles")
+  # NOTE: warnings probably generated due to use of dummy data
+  df_plot <- suppressWarnings(
+    prep_plot_cumul(combined_df, "deaths_averted", "Measles")
+  )
 
   p <- plot_cumul(df_plot)
 

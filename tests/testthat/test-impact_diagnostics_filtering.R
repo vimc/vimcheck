@@ -117,14 +117,13 @@ test_that("`flag_duplicates()`: Flagging duplicates works", {
     suppressWarnings(flag_duplicates(df))
   )
 
-  # TODO: please check that duplicates are true duplicates
   expect_equal(
-    nrow(flag_duplicates(df)),
+    nrow(suppressWarnings(flag_duplicates(df))),
     nrow(df)
   )
 
   expect_true(
-    "n_key" %in% colnames(flag_duplicates(df))
+    "n_key" %in% colnames(suppressWarnings(flag_duplicates(df)))
   )
 
   # errors
@@ -151,7 +150,7 @@ test_that("`flag_duplicates()`: Flagging duplicates works", {
 
 # TODO: how should this be tested?
 test_that("`filter_invalid_trajectories()`: Filtering impact trends works", {
-  prev_df <- flag_duplicates(eg_impact)
+  prev_df <- suppressWarnings(flag_duplicates(eg_impact))
   prev_df <- dplyr::filter(prev_df, n_key == 1)
   prev_df <- tidyr::pivot_wider(
     prev_df,

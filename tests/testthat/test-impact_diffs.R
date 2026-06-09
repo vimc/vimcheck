@@ -1,5 +1,5 @@
 test_that("`gen_national_iqr()`: Generating impact IQR works", {
-  df <- flag_duplicates(eg_impact)
+  df <- suppressWarnings(flag_duplicates(eg_impact))
   df <- dplyr::filter(df, n_key == 1)
   df <- tidyr::pivot_wider(
     df,
@@ -69,7 +69,7 @@ test_that("`gen_national_iqr()`: Generating impact IQR works", {
 })
 
 test_that("`generate_diffs()`: Generating differences works", {
-  prev_df <- flag_duplicates(eg_impact)
+  prev_df <- suppressWarnings(flag_duplicates(eg_impact))
   prev_df <- dplyr::filter(prev_df, n_key == 1)
   prev_df <- tidyr::pivot_wider(
     prev_df,
@@ -86,10 +86,12 @@ test_that("`generate_diffs()`: Generating differences works", {
   curr_df$dalys_averted <- 1e6
 
   interest_cols <- c("deaths_averted", "dalys_averted")
-  difflist <- generate_diffs(
-    prev_df,
-    curr_df,
-    interest_cols
+  difflist <- suppressWarnings(
+    generate_diffs(
+      prev_df,
+      curr_df,
+      interest_cols
+    )
   )
   expect_list(
     difflist,
@@ -158,7 +160,7 @@ test_that("`generate_diffs()`: Generating differences works", {
 
 
 test_that("`flag_large_diffs()`: Flagging large diffs works", {
-  prev_df <- flag_duplicates(eg_impact)
+  prev_df <- suppressWarnings(flag_duplicates(eg_impact))
   prev_df <- dplyr::filter(prev_df, n_key == 1)
   prev_df <- tidyr::pivot_wider(
     prev_df,
@@ -175,11 +177,11 @@ test_that("`flag_large_diffs()`: Flagging large diffs works", {
   curr_df$dalys_averted <- 1e9
 
   interest_cols <- c("deaths_averted", "dalys_averted")
-  changes <- generate_diffs(
+  changes <- suppressWarnings(generate_diffs(
     prev_df,
     curr_df,
     interest_cols
-  )
+  ))
 
   # national IQR - inset dummy values for tests
   national_iqr <- gen_national_iqr(prev_df)
@@ -217,7 +219,7 @@ test_that("`flag_large_diffs()`: Flagging large diffs works", {
 })
 
 test_that("`gen_combined_df()`: Generating combined data works", {
-  prev_df <- flag_duplicates(eg_impact)
+  prev_df <- suppressWarnings(flag_duplicates(eg_impact))
   prev_df <- dplyr::filter(prev_df, n_key == 1)
   prev_df <- tidyr::pivot_wider(
     prev_df,
@@ -229,11 +231,13 @@ test_that("`gen_combined_df()`: Generating combined data works", {
   prev_df$coverage <- 0.5
   prev_df$fvps <- 1e6
   prev_df$target_population <- 2e6
+  prev_df$touchstone <- "202010"
 
   # assign dummy values
   curr_df <- prev_df
   curr_df$deaths_averted <- 1e6
   curr_df$dalys_averted <- 1e9
+  curr_df$touchstone <- "202310"
 
   expect_data_frame(
     gen_combined_df(
@@ -253,5 +257,13 @@ test_that("`gen_combined_df()`: Generating combined data works", {
       c("deaths_averted", "dalys_averted"),
       c("old", "new")
     )
+  )
+
+  # check error on touchstone
+  prev_df$touchstone <- NULL
+  curr_df$touchstone <- NULL
+  expect_error(
+    gen_combined_df(prev_df, curr_df),
+    "(Names)*(is missing elements)*(touchstone)"
   )
 })

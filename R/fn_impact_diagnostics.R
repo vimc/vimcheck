@@ -526,9 +526,16 @@ gen_combined_df <- function(
   interest_cols = COLNAMES_INTEREST_PRESSURE_TEST,
   key_cols = COLNAMES_KEY_PRESSURE_TEST
 ) {
+  n_expected_cols <- length(union(interest_cols, key_cols))
   checkmate::assert_data_frame(
     prev_dat,
-    min.cols = 1L,
+    min.cols = n_expected_cols,
+    min.rows = 1L
+  )
+
+  checkmate::assert_data_frame(
+    df_clean,
+    min.cols = n_expected_cols,
     min.rows = 1L
   )
 
@@ -557,12 +564,23 @@ gen_combined_df <- function(
 
   checkmate::assert_names(
     colnames(prev_dat),
-    must.include = c(interest_cols, key_cols)
+    must.include = c(interest_cols, key_cols, "touchstone")
   )
   checkmate::assert_names(
     colnames(df_clean),
-    must.include = c(interest_cols, key_cols)
+    must.include = c(interest_cols, key_cols, "touchstone")
   )
+
+  # check touchstones
+  ts_old <- validate_ts_year(unique(prev_dat$touchstone))
+  ts_new <- validate_ts_year(unique(df_clean$touchstone))
+
+  if (ts_old == ts_new) {
+    cli::cli_abort(
+      "Touchstones for previous data and current data are the same: {ts_old}, \
+      please check datasets!"
+    )
+  }
 
   prev_df <- dplyr::select(prev_dat, {{ interest_cols }})
   cur_df <- dplyr::select(df_clean, {{ interest_cols }})
