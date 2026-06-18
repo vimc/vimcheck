@@ -95,7 +95,7 @@ Duplicates are identified across columns specified by the argument `key_cols`, w
 # view n_keys column
 flag_duplicates(eg_impact) %>%
   select(
-    modelling_group, country, disease,
+    modelling_group, country, disease, burden_outcome,
     vaccine, activity_type, year, n_key
   )
 ```
@@ -118,7 +118,9 @@ prev_df <- tidyr::pivot_wider(
   names_from = "burden_outcome",
   values_from = "impact"
 )
-prev_df$support_type <- "other" # unsure what values this can take
+
+# will be replaced by proportion of GAVI support in future
+prev_df$support_type <- "other"
 rows <- nrow(prev_df)
 prev_df$coverage <- 0.5
 
