@@ -7,9 +7,9 @@
   : vimcheck: Diagnostics for Vaccine Impact Modelling Consortium Burden
   and Impact Estimates
 
-## Diagnostic functions
+## Burden estimate diagnostics
 
-Package diagnostic functions.
+### Check burden estimates
 
 - [`basic_burden_sanity()`](https://vimc.github.io/vimcheck/reference/basic_burden_sanity.md)
   : Sanity checks on burden estimates
@@ -22,43 +22,84 @@ Package diagnostic functions.
 - [`validate_template_alignment()`](https://vimc.github.io/vimcheck/reference/validate_template_alignment.md)
   : Check incoming burden set against template
 
-## Plotting prepartion
+### Prepare burden estimates for plotting
 
-Prepare validated data for plotting.
-
-- [`prep_plot_demography()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
-  [`prep_plot_age()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
-  [`prep_plot_burden_decades()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
-  [`prep_plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
-  [`prep_plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
-  [`prep_plot_fvp()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+- [`prep_plot_demography()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
+  [`prep_plot_age()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
+  [`prep_plot_burden_decades()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
+  [`prep_plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
+  [`prep_plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
+  [`prep_plot_fvp()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
   : Prepare data for plotting
 
-## Plotting functions
+### Plot burden estimates
 
-Package plotting functions.
-
-- [`plot_compare_demography()`](https://vimc.github.io/vimcheck/reference/plotting.md)
-  [`plot_age_patterns()`](https://vimc.github.io/vimcheck/reference/plotting.md)
-  [`plot_global_burden_decades()`](https://vimc.github.io/vimcheck/reference/plotting.md)
-  [`plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plotting.md)
-  [`plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plotting.md)
-  [`plot_fvp()`](https://vimc.github.io/vimcheck/reference/plotting.md)
+- [`plot_compare_demography()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
+  [`plot_age_patterns()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
+  [`plot_global_burden_decades()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
+  [`plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
+  [`plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
+  [`plot_fvp()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
   : Plot burden and impact diagnostics
+
+## Impact estimate diagnostics
+
+### Check impact estimates
+
+- [`compare_natl_subreg()`](https://vimc.github.io/vimcheck/reference/compare_natl_subreg.md)
+  : Compare sub-regional and national estimates
+- [`filter_recent_ts()`](https://vimc.github.io/vimcheck/reference/filter_impact_data.md)
+  [`filter_excluded_diseases_ts()`](https://vimc.github.io/vimcheck/reference/filter_impact_data.md)
+  [`flag_duplicates()`](https://vimc.github.io/vimcheck/reference/filter_impact_data.md)
+  [`filter_invalid_trajectories()`](https://vimc.github.io/vimcheck/reference/filter_impact_data.md)
+  : Filter data for touchstones or diseases
+- [`flag_large_diffs()`](https://vimc.github.io/vimcheck/reference/flag_large_diffs.md)
+  : Flag significant changes in impact estimates
+- [`gen_combined_df()`](https://vimc.github.io/vimcheck/reference/gen_combined_df.md)
+  : Combine and align data from two touchstones
+- [`gen_national_iqr()`](https://vimc.github.io/vimcheck/reference/gen_national_iqr.md)
+  : Generate IQR for key outcomes
+- [`generate_diffs()`](https://vimc.github.io/vimcheck/reference/generate_diffs.md)
+  : Explore significant changes in deaths and DALYs
+- [`save_outputs()`](https://vimc.github.io/vimcheck/reference/save_outputs.md)
+  : Save pressure-testing diagnostics to local file
+
+### Prepare impact estimate checks for plotting
+
+- [`prep_plot_mod_grp_varn()`](https://vimc.github.io/vimcheck/reference/plot_prep_impact_diagnostics.md)
+  [`prep_plot_vax_gavi()`](https://vimc.github.io/vimcheck/reference/plot_prep_impact_diagnostics.md)
+  [`prep_plot_cumul()`](https://vimc.github.io/vimcheck/reference/plot_prep_impact_diagnostics.md)
+  : Prepare impact diagnostics for plotting
+
+### Plot impact estimates
+
+- [`plot_sig_diff()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
+  [`plot_diff()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
+  [`plot_modelling_group_variation()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
+  [`plot_vaccine_gavi()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
+  [`plot_cumul()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
+  : Create impact diagnostics plots
+
+## Plotting helper functions
+
 - [`theme_vimc()`](https://vimc.github.io/vimcheck/reference/plotting_theme.md)
   [`theme_vimc_noxaxis()`](https://vimc.github.io/vimcheck/reference/plotting_theme.md)
   : Plotting theme for vimcheck
 
 ## Internal functions
 
-Internal helper functions.
-
+- [`adaptive_round()`](https://vimc.github.io/vimcheck/reference/adaptive_round.md)
+  : Adaptively round numerics
+- [`add_campaign_id()`](https://vimc.github.io/vimcheck/reference/add_campaign_id.md)
+  : Add campaign id to dataframe
 - [`make_novax_scenario()`](https://vimc.github.io/vimcheck/reference/helpers.md)
   : Make data for a no-vaccination scenario
+- [`round_numeric()`](https://vimc.github.io/vimcheck/reference/round_numeric.md)
+  : Round numeric columns of a data.frame
+- [`validate_ts_year()`](https://vimc.github.io/vimcheck/reference/validate_ts_year.md)
+  : Check and return touchstone year-month
 
-## Data
-
-Package data.
+## Package data
 
 - [`eg_burden_template`](https://vimc.github.io/vimcheck/reference/eg_burden_template.md)
   : Example of VIMC burden template provided to modellers
@@ -66,15 +107,32 @@ Package data.
   : Example of scenario coverage data
 - [`eg_fvps`](https://vimc.github.io/vimcheck/reference/eg_fvps.md) :
   Example of FVP estimate data
+- [`eg_impact`](https://vimc.github.io/vimcheck/reference/eg_impact.md)
+  : Example of impact data
 - [`eg_wpp`](https://vimc.github.io/vimcheck/reference/eg_wpp.md) :
   Example of UN-WPP time-series data
+- [`who_subregions`](https://vimc.github.io/vimcheck/reference/who_subregions.md)
+  : Data on countries in WHO subregions
 
-## Constants
-
-Package constants.
+## Package constants
 
 - [`file_dict_colnames`](https://vimc.github.io/vimcheck/reference/constants.md)
   [`scenario_data_colnames`](https://vimc.github.io/vimcheck/reference/constants.md)
   [`burden_outcome_names`](https://vimc.github.io/vimcheck/reference/constants.md)
   [`colnames_plot_demog_compare`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`colnames_df_missing_cols`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`COLNAMES_KEY_PRESSURE_TEST`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`COLNAMES_INTEREST_PRESSURE_TEST`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`IMPACT_OUTCOMES`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`EXCLUDED_DISEASES`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`N_TS_MIN_CHARS`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`N_TS_YEAR_CHARS`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`MIN_TS_YEAR`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`MAX_TS_YEAR`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`MIN_TS_MONTH`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`MAX_TS_MONTH`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`DEF_TOUCHSTONE_OLD`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`DEF_TOUCHSTONE_NEW`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`DEF_TOUCHSTONE_OLD_OLD`](https://vimc.github.io/vimcheck/reference/constants.md)
+  [`COLOUR_VIMC`](https://vimc.github.io/vimcheck/reference/constants.md)
   : Package constants

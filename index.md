@@ -22,6 +22,7 @@ install.packages(
 or from GitHub [GitHub](https://github.com/) with:
 
 ``` r
+
 install.packages("pak")
 pak::pak("vimc/vimcheck")
 ```

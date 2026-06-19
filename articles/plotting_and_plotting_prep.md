@@ -6,6 +6,7 @@ functions in *vimcheck*.
 Note that all data used here are placeholders.
 
 ``` r
+
 library(vimcheck)
 ```
 
@@ -14,11 +15,12 @@ library(vimcheck)
 Users can check demographic alignment of burden data using
 [`check_demography_alignment()`](https://vimc.github.io/vimcheck/reference/check_demography_alignment.md),
 then prepare it for plotting using
-[`prep_plot_demography()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md),
+[`prep_plot_demography()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md),
 and plot it using
-[`plot_compare_demography()`](https://vimc.github.io/vimcheck/reference/plotting.md).
+[`plot_compare_demography()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md).
 
 ``` r
+
 burden <- eg_burden_template
 
 burden <- check_demography_alignment(burden, eg_wpp)
@@ -32,14 +34,15 @@ plot_compare_demography(burden, 1)
 ## Examine age patterns
 
 Users can check age patterns in burden data using
-[`prep_plot_age()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+[`prep_plot_age()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
 and plotting using
-[`plot_age_patterns()`](https://vimc.github.io/vimcheck/reference/plotting.md).
+[`plot_age_patterns()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md).
 
 Note that values are placeholders and you should expect to see real
 age-wise burden patterns look very different.
 
 ``` r
+
 burden <- eg_burden_template
 burden <- prep_plot_age(burden)
 
@@ -54,11 +57,12 @@ plot_age_patterns(burden, 1)
 ## Global burden by decade
 
 Users can check the global burden in each decade for each scenario using
-[`prep_plot_burden_decades()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+[`prep_plot_burden_decades()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
 and
-[`plot_global_burden_decades()`](https://vimc.github.io/vimcheck/reference/plotting.md).
+[`plot_global_burden_decades()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md).
 
 ``` r
+
 burden <- eg_burden_template
 year_max <- 2100
 burden <- prep_plot_burden_decades(burden, year_max)
@@ -75,7 +79,7 @@ plot_global_burden_decades(burden, 1)
 
 Users can check a timeseries of global burdens by scenario and age
 group. In contrast with the plotting scheme above,
-[`prep_plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+[`prep_plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
 converts the burden data to long-format and transforms the data tibble
 into a [nested-tibble](https://tidyr.tidyverse.org/articles/nest.html).
 This gives a tibble with as many rows as burden outcomes: cases, deaths,
@@ -83,12 +87,13 @@ DALYs and YLLs, and a tibble giving the annual values by age for each
 burden outcome.
 
 The function
-[`plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plotting.md)
+[`plot_global_burden()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
 is intended to be applied row-wise, taking the burden outcome name
 (e.g. “cases”) and the burden outcome data to plot a timeseries with
 values by age.
 
 ``` r
+
 burden <- eg_burden_template
 burden <- prep_plot_global_burden(burden)
 
@@ -108,12 +113,13 @@ plot_global_burden(
 ## Coverage sets
 
 Users can check trends in coverage sets using
-[`prep_plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+[`prep_plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
 to prepare coverage sets data, and
-[`plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plotting.md)
+[`plot_coverage_set()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
 to prepare a plot facetted by country and scenario.
 
 ``` r
+
 # load some example data
 coverage <- eg_coverage
 coverage <- prep_plot_coverage_set(coverage)
@@ -127,11 +133,12 @@ plot_coverage_set(coverage, 1)
 
 Users can check trends in fully-vaccinated persons (FVPs) over time
 using
-[`prep_plot_fvp()`](https://vimc.github.io/vimcheck/reference/plotting_prep.md)
+[`prep_plot_fvp()`](https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.md)
 to prepare FVPs sets data, and `plot_fvps()` to prepare a plot facetted
 by country and scenario.
 
 ``` r
+
 # load some example data
 fvps <- eg_fvps
 fvps <- prep_plot_fvp(fvps, 2030, 2040) # example data has year limits 2030-40

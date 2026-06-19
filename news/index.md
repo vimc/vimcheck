@@ -1,5 +1,20 @@
 # Changelog
 
+## vimcheck 0.0.4
+
+- Added impact diagnostics functions in `R/fn_impact_diagnostics.R`.
+
+- Added test data originally used in
+  [vimpact](https://github.com/vimc/vimpact) for use with vimcheck.
+
+- Added plotting preparation functions and plotting functions in
+  `R/fn_plotting_prep_impact_diagnostics.R` and
+  `R/fn_plotting_impact_diagnostics.R`.
+
+- Added dependencies *diffdf* and *here*.
+
+- Added vignette on design decisions and pressure testing functions.
+
 ## vimcheck 0.0.3
 
 - Separated data-prep for plotting from plotting functions.

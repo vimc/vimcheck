@@ -1,4 +1,4 @@
 # License
 
-    YEAR: 2025
+    YEAR: 2025-2026
     COPYRIGHT HOLDER: Imperial College of Science, Technology and Medicine
