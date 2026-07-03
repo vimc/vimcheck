@@ -22,7 +22,6 @@
 \alias{DEF_TOUCHSTONE_NEW}
 \alias{DEF_TOUCHSTONE_OLD_OLD}
 \alias{COLOUR_VIMC}
-\alias{pine}
 \title{Package constants}
 \format{
 An object of class \code{character} of length 5.
@@ -62,8 +61,6 @@ An object of class \code{character} of length 1.
 An object of class \code{character} of length 1.
 
 An object of class \code{character} of length 1.
-
-An object of class \code{character} of length 4.
 }
 \usage{
 file_dict_colnames
@@ -103,8 +100,6 @@ DEF_TOUCHSTONE_NEW
 DEF_TOUCHSTONE_OLD_OLD
 
 COLOUR_VIMC
-
-pine
 }
 \description{
 Constant values used in \emph{vimcheck}. See the \strong{Examples} section for the
@@ -148,8 +143,6 @@ DEF_TOUCHSTONE_NEW
 DEF_TOUCHSTONE_OLD_OLD
 
 COLOUR_VIMC
-
-pine
 
 }
 \keyword{constants}

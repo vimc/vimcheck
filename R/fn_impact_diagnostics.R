@@ -25,15 +25,16 @@
 #' to the [EXCLUDED_DISEASES], when the touchstone year in `df` is less than the
 #' `threshold`, excluded.
 #'
-#' - `filter_duplicates()` returns `df` with duplicated combinations of
-#' `key_cols` removed.
+#' - `flag_duplicates()` returns `df` with duplicated combinations of
+#' `key_cols` flagged using the column `n_key` (or a user-defined name).
 #'
 #' - `filter_invalid_trajectories()` returns `df` with bad outcome trajectories
 #' (`NA` to non-`NA`) removed.
 #'
 #' @export
 filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
-  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
+  # NOTE: exact min cols to be updated - fn implies at least 2
+  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 2L)
   checkmate::assert_names(
     names(df),
     must.include = "touchstone"
@@ -43,6 +44,8 @@ filter_recent_ts <- function(df, threshold = DEF_TOUCHSTONE_NEW) {
   touchstone_year <- unique(df[["touchstone"]])
 
   ts_number <- validate_ts_year(touchstone_year) # see R/helpers.R
+
+  df <- tibble::as_tibble(df)
 
   # NOTE: consider converting to Date and checking - numeric comparison
   # works okay for now
@@ -74,6 +77,8 @@ filter_excluded_diseases_ts <- function(
   touchstone_year <- unique(df$touchstone)
   ts_number <- validate_ts_year(touchstone_year)
 
+  df <- tibble::as_tibble(df)
+
   if (ts_number <= threshold) {
     dplyr::filter(df, !.data$disease %in% EXCLUDED_DISEASES)
   } else {
@@ -86,8 +91,8 @@ filter_excluded_diseases_ts <- function(
 #' @param key_cols Key columns in `df` to check for duplicates.
 #'
 #' @export
-filter_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
-  checkmate::assert_data_frame(df, min.cols = 1L, min.rows = 1L)
+flag_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
+  checkmate::assert_data_frame(df, min.cols = length(key_cols), min.rows = 1L)
   checkmate::assert_character(key_cols)
 
   has_cols <- checkmate::test_names(
@@ -102,13 +107,22 @@ filter_duplicates <- function(df, key_cols = COLNAMES_KEY_PRESSURE_TEST) {
     )
   }
 
+  # data may have a `burden_outcome` column which should not be counted as
+  # a duplicate
   df <- dplyr::add_count(
     df,
-    dplyr::across(dplyr::all_of(key_cols)),
+    dplyr::across(dplyr::all_of(c(key_cols, "burden_outcome"))),
     name = "n_key"
   )
 
-  dplyr::filter(df, .data$n_key > 1)
+  if (any(df$n_key > 1)) {
+    n_duplicates <- sum(df$n_key > 1) # nolint used below
+    cli::cli_warn(
+      "{n_duplicates} duplicates found in data; please check for plausibility!"
+    )
+  }
+
+  tibble::as_tibble(df)
 }
 
 #' @name filter_impact_data
@@ -127,7 +141,6 @@ filter_invalid_trajectories <- function(
 ) {
   checkmate::assert_data_frame(df, min.cols = 1L, min.rows = 1L)
 
-  # TODO: can we find checks for prev_data size in reln to df? rows? cols?
   checkmate::assert_data_frame(
     prev_data,
     min.rows = nrow(df)
@@ -182,11 +195,13 @@ filter_invalid_trajectories <- function(
   )
 
   # `,` replaces `&` for dplyr syntax
-  dplyr::filter(
+  result <- dplyr::filter(
     result,
     !is.na(.data$outcome_prev),
     is.na(.data$outcome_cur)
   )
+
+  tibble::as_tibble(result)
 }
 
 #' Explore significant changes in deaths and DALYs
@@ -207,7 +222,7 @@ filter_invalid_trajectories <- function(
 #' @param touchstone A six character string that can be converted to a six digit
 #' numeric giving a touchstone identifier in `YYYYMM` format.
 #'
-#' @return A list of data.frames of differences between `prev_df` and `curr_df`,
+#' @return A list of tibbles of differences between `prev_df` and `curr_df`,
 #' with one list element per element of `interest_cols`.
 #'
 #' @keywords impact_diagnostics
@@ -220,8 +235,16 @@ generate_diffs <- function(
   key_cols = COLNAMES_KEY_PRESSURE_TEST,
   touchstone = DEF_TOUCHSTONE_OLD
 ) {
-  checkmate::assert_data_frame(prev_df, min.rows = 1L, min.cols = 1L)
-  checkmate::assert_data_frame(curr_df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    prev_df,
+    min.rows = 1L,
+    min.cols = length(interest_cols)
+  )
+  checkmate::assert_data_frame(
+    curr_df,
+    min.rows = 1L,
+    min.cols = length(interest_cols)
+  )
 
   checkmate::assert_character(interest_cols, min.len = 1L)
   checkmate::assert_character(key_cols, min.len = 1L)
@@ -229,11 +252,11 @@ generate_diffs <- function(
   # check interest cols in dfs. key cols are check in `add_campaign_id`
   checkmate::assert_names(
     colnames(prev_df),
-    must.include = interest_cols
+    must.include = c(interest_cols, "support_type", "coverage")
   )
   checkmate::assert_names(
     colnames(curr_df),
-    must.include = interest_cols
+    must.include = c(interest_cols, "support_type", "coverage")
   )
 
   touchstone <- validate_ts_year(touchstone)
@@ -262,6 +285,7 @@ generate_diffs <- function(
     keys = diff_keys
   )
 
+  # diffdf's Vardiff_* returns a tibble, no need to convert
   changes <- stats::setNames(
     lapply(interest_cols, function(v) {
       nm <- glue::glue("VarDiff_{v}")
@@ -270,7 +294,7 @@ generate_diffs <- function(
     interest_cols
   )
 
-  tibble::as_tibble(changes)
+  changes # a list of tibbles
 }
 
 #' Generate IQR for key outcomes
@@ -299,7 +323,11 @@ gen_national_iqr <- function(
   value_cols = c("deaths_averted", "dalys_averted"),
   prefix = "national_iqr"
 ) {
-  checkmate::assert_data_frame(df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    df,
+    min.rows = 1L,
+    min.cols = length(c(group_cols, value_cols))
+  )
   checkmate::assert_character(group_cols, min.len = 1L, any.missing = FALSE)
 
   # NOTE: restricting value columns to deaths and dalys averted
@@ -315,6 +343,9 @@ gen_national_iqr <- function(
     must.include = union(group_cols, value_cols)
   )
 
+  df <- tibble::as_tibble(df)
+
+  # long-winded syntax to pass grouping variables as char vec
   df <- dplyr::group_by(df, dplyr::across(dplyr::all_of(group_cols)))
   df <- dplyr::summarise(
     df,
@@ -328,7 +359,7 @@ gen_national_iqr <- function(
     .groups = "drop"
   )
 
-  tibble::as_tibble(df)
+  df
 }
 
 #' Flag significant changes in impact estimates
@@ -375,12 +406,15 @@ flag_large_diffs <- function(
   touchstone_new = DEF_TOUCHSTONE_NEW
 ) {
   checkmate::assert_list(changes_list, c("data.frame", "NULL"))
-  checkmate::assert_data_frame(iqr_df, min.rows = 1L, min.cols = 1L)
+  checkmate::assert_data_frame(
+    iqr_df,
+    min.rows = 1L,
+    min.cols = length(group_cols)
+  )
 
   variable <- rlang::arg_match(variable)
   checkmate::assert_character(group_cols, min.len = 1L, any.missing = FALSE)
 
-  # TODO: check what a sensible upper limit might be
   checkmate::assert_number(threshold, lower = 1.0, finite = TRUE)
 
   touchstone_old <- validate_ts_year(touchstone_old)
@@ -394,7 +428,7 @@ flag_large_diffs <- function(
     {.str {variable}}, but it does not."
     )
   }
-  df_compare <- changes_list[[variable]]
+  df_compare <- tibble::as_tibble(changes_list[[variable]])
 
   checkmate::assert_names(
     colnames(df_compare),
@@ -455,12 +489,12 @@ flag_large_diffs <- function(
   )
   df_compare <- dplyr::rename(
     df_compare,
-    rename_lookup
+    dplyr::all_of(rename_lookup)
   )
 
   df_compare <- dplyr::arrange(df_compare, dplyr::desc(diff))
 
-  tibble::as_tibble(df_compare)
+  df_compare
 }
 
 #' Combine and align data from two touchstones
@@ -471,8 +505,8 @@ flag_large_diffs <- function(
 #' @param prev_dat A data.frame of impact estimates corresponding to an earlier
 #' touchstone.
 #'
-#' @param df_clean A data.frame of impact estimates corresponding to a more recent
-#' touchstone.
+#' @param df_clean A data.frame of impact estimates corresponding to a more
+#' recent touchstone.
 #'
 #' @param interest_cols A character vector of columns of interest. Defaults to
 #' [COLNAMES_INTEREST_PRESSURE_TEST].
@@ -480,8 +514,8 @@ flag_large_diffs <- function(
 #' @param key_cols A character vector of columns of interest. Defaults to
 #' [COLNAMES_KEY_PRESSURE_TEST].
 #'
-#' @return A data.frame which is a full join of `prev_dat` and `df_clean`. Columns
-#' are disambiguated with the suffixes `"_old"` and `"_new"`.
+#' @return A data.frame which is a full join of `prev_dat` and `df_clean`.
+#' Columns are disambiguated with the suffixes `"_old"` and `"_new"`.
 #'
 #' @keywords impact_diagnostics
 #'
@@ -492,9 +526,16 @@ gen_combined_df <- function(
   interest_cols = COLNAMES_INTEREST_PRESSURE_TEST,
   key_cols = COLNAMES_KEY_PRESSURE_TEST
 ) {
+  n_expected_cols <- length(union(interest_cols, key_cols))
   checkmate::assert_data_frame(
     prev_dat,
-    min.cols = 1L,
+    min.cols = n_expected_cols,
+    min.rows = 1L
+  )
+
+  checkmate::assert_data_frame(
+    df_clean,
+    min.cols = n_expected_cols,
     min.rows = 1L
   )
 
@@ -523,12 +564,23 @@ gen_combined_df <- function(
 
   checkmate::assert_names(
     colnames(prev_dat),
-    must.include = c(interest_cols, key_cols)
+    must.include = c(interest_cols, key_cols, "touchstone")
   )
   checkmate::assert_names(
     colnames(df_clean),
-    must.include = c(interest_cols, key_cols)
+    must.include = c(interest_cols, key_cols, "touchstone")
   )
+
+  # check touchstones
+  ts_old <- validate_ts_year(unique(prev_dat$touchstone))
+  ts_new <- validate_ts_year(unique(df_clean$touchstone))
+
+  if (ts_old == ts_new) {
+    cli::cli_abort(
+      "Touchstones for previous data and current data are the same: {ts_old}, \
+      please check datasets!"
+    )
+  }
 
   prev_df <- dplyr::select(prev_dat, {{ interest_cols }})
   cur_df <- dplyr::select(df_clean, {{ interest_cols }})
@@ -540,6 +592,8 @@ gen_combined_df <- function(
     suffix = c("_old", "_new")
   )
 
+  combined <- tibble::as_tibble(combined)
+
   checkmate::assert_names(
     colnames(combined),
     must.include = cols_to_select
@@ -550,7 +604,7 @@ gen_combined_df <- function(
     dplyr::all_of(cols_to_select)
   )
 
-  tibble::as_tibble(combined)
+  combined
 }
 
 #' Compare sub-regional and national estimates
@@ -575,6 +629,23 @@ compare_natl_subreg <- function(
   outcome = c("deaths_averted_rate", "dalys_averted_rate"),
   activity_filter = c("campaign", "routine")
 ) {
+  checkmate::assert_data_frame(
+    df,
+    min.rows = 1L,
+    min.cols = length(
+      c(outcome, "subregion", COLNAMES_KEY_PRESSURE_TEST)
+    )
+  )
+  outcome <- rlang::arg_match(outcome)
+  activity_filter <- rlang::arg_match(activity_filter)
+
+  checkmate::assert_names(
+    names(df),
+    must.include = c(outcome, "subregion", COLNAMES_KEY_PRESSURE_TEST)
+  )
+
+  df <- tibble::as_tibble(df)
+
   df <- dplyr::filter(df, .data$activity_type == activity_filter)
   df <- dplyr::select(
     df,
@@ -587,7 +658,7 @@ compare_natl_subreg <- function(
   national_summary <- dplyr::select(
     df,
     dplyr::all_of(COLNAMES_KEY_PRESSURE_TEST),
-    .data$subregion,
+    "subregion",
     !!outcome
   )
   national_summary <- dplyr::rename(
@@ -644,7 +715,7 @@ compare_natl_subreg <- function(
   comparison <- dplyr::select(comparison, {{ cols_to_select }})
   comparison <- dplyr::arrange(comparison, dplyr::desc(.data$iqr_score))
 
-  tibble::as_tibble(comparison)
+  comparison
 }
 
 #' Save pressure-testing diagnostics to local file

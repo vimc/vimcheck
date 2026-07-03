@@ -143,13 +143,13 @@ validate_ts_year <- function(x) {
   if (!is_good_month) {
     cli::cli_abort(
       "Touchstone month string has an inferred month of \
-      {.strong {inferred_month}} but expected an month in the range \
+      {.strong {inferred_month}} but expected a month in the range \
       [{MIN_TS_MONTH}, {MAX_TS_MONTH}]."
     )
   }
 
-  # return year-month as numeric
-  substr(x, 1, N_TS_MIN_CHARS)
+  # return year-month as string
+  as.numeric(substr(x, 1, N_TS_MIN_CHARS))
 }
 
 #' Add campaign id to dataframe
@@ -163,7 +163,7 @@ validate_ts_year <- function(x) {
 #'
 #' @keywords internal
 add_campaign_id <- function(df, key_cols) {
-  checkmate::assert_data_frame(df)
+  checkmate::assert_data_frame(df, min.cols = length(key_cols))
   checkmate::assert_character(key_cols, any.missing = FALSE)
 
   has_cols <- checkmate::test_names(
@@ -171,7 +171,7 @@ add_campaign_id <- function(df, key_cols) {
     must.include = key_cols
   )
   if (!has_cols) {
-    missing_cols <- setdiff(colnames(df), key_cols) # nolint used in cli
+    missing_cols <- setdiff(key_cols, colnames(df)) # nolint used in cli
     cli::cli_abort(
       "Expected {.code df} to have columns {.str {key_cols}} but columns \
     {.str {missing_cols}} are missing."

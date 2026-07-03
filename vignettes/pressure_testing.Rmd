@@ -1,0 +1,334 @@
+---
+title: "Pressure testing functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pressure testing functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to use functions added from the pressure testing report.
+
+```{r setup}
+library(vimcheck)
+library(dplyr)
+library(tidyr)
+```
+
+## Example data
+
+Example impact data are taken from [_vimpact_](https://github.com/vimc/vimpact) and included in the package as `eg_impact`.
+This dataset holds projections for four countries, four diseases, and three modelling groups; combinations are shown below.
+
+```{r impact_data}
+eg_impact
+
+# check combinations
+distinct(eg_impact, country_name, disease, modelling_group)
+```
+
+Data on WHO regions is provided as `who_subregions` to enable comparing countries with their regions.
+
+```{r who_regions}
+who_subregions
+```
+
+## Filtering impact data
+
+Impact data can be filtered, or flagged for filtering, in different ways.
+
+### Filtering on touchstone
+
+Data can be filtered on touchstone using `filter_recent_ts()`; rows with `scenario_type` matching "default" are retained.
+
+Some useful default touchstone values are `DEF_TOUCHSTONE_NEW` (`r DEF_TOUCHSTONE_NEW`), `DEF_TOUCHSTONE_OLD` (`r DEF_TOUCHSTONE_OLD`), and `DEF_TOUCHSTONE_OLD_OLD` (`r DEF_TOUCHSTONE_OLD_OLD`)
+
+```{r filter_ts}
+# assign dummy touchstones and scenario type for demo
+df <- eg_impact
+df$touchstone <- "202401"
+
+test_scenario_types <- rep(
+  c("default", "dummy"),
+  each = nrow(df) / 2
+)
+df$scenario_type <- test_scenario_types
+
+# use a package default touchstone
+DEF_TOUCHSTONE_NEW
+
+# touchstone filtering is applied to all non-default scenario rows
+filter_recent_ts(df, DEF_TOUCHSTONE_NEW)
+```
+
+### Filtering on diseases
+
+Data can be filtered to exclude a fixed set of diseases, if the touchstone is older than a threshold value, using `filter_excluded_diseases_ts()`.
+
+The excluded diseases are stored as the package constant `EXCLUDED_DISEASES` (`r cli::cli_text("{.str {EXCLUDED_DISEASES}}")`).
+
+```{r filter_diseases}
+# make a copy and add dummy disease values
+df_copy <- df
+df_copy$disease <- rep(
+  EXCLUDED_DISEASES, each = nrow(df_copy) / length(EXCLUDED_DISEASES)
+)
+
+# pass dummy touchstone to filter out all rows
+filter_excluded_diseases_ts(df_copy, "202501")
+```
+
+### Flagging duplicates
+
+Duplicated rows in the data can be identifier by adding a flag variable column `n_key`, using `flag_duplicates()`.
+
+Duplicates are identified across columns specified by the argument `key_cols`, which defaults to `r cli::cli_text("{.str {COLNAMES_KEY_PRESSURE_TEST}}")`.
+
+```{r flag_dups}
+# view n_keys column
+flag_duplicates(eg_impact) %>%
+  select(
+    modelling_group, country, disease, burden_outcome,
+    vaccine, activity_type, year, n_key
+  )
+```
+
+### Filtering invalid trajectories
+
+The function `filter_invalid_trajectories()` can be used to remove rows where outcome values are missing in one of two paired datasets (each ideally from a different touchstone).
+
+This function should be applied to data which has the impact outcomes as columns (i.e., in wide format), with duplicates removed.
+
+The outcome to check is specified by the argument `"outcome"`.
+
+```{r filter_traj}
+# create some dummy data from exampled data
+prev_df <- flag_duplicates(eg_impact)
+prev_df <- dplyr::filter(prev_df, n_key == 1)
+prev_df <- tidyr::pivot_wider(
+  prev_df,
+  id_cols = {{ COLNAMES_KEY_PRESSURE_TEST }},
+  names_from = "burden_outcome",
+  values_from = "impact"
+)
+
+# will be replaced by proportion of GAVI support in future
+prev_df$support_type <- "other"
+rows <- nrow(prev_df)
+prev_df$coverage <- 0.5
+
+prev_df$deaths_averted <- withr::with_seed(
+  1, sample(c(5e2, NA_real_), rows, TRUE)
+)
+prev_df$dalys_averted <- withr::with_seed(
+  1, sample(c(5e5, NA_real_), rows, TRUE)
+)
+
+# assign dummy values
+curr_df <- prev_df
+curr_df$deaths_averted <- 1e3
+curr_df$dalys_averted <- 1e6
+
+# View data with invalid trajectories removed
+filter_invalid_trajectories(prev_df, curr_df, "deaths_averted")
+```
+
+## Identifying differences between datasets
+
+This section provides a general demonstration of tools that help to identify differences between two paired datasets.
+
+### Generating differences
+
+The function `generate_diffs()` uses the [_diffdf_ package](https://cran.r-project.org/package=diffdf) to identify differences between two data frames.
+The output is a list of tibbles with the added column `VARIABLE` for the column examined for differences, with the baseline and comparator as `BASE` and `COMPARE`.
+
+```{r gen_diffs}
+# use prev_df from section above
+prev_df$deaths_averted <- withr::with_seed(
+  1, rnorm(rows, 1e3, 100)
+)
+prev_df$dalys_averted <- withr::with_seed(
+  1, rnorm(rows, 1e6, 100)
+)
+
+# assign dummy values
+curr_df <- prev_df
+curr_df$deaths_averted <- prev_df$deaths_averted * 2
+curr_df$dalys_averted <- prev_df$dalys_averted * 2
+
+interest_cols <- c("deaths_averted", "dalys_averted")
+difflist <- generate_diffs(
+  prev_df,
+  curr_df,
+  interest_cols
+)
+
+# all rows are different - view the output types
+names(difflist)
+
+difflist
+```
+
+### Generate national IQRs
+
+The function `generate_national_iqr()` generates the inter-quartile range of the impact outcome for a dataset.
+
+```{r gen_iqr}
+# assign dummy values to check functionality
+df <- prev_df
+df$deaths_averted <- withr::with_seed(
+  1, rnorm(rows, 1e3, 100)
+)
+
+iqr_df <- gen_national_iqr(df, value_cols = "deaths_averted")
+
+iqr_df
+```
+
+### Flag large differences
+
+The function `flag_large_diffs()` can be used with the outputs of `generate_diffs()` and `gen_national_iqr()` to find rows where the impact estimate is outside the range expected, given the IQR.
+
+```{r flag_diffs}
+# assign some dummy values that will trigger flagging
+difflist2 <- difflist
+difflist2$deaths_averted$COMPARE <- 1e9 # typical values for BASE are ~1000
+
+# all rows are flagged as having differences > IQR
+flag_large_diffs(difflist2, iqr_df, "deaths_averted")
+```
+
+### Generate a combined dataset
+
+`gen_combined_df()` can be used to generate a combined dataset across two different touchstones.
+
+```{r gen_combined}
+# regenerate data
+prev_df <- flag_duplicates(eg_impact)
+prev_df <- dplyr::filter(prev_df, n_key == 1)
+prev_df <- tidyr::pivot_wider(
+  prev_df,
+  id_cols = {{ COLNAMES_KEY_PRESSURE_TEST }},
+  names_from = "burden_outcome",
+  values_from = "impact"
+)
+prev_df$support_type <- "other" # unsure what values this can take
+prev_df$coverage <- 0.5
+prev_df$fvps <- 1e6
+prev_df$target_population <- 2e6
+prev_df$touchstone <- "202010"
+
+# assign dummy values
+curr_df <- prev_df
+curr_df$deaths_averted <- 1e6
+curr_df$dalys_averted <- 1e9
+curr_df$touchstone <- "202110"
+
+gen_combined_df(prev_df, curr_df)
+```
+
+## Comparing national values to regional values
+
+`compare_natl_subreg()` allows comparing national impact rates with regional rates, where regions are the WHO regions.
+
+There is no example for this functionality as yet.
+
+## Plotting functions
+
+This section covers plotting functions.
+
+First we prepare some dummy data for plotting.
+
+```{r plot_prep}
+# preparatory code with dummy data
+prev_df <- flag_duplicates(eg_impact)
+prev_df <- dplyr::filter(prev_df, n_key == 1)
+prev_df <- tidyr::pivot_wider(
+  prev_df,
+  id_cols = {{ COLNAMES_KEY_PRESSURE_TEST }},
+  names_from = "burden_outcome",
+  values_from = "impact"
+)
+prev_df$support_type <- "other" # unsure what values this can take
+prev_df$coverage <- 0.5
+prev_df$fvps <- 1e6
+prev_df$target_population <- 2e6
+
+prev_df$deaths_averted <- withr::with_seed(
+  1,
+  rnorm(nrow(prev_df), 100, 0.1)
+)
+prev_df$dalys_averted <- prev_df$deaths_averted * 100
+prev_df$touchstone <- "202010"
+
+# assign dummy values
+curr_df <- prev_df
+curr_df$deaths_averted <- withr::with_seed(
+  1,
+  rnorm(nrow(prev_df), 300, 0.1)
+)
+curr_df$dalys_averted <- curr_df$deaths_averted * 100
+curr_df$touchstone <- "202110"
+
+interest_cols <- c("deaths_averted", "dalys_averted")
+changes <- generate_diffs(
+  prev_df,
+  curr_df,
+  interest_cols
+)
+
+# national IQR - inset dummy values for tests
+national_iqr <- gen_national_iqr(prev_df)
+national_iqr$national_iqr_deaths_averted <- seq_len(nrow(national_iqr))
+```
+
+### Plotting significant differences
+
+Find and flag large diffs using `flag_large_diffs()` and visualise the output using `plot_sig_diff()`.
+
+```{r plot_sig_diff}
+flag_large_diffs(changes, national_iqr) |>
+  plot_sig_diff()
+```
+
+### Plotting modelling group variation
+
+Visualise variation in impact by modelling group using `plot_modelling_group_variation()`.
+
+Data should be prepared using `prep_plot_mod_grp_varn()` first.
+
+```{r plot_mod_grp_var}
+prev_df_copy <- dplyr::select(curr_df, vaccine, modelling_group) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(vaccine) %>%
+  dplyr::mutate(mod_num = dplyr::row_number())
+
+prep_plot_mod_grp_varn(curr_df, prev_df_copy) |>
+  plot_modelling_group_variation()
+```
+
+### Plotting GAVI vaccination
+
+Use `plot_vaccine_gavi()` on data that has been prepared using `prep_plot_vax_gavi()`.
+
+```{r plot_gavi}
+prep_plot_vax_gavi(curr_df, prev_df, "deaths_averted") |>
+  plot_vaccine_gavi()
+```
+
+### Plot cumulative values
+
+Use `plot_cumul()` on data prepared using `prep_plot_cumul()` and `gen_combined_df()`.
+
+```{r plot_cumul}
+gen_combined_df(prev_df, curr_df) |>
+  prep_plot_cumul("deaths_averted", "Measles") |>
+  plot_cumul()
+```

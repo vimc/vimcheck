@@ -333,5 +333,5 @@ prep_plot_cumul <- function(
     return(NULL)
   }
 
-  tibble::as_tibble(df_plot)
+  df_plot
 }

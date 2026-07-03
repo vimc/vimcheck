@@ -32,12 +32,6 @@ reference:
   - subtitle: Plot impact estimates
     contents:
     - plot_impact_diagnostics
-  - subtitle: Plot central impact estimates by cohort and year
-    contents: 
-    - plot_impact
-  - subtitle: Plot coverage and fully vaccinated persons (FVPs)
-    contents:
-    - plot_coverage_fvps
 
   - title: Plotting helper functions
     contents:

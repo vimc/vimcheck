@@ -30,7 +30,7 @@ identifiers. Passed to \code{\link[=add_campaign_id]{add_campaign_id()}}, defaul
 numeric giving a touchstone identifier in \code{YYYYMM} format.}
 }
 \value{
-A list of data.frames of differences between \code{prev_df} and \code{curr_df},
+A list of tibbles of differences between \code{prev_df} and \code{curr_df},
 with one list element per element of \code{interest_cols}.
 }
 \description{
