@@ -32,6 +32,8 @@ reference:
   - subtitle: Plot impact estimates
     contents:
     - plot_impact_diagnostics
+    - plot_impact
+    - plot_coverage_fvps
 
   - title: Plotting helper functions
     contents:
