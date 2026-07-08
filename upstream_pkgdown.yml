@@ -1,0 +1,50 @@
+# NOTE: Update the `url` field as needed
+url: "https://vimc.github.io/vimcheck/"
+template:
+  bootstrap: 5
+
+reference:
+  - title: Package-level documentation
+    contents:
+    - has_keyword("package_doc")
+  
+  - title: Burden estimate diagnostics
+
+  - subtitle: Check burden estimates
+    contents:
+    - has_keyword("burden_diagnostics")
+  - subtitle: Prepare burden estimates for plotting
+    contents:
+    - plot_prep_burden_diagnostics
+  - subtitle: Plot burden estimates
+    contents:
+    - plot_burden_diagnostics
+
+    
+  - title: Impact estimate diagnostics
+    
+  - subtitle: Check impact estimates
+    contents:
+    - has_keyword("impact_diagnostics")
+  - subtitle: Prepare impact estimate checks for plotting
+    contents:
+    - plot_prep_impact_diagnostics
+  - subtitle: Plot impact estimates
+    contents:
+    - plot_impact_diagnostics
+
+  - title: Plotting helper functions
+    contents:
+    - plotting_theme
+  
+  - title: Internal functions
+    contents:
+    - has_keyword("internal")
+  
+  - title: Package data
+    contents:
+    - has_keyword("data")
+  
+  - title: Package constants
+    contents:
+    - has_keyword("constants")
