@@ -9,10 +9,10 @@
 #' @param country The country names as a character vector. Defaults to PINE
 #' countries.
 #'
-#' @param burden_type Burden metric used to evaluate impact. burden_type can be:
-#' cases, deaths, dalys, yll.
+#' @param burden_type Burden metric used to evaluate impact; may be one of:
+#' `"cases", "deaths", "dalys", "s"`.
 #'
-#' @param view Charactar scalar. The way impact is assigned, either by birth
+#' @param view A string for the way impact is assigned, either by birth
 #' cohort ("cohort")  or by year of vaccination ("year").
 #'
 #' @param title Title of the plot to be rendered. Defaults to `NULL`.

@@ -6,6 +6,9 @@ linters: all_linters(
     object_length_linter = NULL # due to length of method names
     )
 exclusions: list(
+    "R/fn_plotting_impact.R" = list(
+      object_overwrite_linter = Inf
+    ),
     "tests/testthat.R" = list(
       unused_import_linter = Inf,
       undesirable_function_linter = Inf

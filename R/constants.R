@@ -219,7 +219,7 @@ COLOUR_VIMC <- "#008080"
 #' @name constants
 #'
 #' @examples
-#' pine
+#' PINE
 #'
 #' @export
-pine <- c("PAK", "IND", "NGA", "ETH")
+PINE <- c("PAK", "IND", "NGA", "ETH")

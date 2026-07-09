@@ -1,3 +1,7 @@
+# vimcheck 0.0.5
+
+- Added functions to plot impact and FVPs and coverage.
+
 # vimcheck 0.0.4
 
 - Added impact diagnostics functions in `R/fn_impact_diagnostics.R`.

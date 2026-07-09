@@ -2,19 +2,29 @@
 % Please edit documentation in R/fn_plotting_impact.R
 \name{plot_impact}
 \alias{plot_impact}
-\title{Plot central impact estimates by cohort and year.
-TODO: need to add importFrom ... to avoid package issues with testing?}
+\title{Plot central impact estimates by cohort and year}
 \usage{
-plot_impact(data, burden_type, title, view)
+plot_impact(
+  data,
+  country = PINE,
+  burden_type = c("cases", "deaths", "dalys", "yll"),
+  view = c("cohort", "year"),
+  title = NULL
+)
 }
 \arguments{
 \item{data}{A tibble containing impact estimates.}
 
-\item{burden_type}{Burden metric used to evaluate impact. burden_type can be: cases, deaths, dalys, yll.}
+\item{country}{The country names as a character vector. Defaults to PINE
+countries.}
 
-\item{title}{Title of the plot to be rendered}
+\item{burden_type}{Burden metric used to evaluate impact; may be one of:
+\verb{"cases", "deaths", "dalys", "s"}.}
 
-\item{view}{Charactar scalar. The way impact is assigned, either by birth cohort ("cohort")  or by year of vaccination ("year").}
+\item{view}{A string for the way impact is assigned, either by birth
+cohort ("cohort")  or by year of vaccination ("year").}
+
+\item{title}{Title of the plot to be rendered. Defaults to \code{NULL}.}
 }
 \value{
 ggplot object showing central impact estimates
@@ -25,11 +35,14 @@ stratified either by birth cohort or by year of vaccination.
 Impact metrics include cases, deaths, DALYs, and YLLs.
 }
 \examples{
+impact_data <- eg_impact_2
+
 plot_impact(
   data = impact_data,
+  "A",
   burden_type = "cases",
   title = "Cases averted",
   view = "year"
 )
- 
+
 }

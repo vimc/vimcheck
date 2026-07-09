@@ -21,7 +21,7 @@ reference:
     - plot_burden_diagnostics
 
     
-  - title: Impact estimate diagnostics
+  - title: Impact estimates and diagnostics
     
   - subtitle: Check impact estimates
     contents:

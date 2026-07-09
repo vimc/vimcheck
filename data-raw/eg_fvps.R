@@ -14,3 +14,16 @@ eg_fvps$target_adjusted <- eg_fvps$target # assumed same as target
 eg_fvps$coverage_adjusted <- eg_fvps$fvps_adjusted / eg_fvps$target_adjusted
 
 usethis::use_data(eg_fvps, overwrite = TRUE)
+
+## A second example of FVP data
+eg_fvps_2 <- tibble::tibble(
+  country = c("AGO", "AGO", "BEN", "BEN"),
+  year = c(2020, 2021, 2020, 2021),
+  activity_type = c("routine", "campaign", "routine", "campaign"),
+  scenario_type = c("default", "default", "default", "default"),
+  vaccine = c("measles", "measles", "measles", "measles"),
+  coverage_adjusted = c(0.8, 0.85, 0.4, 0.7),
+  fvps = c(1000000, 1200000, 800000, 900000)
+)
+
+usethis::use_data(eg_fvps_2, overwrite = TRUE)
