@@ -1,4 +1,4 @@
-#' Plot central impact estimates by cohort and year.
+#' Plot central impact estimates by cohort and year
 #'
 #' Produces faceted plots of central impact estimates for priority countries,
 #' stratified either by birth cohort or by year of vaccination.
@@ -6,29 +6,25 @@
 #'
 #' @param data A tibble containing impact estimates.
 #'
+#' @param country The country names as a character vector. Defaults to PINE
+#' countries.
+#'
 #' @param burden_type Burden metric used to evaluate impact. burden_type can be:
 #' cases, deaths, dalys, yll.
-#'
-#' @param title Title of the plot to be rendered
 #'
 #' @param view Charactar scalar. The way impact is assigned, either by birth
 #' cohort ("cohort")  or by year of vaccination ("year").
 #'
+#' @param title Title of the plot to be rendered. Defaults to `NULL`.
+#'
 #' @return ggplot object showing central impact estimates
 #'
 #' @examples
+#' impact_data <- eg_impact_2
 #'
-#' # Create example data
-#' impact_data <- tibble::tibble(
-#'   country = c("A", "A", "B", "B"),
-#'   year = c(2020, 2021, 2020, 2021),
-#'   birth_cohort = c(2000, 2001, 2000, 2001),
-#'   burden_outcome = c("deaths", "cases", "deaths", "cases"),
-#'   impact = c(15, 5, 14, 8),
-#'   short_name = c("short1", "short2", "short3", "short4")
-#' )
 #' plot_impact(
 #'   data = impact_data,
+#'   "A",
 #'   burden_type = "cases",
 #'   title = "Cases averted",
 #'   view = "year"
@@ -37,108 +33,87 @@
 #' @export
 plot_impact <- function(
   data,
+  country = PINE,
   burden_type = c("cases", "deaths", "dalys", "yll"),
-  title,
-  view = c("cohort", "year")
+  view = c("cohort", "year"),
+  title = NULL
 ) {
-  checkmate::assert_tibble(data, min.rows = 1L, min.cols = 1L)
-
   required_cols <- c("country", "burden_outcome", "impact", "short_name")
 
-  checkmate::assert_names(
-    names(data),
-    must.include = required_cols
+  checkmate::assert_data_frame(
+    data,
+    min.rows = 1L,
+    min.cols = length(required_cols)
   )
+  checkmate::assert_names(colnames(data), must.include = required_cols)
 
-  checkmate::assert_character(title, len = 1)
+  checkmate::assert_character(country, any.missing = FALSE)
 
   burden_type <- rlang::arg_match(burden_type)
   view <- rlang::arg_match(view)
 
-  Impact <- dplyr::filter(
+  checkmate::assert_string(title, null.ok = TRUE)
+
+  # check if country is in data
+  if (!all(country %in% data[["country"]])) {
+    missing_country <- setdiff(country, data[["country"]]) # nolint used in err
+    cli::cli_abort(
+      "Impact data `data` expected to have country {.str {missing_country}} \
+      but it is missing."
+    )
+  }
+
+  impact <- dplyr::filter(
     data,
-    .data$country %in% pine,
+    .data$country %in% country,
     .data$burden_outcome == burden_type,
-    .data$impact != 0
+    .data$impact != 0 # can this be safely written as impact > 0?
   )
 
-  if (nrow(Impact) > 0) {
-    # ---- Cohort view ----
+  if (nrow(impact) > 0) {
     if (view == "cohort") {
       checkmate::assert_names(names(data), must.include = "birth_cohort")
-
-      Impact <- Impact %>% dplyr::rename(Impact, cohort = .data$birth_cohort)
-
-      cols_to_select <- c("country", "cohort", "impact", "short_name")
-
-      Impact <- dplyr::select(Impact, all_of(cols_to_select))
-
-      p <- ggplot(
-        Impact,
-        aes(
-          x = .data$cohort,
-          y = .data$impact,
-          ymin = .data$impact,
-          ymax = .data$impact,
-          fill = as.character(.data$short_name)
-        )
-      ) +
-        ggplot::geom_ribbon(alpha = 0.3) +
-        ggplot::geom_line(aes(colour = .data$short_name), size = 0.5) +
-        ggplot::geom_point(aes(colour = .data$short_name), size = 0.5) +
-        # TODO: theme definition may not be right for this plot
-        theme_vimc() +
-        facet_wrap(country ~ ., scales = "free_y") +
-        labs(
-          x = "Birth cohort",
-          y = paste(burden_type, "averted"),
-          title = title
-        ) +
-        theme(
-          legend.position = "bottom",
-          legend.key.size = unit(0.5, "cm"),
-          legend.key.width = unit(0.3, "cm")
-        )
+      x_var <- "birth_cohort"
+      x_lab <- "Birth cohort"
     } else {
-      # ---- Year (non-cohort) view ----
-      cols_to_select <- c("country", "year", "impact", "short_name")
-
-      checkmate::assert_names(names(data), must.include = "year")
-
-      Impact <- dplyr::select(Impact, all_of(cols_to_select))
-
-      p <- ggplot(
-        Impact,
-        aes(
-          x = .data$year,
-          y = .data$impact,
-          ymin = .data$impact,
-          ymax = .data$impact,
-          fill = .data$short_name
-        )
-      ) +
-        ggplot::geom_ribbon(alpha = 0.3) +
-        ggplot::geom_line(aes(colour = .data$short_name), size = 0.5) +
-        ggplot::geom_point(aes(colour = .data$short_name), size = 0.5) +
-        theme_vimc() + # TODO: same note as above re theme definition
-        facet_wrap(country ~ ., scales = "free_y") +
-        labs(
-          x = "Year",
-          y = paste(burden_type, "averted"),
-          title = title
-        ) +
-        theme(
-          legend.position = "bottom",
-          legend.key.size = unit(0.5, "cm"),
-          legend.key.width = unit(0.3, "cm")
-        )
+      checkmate::assert_names(names(data), must.include = view)
+      x_var <- view
+      x_lab <- "Year"
     }
+
+    ggplot(
+      impact,
+      aes(
+        x = .data[[x_var]],
+        y = .data$impact,
+        ymin = .data$impact,
+        ymax = .data$impact,
+        fill = .data$short_name
+      )
+    ) +
+      ggplot2::geom_ribbon(alpha = 0.3) +
+      ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
+      ggplot2::geom_point(aes(colour = .data$short_name), size = 0.5) +
+      # TODO: theme definition may not be right for this plot
+      theme_vimc() +
+      facet_wrap(ggplot2::vars("country"), scales = "free_y") +
+      labs(
+        x = x_lab,
+        y = glue::glue("{burden_type} averted"),
+        title = title
+      ) +
+      theme(
+        legend.position = "bottom",
+        legend.key.size = ggplot2::unit(0.5, "cm"),
+        legend.key.width = ggplot2::unit(0.3, "cm")
+      )
   } else {
-    # TODO: both here and in the below plot returning p may be an issue?
-    # Can you think of a better way?
-    p <- "No estimates in the data."
+    cli::cli_abort(
+      "No estimates remaining in the data after filtering for \\
+      countries: {.str {country}} and impact != 0 for `burden_type`: \\
+      {.str {burden_type}}."
+    )
   }
-  return(p)
 }
 
 #' Plot coverage and fully vaccinated persons (FVPs)
@@ -146,35 +121,31 @@ plot_impact <- function(
 #' Generates plots of routine vaccine coverage and fully vaccinated
 #' persons (FVPs) over time for selected countries.
 #'
-#' @param fvps A tibble showing the number of fvps (fully vaccinated persons)
-#'  by country, year and scenario/activity type.
+#' @param fvps A data.frame (or class extending it) showing the number of
+#' FVPs (fully vaccinated persons) by country, year and scenario/activity type.
+#'
+#' @param country A character vector of country identifiers, with all
+#' identifiers expected to be found in `fvps`. Defaults to PINE countries.
 #'
 #' @return A named list with two ggplot objects:
 #'   \describe{
 #'     \item{coverage}{A plot of routine vaccine coverage over time.}
 #'     \item{fvps}{A plot of fully vaccinated persons over time.}
 #'   }
-#' @examples
 #'
-#' # Create example data
-#' fvps <- tibble::tibble(
-#'   country = c("AGO", "AGO", "BEN", "BEN"),
-#'   year = c(2020, 2021, 2020, 2021),
-#'   activity_type = c("routine", "campaign", "routine", "campaign"),
-#'   scenario_type = c("default", "default", "default", "default"),
-#'   vaccine = c("measles", "measles", "measles", "measles"),
-#'   coverage_adjusted = c(0.8, 0.85, 0.4, 0.7),
-#'   fvps = c(1000000, 1200000, 800000, 900000)
-#' )
-
-#' plots <- plot_coverage_fvps(fvps)
+#' If there is no data on routine vaccination in the dataset, the `coverage`
+#' element of the return will be an empty `<ggplot>` object, and a warning is
+#' thrown.
+#'
+#' @examples
+#' fvps <- eg_fvps_2
+#'
+#' plots <- plot_coverage_fvps(fvps, "AGO")
 #' plots$coverage
 #' plots$fvps
 #'
 #' @export
-plot_coverage_fvps <- function(fvps) {
-  checkmate::assert_tibble(fvps, min.rows = 1L, min.cols = 1L)
-
+plot_coverage_fvps <- function(fvps, country = PINE) {
   required_cols <- c(
     "country",
     "activity_type",
@@ -185,31 +156,25 @@ plot_coverage_fvps <- function(fvps) {
     "fvps"
   )
 
-  checkmate::assert_names(
-    names(fvps),
-    must.include = required_cols
+  checkmate::assert_data_frame(
+    fvps,
+    min.rows = 1L,
+    min.cols = length(required_cols)
   )
+  checkmate::assert_names(colnames(fvps), must.include = required_cols)
 
-  fvps <- dplyr::filter(fvps, .data$country %in% pine)
+  country <- checkmate::assert_character(country, any.missing = FALSE)
+  if (!all(country %in% fvps[["country"]])) {
+    missing_country <- setdiff(country, fvps[["country"]]) # nolint used in err
+    cli::cli_abort(
+      "Impact data `fvps` expected to have country {.str {missing_country}} \
+      but it is missing."
+    )
+  }
 
+  # handle FVPs plot
+  fvps <- dplyr::filter(fvps, .data$country %in% country)
   cov <- dplyr::filter(fvps, .data$activity_type == "routine")
-
-  cov <- dplyr::mutate(
-    cov,
-    vaccine_delivery = paste(.data$scenario_type, .data$vaccine, sep = "_"),
-    coverage_adjusted = round(.data$coverage_adjusted * 100, 2)
-  )
-
-  cols_to_select <- c(
-    "country",
-    "vaccine_delivery",
-    "year",
-    "coverage_adjusted"
-  )
-
-  cov <- dplyr::select(cov, all_of(cols_to_select))
-
-  cov <- dplyr::rename(cov, coverage = .data$coverage_adjusted)
 
   fvps <- dplyr::mutate(
     fvps,
@@ -221,7 +186,7 @@ plot_coverage_fvps <- function(fvps) {
   )
   cols_to_select <- c("country", "vaccine_delivery", "year", "fvps")
 
-  fvps <- dplyr::select(fvps, all_of(cols_to_select))
+  fvps <- dplyr::select(fvps, dplyr::all_of(cols_to_select))
 
   fvps <- dplyr::group_by(
     fvps,
@@ -235,62 +200,68 @@ plot_coverage_fvps <- function(fvps) {
     fvps = round(sum(.data$fvps) / 1e6, 2),
     .groups = "drop"
   )
+
+  # handle coverage plot
+  cov <- dplyr::mutate(
+    cov,
+    vaccine_delivery = paste(.data$scenario_type, .data$vaccine, sep = "_"),
+    coverage_adjusted = round(.data$coverage_adjusted * 100, 2)
+  )
+
+  cols_to_select <- c(
+    "country",
+    "vaccine_delivery",
+    "year",
+    "coverage_adjusted"
+  )
+  cov <- dplyr::select(cov, dplyr::all_of(cols_to_select))
+  cov <- dplyr::rename(cov, coverage = "coverage_adjusted")
+
   if (nrow(cov) > 0) {
-    p <- ggplot(
+    p <- .plot_cov_fvp(
       cov,
-      aes(
-        x = .data$year,
-        y = .data$coverage,
-        ymin = 0,
-        ymax = 1,
-        fill = .data$vaccine_delivery
-      )
-    ) +
-      ggplot::geom_line(aes(colour = .data$vaccine_delivery), size = 0.5) +
-      theme_vimc() + # TODO: same note as above
-      facet_wrap(country ~ ., scales = "free_y") +
-      labs(
-        x = "Year",
-        y = "Coverage (%)",
-        title = "Routine vaccine coverage"
-      ) +
-      theme(
-        legend.position = "bottom",
-        legend.key.size = unit(0.5, "cm"),
-        legend.key.width = unit(0.3, "cm")
-      )
+      "coverage",
+      "Coverage (%)",
+      "Routine vaccine coverage"
+    )
   } else {
-    p <- "There is no routine coverage in the database."
+    p <- ggplot()
+    cli::cli_warn(
+      "There is no routine coverage in the database after filtering for \
+      country: {.str {country}}"
+    )
   }
 
-  q <- ggplot(
-    fvps,
+  # assumed FVP data always available
+  q <- .plot_cov_fvp(fvps, "fvps", "FVPs (in millions)", "FVPs")
+
+  list(coverage = p, fvps = q)
+}
+
+#' @keywords internal
+.plot_cov_fvp <- function(data, col, ylab, title) {
+  ggplot(
+    data,
     aes(
       x = .data$year,
-      y = .data$fvps,
-      # TODO: min/max both here and above seem to be the same so may be
-      # irrelevant to define
-      ymin = .data$fvps,
-      ymax = .data$fvps,
+      y = .data[[col]],
       fill = .data$vaccine_delivery
     )
   ) +
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
     theme_vimc() + # TODO: same note above on theme
-    facet_wrap(country ~ ., scales = "free_y") +
+    facet_wrap(
+      ggplot2::vars("country"),
+      scales = "free_y"
+    ) +
     labs(
       x = "Year",
-      y = "FVPs (in millions)",
-      title = "FVPs"
+      y = ylab,
+      title = title
     ) +
     theme(
       legend.position = "bottom",
-      legend.key.size = unit(0.5, "cm"),
-      legend.key.width = unit(0.3, "cm")
+      legend.key.size = ggplot2::unit(0.5, "cm"),
+      legend.key.width = ggplot2::unit(0.3, "cm")
     )
-
-  return(list(
-    coverage = p,
-    fvps = q
-  ))
 }
