@@ -19,7 +19,7 @@ plot_impact(
 countries.}
 
 \item{burden_type}{Burden metric used to evaluate impact; may be one of:
-\verb{"cases", "deaths", "dalys", "s"}.}
+\verb{"cases", "deaths", "dalys", "yll"}.}
 
 \item{view}{A string for the way impact is assigned, either by birth
 cohort ("cohort")  or by year of vaccination ("year").}

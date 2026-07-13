@@ -10,7 +10,7 @@
 #' countries.
 #'
 #' @param burden_type Burden metric used to evaluate impact; may be one of:
-#' `"cases", "deaths", "dalys", "s"`.
+#' `"cases", "deaths", "dalys", "yll"`.
 #'
 #' @param view A string for the way impact is assigned, either by birth
 #' cohort ("cohort")  or by year of vaccination ("year").
@@ -94,7 +94,6 @@ plot_impact <- function(
       ggplot2::geom_ribbon(alpha = 0.3) +
       ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
       ggplot2::geom_point(aes(colour = .data$short_name), size = 0.5) +
-      # TODO: theme definition may not be right for this plot
       theme_vimc() +
       facet_wrap(ggplot2::vars("country"), scales = "free_y") +
       labs(
@@ -249,7 +248,7 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     )
   ) +
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
-    theme_vimc() + # TODO: same note above on theme
+    theme_vimc() +
     facet_wrap(
       ggplot2::vars("country"),
       scales = "free_y"
