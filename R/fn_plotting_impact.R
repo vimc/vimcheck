@@ -95,10 +95,12 @@ plot_impact <- function(
       ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
       ggplot2::geom_point(aes(colour = .data$short_name), size = 0.5) +
       theme_vimc() +
-      facet_wrap(ggplot2::vars("country"), scales = "free_y") +
+      facet_wrap(ggplot2::vars(.data$country), scales = "free_y") +
       labs(
         x = x_lab,
         y = glue::glue("{burden_type} averted"),
+        fill = "Vaccination activity",
+        colour = "Vaccination activity",
         title = title
       ) +
       theme(
@@ -248,7 +250,7 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     )
   ) +
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
-    theme_vimc() +
+    scale_x_continuous(labels = scales::number_format(1, big.mark = "")) +
     facet_wrap(
       ggplot2::vars("country"),
       scales = "free_y"
@@ -256,8 +258,11 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     labs(
       x = "Year",
       y = ylab,
+      fill = "Vaccination activity",
+      colour = "Vaccination activity",
       title = title
     ) +
+    theme_vimc() +
     theme(
       legend.position = "bottom",
       legend.key.size = ggplot2::unit(0.5, "cm"),

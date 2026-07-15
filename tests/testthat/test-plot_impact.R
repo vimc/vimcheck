@@ -8,6 +8,8 @@ test_that("Plotting impact works", {
   )
   expect_class(p, "ggplot")
 
+  vdiffr::expect_doppelganger("plot_impact", p)
+
   p <- plot_impact(
     eg_impact_2,
     "A",
@@ -78,6 +80,9 @@ test_that("Plotting impact works", {
 test_that("Plotting coverage and FVPs works", {
   p <- plot_coverage_fvps(eg_fvps_2, "AGO")
   expect_list(p, "ggplot")
+
+  vdiffr::expect_doppelganger("plot_coverage", p[[1]])
+  vdiffr::expect_doppelganger("plot_fvps", p[[2]])
 
   # errors
   expect_error(
