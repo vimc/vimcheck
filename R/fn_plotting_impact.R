@@ -252,7 +252,7 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
     scale_x_continuous(labels = scales::number_format(1, big.mark = "")) +
     facet_wrap(
-      ggplot2::vars("country"),
+      ggplot2::vars(.data$country),
       scales = "free_y"
     ) +
     labs(
