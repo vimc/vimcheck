@@ -26,3 +26,15 @@ eg_impact <- mutate(
 )
 
 usethis::use_data(eg_impact, overwrite = TRUE)
+
+# second impact dataset
+eg_impact_2 <- tibble::tibble(
+  country = c("A", "A", "B", "B"),
+  year = c(2020, 2021, 2020, 2021),
+  birth_cohort = c(2000, 2001, 2000, 2001),
+  burden_outcome = c("deaths", "cases", "deaths", "cases"),
+  impact = c(15, 5, 14, 8),
+  short_name = c("short1", "short2", "short3", "short4")
+)
+
+usethis::use_data(eg_impact_2, overwrite = TRUE)

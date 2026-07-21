@@ -115,6 +115,28 @@
 #' @source Prepared by the VIMC secretariat.
 "eg_fvps"
 
+#' A second FVP data example
+#'
+#' Exampled data for fully-vaccinated persons, created manually from arbitrary
+#' data.
+#'
+#' @format ## `eg_fvps_2`
+#' A data frame with 4 rows and 7 columns:
+#' \describe{
+#'   \item{country}{Country name as ISO 3 character code.}
+#'   \item{year}{Year.}
+#'   \item{activity_type}{Vaccination activity identifier.}
+#'   \item{scenario_type}{Scenario type name.}
+#'   \item{vaccine}{Vaccine identifier.}
+#'   \item{coverage_adjusted}{Ratio of adjusted FVPs to adjusted target.}
+#'   \item{fvps}{Count of fully vaccinated persons.}
+#' }
+#'
+#' @keywords data
+#'
+#' @source Example data prepared by the VIMC secretariat.
+"eg_fvps_2"
+
 #' Example of impact data
 #'
 #' Example of vaccine impact data taken from data used to test \pkg{vimpact}.
@@ -139,3 +161,21 @@
 #'
 #' @source Prepared by the VIMC secretariat.
 "eg_impact"
+
+#' Second example of impact data
+#'
+#' @format ## `eg_impact_2`
+#' A data frame with 4 rows and 6 columns:
+#' \describe{
+#'   \item{country}{Example country identifier.}
+#'   \item{year}{Year.}
+#'   \item{birth_cohort}{Numeric for the birth year.}
+#'   \item{burden_outcome}{Outcome identifier.}
+#'   \item{impact}{Numeric for impact.}
+#'   \item{short_name}{Example identifier.}
+#' }
+#'
+#' @keywords data
+#'
+#' @source Prepared manually by the VIMC secretariat.
+"eg_impact_2"
