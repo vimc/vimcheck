@@ -1,7 +1,7 @@
-# --------------------------------------------
-# CITATION file created with {cffr} R package
+# ------------------------------------------------
+# CITATION.cff file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
-# --------------------------------------------
+# ------------------------------------------------
  
 cff-version: 1.2.0
 message: 'To cite package "vimcheck" in publications use:'
@@ -9,7 +9,7 @@ type: software
 license: MIT
 title: 'vimcheck: Diagnostics for Vaccine Impact Modelling Consortium Burden and Impact
   Estimates'
-version: 0.0.3
+version: 0.0.5
 abstract: Run diagnostics on burden estimates submitted by modellers in the Vaccine
   Impact Modelling Consortium (VIMC) and impact estimates calculated by the VIMC Science
   & Policy team.
@@ -41,10 +41,13 @@ references:
   url: https://www.R-project.org/
   authors:
   - name: R Core Team
+    website: https://ror.org/02zz1nj61
   institution:
     name: R Foundation for Statistical Computing
+    website: https://ror.org/05qewa988
     address: Vienna, Austria
   year: '2026'
+  doi: 10.32614/R.manuals
   version: '>= 3.5'
 - type: software
   title: checkmate
@@ -71,6 +74,21 @@ references:
     email: gabor@posit.co
   year: '2026'
   doi: 10.32614/CRAN.package.cli
+- type: software
+  title: diffdf
+  abstract: 'diffdf: Dataframe Difference Tool'
+  notes: Imports
+  url: https://gowerc.github.io/diffdf/
+  repository: https://CRAN.R-project.org/package=diffdf
+  authors:
+  - family-names: Gower-Page
+    given-names: Craig
+    email: craiggower@gmail.com
+  - family-names: Martin
+    given-names: Kieran
+    email: kieranjmartin@gmail.com
+  year: '2026'
+  doi: 10.32614/CRAN.package.diffdf
 - type: software
   title: dplyr
   abstract: 'dplyr: A Grammar of Data Manipulation'
@@ -149,6 +167,19 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.ggplot2
 - type: software
+  title: ggridges
+  abstract: 'ggridges: Ridgeline Plots in ''ggplot2'''
+  notes: Imports
+  url: https://wilkelab.org/ggridges/
+  repository: https://CRAN.R-project.org/package=ggridges
+  authors:
+  - family-names: Wilke
+    given-names: Claus O.
+    email: wilke@austin.utexas.edu
+    orcid: https://orcid.org/0000-0002-7470-9261
+  year: '2026'
+  doi: 10.32614/CRAN.package.ggridges
+- type: software
   title: glue
   abstract: 'glue: Interpreted String Literals'
   notes: Imports
@@ -164,6 +195,19 @@ references:
     orcid: https://orcid.org/0000-0002-6983-2759
   year: '2026'
   doi: 10.32614/CRAN.package.glue
+- type: software
+  title: here
+  abstract: 'here: A Simpler Way to Find Your Files'
+  notes: Imports
+  url: https://here.r-lib.org/
+  repository: https://CRAN.R-project.org/package=here
+  authors:
+  - family-names: Müller
+    given-names: Kirill
+    email: kirill@cynkra.com
+    orcid: https://orcid.org/0000-0002-1416-3412
+  year: '2026'
+  doi: 10.32614/CRAN.package.here
 - type: software
   title: readr
   abstract: 'readr: Read Rectangular Text Data'
@@ -215,6 +259,19 @@ references:
     given-names: Dana
   year: '2026'
   doi: 10.32614/CRAN.package.scales
+- type: software
+  title: stats
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+    website: https://ror.org/02zz1nj61
+  institution:
+    name: R Foundation for Statistical Computing
+    website: https://ror.org/05qewa988
+    address: Vienna, Austria
+  year: '2026'
+  doi: 10.32614/R.manuals
 - type: software
   title: stringr
   abstract: 'stringr: Simple, Consistent Wrappers for Common String Operations'
