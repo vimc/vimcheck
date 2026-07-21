@@ -42,7 +42,7 @@
   [`plot_fvp()`](https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.md)
   : Plot burden and impact diagnostics
 
-## Impact estimate diagnostics
+## Impact estimates and diagnostics
 
 ### Check impact estimates
 
@@ -79,6 +79,10 @@
   [`plot_vaccine_gavi()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
   [`plot_cumul()`](https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.md)
   : Create impact diagnostics plots
+- [`plot_impact()`](https://vimc.github.io/vimcheck/reference/plot_impact.md)
+  : Plot central impact estimates by cohort and year
+- [`plot_coverage_fvps()`](https://vimc.github.io/vimcheck/reference/plot_coverage_fvps.md)
+  : Plot coverage and fully vaccinated persons (FVPs)
 
 ## Plotting helper functions
 
@@ -107,8 +111,12 @@
   : Example of scenario coverage data
 - [`eg_fvps`](https://vimc.github.io/vimcheck/reference/eg_fvps.md) :
   Example of FVP estimate data
+- [`eg_fvps_2`](https://vimc.github.io/vimcheck/reference/eg_fvps_2.md)
+  : A second FVP data example
 - [`eg_impact`](https://vimc.github.io/vimcheck/reference/eg_impact.md)
   : Example of impact data
+- [`eg_impact_2`](https://vimc.github.io/vimcheck/reference/eg_impact_2.md)
+  : Second example of impact data
 - [`eg_wpp`](https://vimc.github.io/vimcheck/reference/eg_wpp.md) :
   Example of UN-WPP time-series data
 - [`who_subregions`](https://vimc.github.io/vimcheck/reference/who_subregions.md)
@@ -135,4 +143,5 @@
   [`DEF_TOUCHSTONE_NEW`](https://vimc.github.io/vimcheck/reference/constants.md)
   [`DEF_TOUCHSTONE_OLD_OLD`](https://vimc.github.io/vimcheck/reference/constants.md)
   [`COLOUR_VIMC`](https://vimc.github.io/vimcheck/reference/constants.md)
-  : Package constants
+  [`PINE`](https://vimc.github.io/vimcheck/reference/constants.md) :
+  Package constants

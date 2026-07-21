@@ -1,12 +1,12 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   design_decisions: design_decisions.html
   plotting_and_plotting_prep: plotting_and_plotting_prep.html
   pressure_testing: pressure_testing.html
   vimcheck: vimcheck.html
-last_built: 2026-06-19T10:08Z
+last_built: 2026-07-21T11:08Z
 urls:
   reference: https://vimc.github.io/vimcheck/reference
   article: https://vimc.github.io/vimcheck/articles

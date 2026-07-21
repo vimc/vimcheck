@@ -43,6 +43,8 @@ DEF_TOUCHSTONE_NEW
 DEF_TOUCHSTONE_OLD_OLD
 
 COLOUR_VIMC
+
+PINE
 ```
 
 ## Format
@@ -84,6 +86,8 @@ An object of class `character` of length 1.
 An object of class `character` of length 1.
 
 An object of class `character` of length 1.
+
+An object of class `character` of length 4.
 
 ## Examples
 
@@ -158,4 +162,7 @@ DEF_TOUCHSTONE_OLD_OLD
 
 COLOUR_VIMC
 #> [1] "#008080"
+
+PINE
+#> [1] "PAK" "IND" "NGA" "ETH"
 ```

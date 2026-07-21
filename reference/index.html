@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">vimcheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,7 +136,7 @@
         </dt>
         <dd>Plot burden and impact diagnostics</dd>
       </dl></div><div class="section level2">
-      <h2 id="impact-estimate-diagnostics">Impact estimate diagnostics<a class="anchor" aria-label="anchor" href="#impact-estimate-diagnostics"></a></h2>
+      <h2 id="impact-estimates-and-diagnostics">Impact estimates and diagnostics<a class="anchor" aria-label="anchor" href="#impact-estimates-and-diagnostics"></a></h2>
 
 
 
@@ -230,6 +230,20 @@
 
         </dt>
         <dd>Create impact diagnostics plots</dd>
+
+        <dt>
+
+          <code><a href="plot_impact.html">plot_impact()</a></code>
+
+        </dt>
+        <dd>Plot central impact estimates by cohort and year</dd>
+
+        <dt>
+
+          <code><a href="plot_coverage_fvps.html">plot_coverage_fvps()</a></code>
+
+        </dt>
+        <dd>Plot coverage and fully vaccinated persons (FVPs)</dd>
       </dl></div><div class="section level2">
       <h2 id="plotting-helper-functions">Plotting helper functions<a class="anchor" aria-label="anchor" href="#plotting-helper-functions"></a></h2>
 
@@ -323,10 +337,24 @@
 
         <dt>
 
+          <code><a href="eg_fvps_2.html">eg_fvps_2</a></code>
+
+        </dt>
+        <dd>A second FVP data example</dd>
+
+        <dt>
+
           <code><a href="eg_impact.html">eg_impact</a></code>
 
         </dt>
         <dd>Example of impact data</dd>
+
+        <dt>
+
+          <code><a href="eg_impact_2.html">eg_impact_2</a></code>
+
+        </dt>
+        <dd>Second example of impact data</dd>
 
         <dt>
 
@@ -353,7 +381,7 @@
 
       <dl><dt>
 
-          <code><a href="constants.html">file_dict_colnames</a></code> <code><a href="constants.html">scenario_data_colnames</a></code> <code><a href="constants.html">burden_outcome_names</a></code> <code><a href="constants.html">colnames_plot_demog_compare</a></code> <code><a href="constants.html">colnames_df_missing_cols</a></code> <code><a href="constants.html">COLNAMES_KEY_PRESSURE_TEST</a></code> <code><a href="constants.html">COLNAMES_INTEREST_PRESSURE_TEST</a></code> <code><a href="constants.html">IMPACT_OUTCOMES</a></code> <code><a href="constants.html">EXCLUDED_DISEASES</a></code> <code><a href="constants.html">N_TS_MIN_CHARS</a></code> <code><a href="constants.html">N_TS_YEAR_CHARS</a></code> <code><a href="constants.html">MIN_TS_YEAR</a></code> <code><a href="constants.html">MAX_TS_YEAR</a></code> <code><a href="constants.html">MIN_TS_MONTH</a></code> <code><a href="constants.html">MAX_TS_MONTH</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_OLD</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_NEW</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_OLD_OLD</a></code> <code><a href="constants.html">COLOUR_VIMC</a></code>
+          <code><a href="constants.html">file_dict_colnames</a></code> <code><a href="constants.html">scenario_data_colnames</a></code> <code><a href="constants.html">burden_outcome_names</a></code> <code><a href="constants.html">colnames_plot_demog_compare</a></code> <code><a href="constants.html">colnames_df_missing_cols</a></code> <code><a href="constants.html">COLNAMES_KEY_PRESSURE_TEST</a></code> <code><a href="constants.html">COLNAMES_INTEREST_PRESSURE_TEST</a></code> <code><a href="constants.html">IMPACT_OUTCOMES</a></code> <code><a href="constants.html">EXCLUDED_DISEASES</a></code> <code><a href="constants.html">N_TS_MIN_CHARS</a></code> <code><a href="constants.html">N_TS_YEAR_CHARS</a></code> <code><a href="constants.html">MIN_TS_YEAR</a></code> <code><a href="constants.html">MAX_TS_YEAR</a></code> <code><a href="constants.html">MIN_TS_MONTH</a></code> <code><a href="constants.html">MAX_TS_MONTH</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_OLD</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_NEW</a></code> <code><a href="constants.html">DEF_TOUCHSTONE_OLD_OLD</a></code> <code><a href="constants.html">COLOUR_VIMC</a></code> <code><a href="constants.html">PINE</a></code>
 
         </dt>
         <dd>Package constants</dd>
@@ -367,7 +395,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

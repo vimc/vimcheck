@@ -19,7 +19,9 @@
 <url><loc>https://vimc.github.io/vimcheck/reference/eg_burden_template.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/eg_coverage.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/eg_fvps.html</loc></url>
+<url><loc>https://vimc.github.io/vimcheck/reference/eg_fvps_2.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/eg_impact.html</loc></url>
+<url><loc>https://vimc.github.io/vimcheck/reference/eg_impact_2.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/eg_wpp.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/filter_impact_data.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/flag_large_diffs.html</loc></url>
@@ -29,6 +31,8 @@
 <url><loc>https://vimc.github.io/vimcheck/reference/helpers.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/index.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/plot_burden_diagnostics.html</loc></url>
+<url><loc>https://vimc.github.io/vimcheck/reference/plot_coverage_fvps.html</loc></url>
+<url><loc>https://vimc.github.io/vimcheck/reference/plot_impact.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/plot_impact_diagnostics.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/plot_prep_burden_diagnostics.html</loc></url>
 <url><loc>https://vimc.github.io/vimcheck/reference/plot_prep_impact_diagnostics.html</loc></url>

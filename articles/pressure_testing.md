@@ -153,7 +153,8 @@ The excluded diseases are stored as the package constant
 # make a copy and add dummy disease values
 df_copy <- df
 df_copy$disease <- rep(
-  EXCLUDED_DISEASES, each = nrow(df_copy) / length(EXCLUDED_DISEASES)
+  EXCLUDED_DISEASES,
+  each = nrow(df_copy) / length(EXCLUDED_DISEASES)
 )
 
 # pass dummy touchstone to filter out all rows
