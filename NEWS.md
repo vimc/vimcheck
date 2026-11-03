@@ -1,4 +1,4 @@
-# vimcheck (development version)
+# vimcheck (0.0.6)
 
 - Fixed `basic_burden_sanity()` to return failed-check messages instead of
   erroring on R >= 4.2 or incorrectly appending `PASS.` on older R versions.
