@@ -381,7 +381,7 @@ basic_burden_sanity <- function(burden) {
     mes <- c(mes, mes_not_numeric)
   }
 
-  if (mes == mes_start) {
+  if (identical(mes, mes_start)) {
     mes <- c(mes, "PASS.")
   }
 

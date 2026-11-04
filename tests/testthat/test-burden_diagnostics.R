@@ -259,3 +259,48 @@ test_that("`check_demography_alignment()` works", {
     permutation.of = expected_names
   )
 })
+
+test_that("`basic_burden_sanity()` passes clean numeric estimates", {
+  expected <- c("Basic sanity check for burden estimates:", "PASS.")
+
+  for (value in list(c(0, 1, 2), c(0L, 1L, 2L), numeric(0))) {
+    expect_no_condition(
+      output <- basic_burden_sanity(data.frame(value = value))
+    )
+    expect_identical(output, expected)
+  }
+})
+
+test_that("`basic_burden_sanity()` returns failed-check messages", {
+  header <- "Basic sanity check for burden estimates:"
+  missing_message <- paste0(
+    "Warning: Burden estimates should not have missing values, but some ",
+    "values are missing. Fix missing values by converting to zeros!"
+  )
+  negative_message <- paste0(
+    "Warning: Burden estimates should all be positive or zero, but found ",
+    "some negative estimates!"
+  )
+  non_numeric_message <- paste0(
+    "Warning: Burden estimates should be of type `numeric`, but are not. ",
+    "Convert burden estimates to `numeric`."
+  )
+
+  cases <- list(
+    list(value = c(1, NA_real_), messages = missing_message),
+    list(value = c(1, NaN), messages = missing_message),
+    list(value = c(0, -1), messages = negative_message),
+    list(value = c("0", "1"), messages = non_numeric_message),
+    list(value = c(NA_real_, -1), messages = c(
+      missing_message,
+      negative_message
+    ))
+  )
+
+  for (case in cases) {
+    expect_no_condition(
+      output <- basic_burden_sanity(data.frame(value = case$value))
+    )
+    expect_identical(output, c(header, case$messages))
+  }
+})
