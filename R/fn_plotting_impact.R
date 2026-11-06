@@ -67,10 +67,10 @@ plot_impact <- function(
     data,
     .data$country %in% country,
     .data$burden_outcome == burden_type,
-    .data$impact != 0 # can this be safely written as impact > 0?
+    !is.na(.data$impact)
   )
 
-  if (nrow(impact) > 0) {
+  if (any(impact$impact != 0)) {
     if (view == "cohort") {
       checkmate::assert_names(names(data), must.include = "birth_cohort")
       x_var <- "birth_cohort"
