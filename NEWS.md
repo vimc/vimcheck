@@ -1,3 +1,9 @@
+# vimcheck 0.0.7
+
+- Fixed `plot_impact()` to retain zero estimates in year and birth-cohort
+  trajectories instead of drawing a line across them. Inputs with no nonzero
+  estimates still raise an error.
+
 # vimcheck 0.0.6
 
 - Fixed `basic_burden_sanity()` to return failed-check messages instead of
