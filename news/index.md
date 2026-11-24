@@ -1,5 +1,20 @@
 # Changelog
 
+## vimcheck 0.0.7
+
+- Fixed
+  [`plot_impact()`](https://vimc.github.io/vimcheck/reference/plot_impact.md)
+  to retain zero estimates in year and birth-cohort trajectories instead
+  of drawing a line across them. Inputs with no non-zero estimates still
+  raise an error.
+
+## vimcheck 0.0.6
+
+- Fixed
+  [`basic_burden_sanity()`](https://vimc.github.io/vimcheck/reference/basic_burden_sanity.md)
+  to return failed-check messages instead of erroring on R \>= 4.2 or
+  incorrectly appending `PASS.` on older R versions.
+
 ## vimcheck 0.0.5
 
 - Added functions to plot impact and FVPs and coverage.
