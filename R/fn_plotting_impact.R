@@ -67,10 +67,10 @@ plot_impact <- function(
     data,
     .data$country %in% country,
     .data$burden_outcome == burden_type,
-    .data$impact != 0 # can this be safely written as impact > 0?
+    !is.na(.data$impact)
   )
 
-  if (nrow(impact) > 0) {
+  if (any(impact$impact != 0)) {
     if (view == "cohort") {
       checkmate::assert_names(names(data), must.include = "birth_cohort")
       x_var <- "birth_cohort"
@@ -93,9 +93,9 @@ plot_impact <- function(
     ) +
       ggplot2::geom_ribbon(alpha = 0.3) +
       ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
-      ggplot2::geom_point(aes(colour = .data$short_name), size = 0.5) +
+      geom_point(aes(colour = .data$short_name), size = 0.5) +
       theme_vimc() +
-      facet_wrap(ggplot2::vars(.data$country), scales = "free_y") +
+      facet_wrap(vars(.data$country), scales = "free_y") +
       labs(
         x = x_lab,
         y = glue::glue("{burden_type} averted"),
@@ -252,7 +252,7 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
     scale_x_continuous(labels = scales::number_format(1, big.mark = "")) +
     facet_wrap(
-      ggplot2::vars(.data$country),
+      vars(.data$country),
       scales = "free_y"
     ) +
     labs(
