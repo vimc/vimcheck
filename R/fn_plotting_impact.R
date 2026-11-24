@@ -91,11 +91,11 @@ plot_impact <- function(
         fill = .data$short_name
       )
     ) +
-      ggplot2::geom_ribbon(alpha = 0.3) +
-      ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
-      ggplot2::geom_point(aes(colour = .data$short_name), size = 0.5) +
+      geom_ribbon(alpha = 0.3) +
+      geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
+      geom_point(aes(colour = .data$short_name), size = 0.5) +
       theme_vimc() +
-      facet_wrap(ggplot2::vars(.data$country), scales = "free_y") +
+      facet_wrap(vars(.data$country), scales = "free_y") +
       labs(
         x = x_lab,
         y = glue::glue("{burden_type} averted"),
@@ -105,8 +105,8 @@ plot_impact <- function(
       ) +
       theme(
         legend.position = "bottom",
-        legend.key.size = ggplot2::unit(0.5, "cm"),
-        legend.key.width = ggplot2::unit(0.3, "cm")
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.3, "cm")
       )
   } else {
     cli::cli_abort(
