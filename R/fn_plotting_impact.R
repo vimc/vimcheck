@@ -91,8 +91,8 @@ plot_impact <- function(
         fill = .data$short_name
       )
     ) +
-      geom_ribbon(alpha = 0.3) +
-      geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
+      ggplot2::geom_ribbon(alpha = 0.3) +
+      ggplot2::geom_line(aes(colour = .data$short_name), linewidth = 0.5) +
       geom_point(aes(colour = .data$short_name), size = 0.5) +
       theme_vimc() +
       facet_wrap(vars(.data$country), scales = "free_y") +
@@ -105,8 +105,8 @@ plot_impact <- function(
       ) +
       theme(
         legend.position = "bottom",
-        legend.key.size = unit(0.5, "cm"),
-        legend.key.width = unit(0.3, "cm")
+        legend.key.size = ggplot2::unit(0.5, "cm"),
+        legend.key.width = ggplot2::unit(0.3, "cm")
       )
   } else {
     cli::cli_abort(
@@ -252,7 +252,7 @@ plot_coverage_fvps <- function(fvps, country = PINE) {
     geom_point(aes(colour = .data$vaccine_delivery), size = 0.5) +
     scale_x_continuous(labels = scales::number_format(1, big.mark = "")) +
     facet_wrap(
-      ggplot2::vars(.data$country),
+      vars(.data$country),
       scales = "free_y"
     ) +
     labs(
